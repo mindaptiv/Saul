@@ -38,10 +38,10 @@ public class Cylon
 	Integer allocationGranularity;
 	//TODO: add minAppAddress
 	//TODO: add maxAppAddress
-	//TODO: add hertz
+	Integer hertz;
 	
 	//memory
-	//TODO: add memoryBytes
+	Integer memoryBytes;
 	Integer osArchitecture;
 	
 	//avatar

@@ -17,11 +17,11 @@ public class Controller
 	
 	//button state
 	Integer packetNumber;
-	//TODO: add buttons 
-	//TODO: add leftTrigger
-	//TODO: add rightTrigger
-	//TODO: add thumbLeftX
-	//TODO: add thumbLeftY
-	//TODO: add thumbRightX
-	//TODO: add thumbRightY
+	Integer	buttons; 
+	Integer leftTrigger;
+	Integer rightTrigger;
+	Integer thumbLeftX;
+	Integer thumbLeftY;
+	Integer thumbRightX;
+	Integer thumbRightY;
 }

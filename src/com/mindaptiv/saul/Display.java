@@ -5,6 +5,7 @@
 package com.mindaptiv.saul;
 
 import java.lang.Integer;
+import java.lang.Float;
 
 public class Display 
 {
@@ -17,8 +18,8 @@ public class Display
 	Integer nativeRotation;
 	Integer resolutionScale;
 	Integer isStereoscopicEnabled;
-	//TODO: add logicalDPI
-	//TODO: add rawDPIX;
-	//TODO: add rawDPIY;
+	Float   logicalDPI;
+	Float	rawDPIX;
+	Float	rawDPIY;
 	
 }
