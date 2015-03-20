@@ -7,5 +7,5 @@ package com.mindaptiv.saul;
 
 public interface Saul 
 {
-
+	
 }

@@ -6,6 +6,7 @@ package com.mindaptiv.saul;
 
 //imports
 import java.lang.Integer;
+import java.lang.String;
 
 public class Device 
 {
@@ -15,8 +16,8 @@ public class Device
 	Integer inDock;
 	Integer isDefault;
 	Integer isEnabled;
-	//TODO: add name
-	//TODO: add id
+	String 	name;
+	String	id;
 	
 	//type
 	Integer deviceType;

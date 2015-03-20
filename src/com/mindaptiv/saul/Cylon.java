@@ -7,12 +7,13 @@ package com.mindaptiv.saul;
 
 //imports
 import java.lang.Integer;
+import java.lang.String;
 
 public class Cylon 
 {
 	//names
-	//TODO: add username
-	//TODO: add deviceName
+	String username;
+	String deviceName;
 	
 	//time
 	Integer milliseconds;
@@ -29,10 +30,10 @@ public class Cylon
 	//time zone
 	Integer dst;
 	Integer timeZone;
-	//TODO: add time zone name
+	String timeZoneName;
 	
 	//processor
-	//TODO: add architecture
+	String architecture;
 	Integer pageSize;
 	Integer processorCount;
 	Integer allocationGranularity;
@@ -46,7 +47,7 @@ public class Cylon
 	
 	//avatar
 	//TODO: add pictureLocation
-	//TODO: add pictureType
+	String pictureType;
 	
 	//devices
 	Integer installedDeviceCount;
