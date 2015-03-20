@@ -7,5 +7,13 @@ package com.mindaptiv.saul;
 
 public interface Saul 
 {
+	//Producers
+	void produceUsername(Cylon saul);
+	void produceDeviceName(Cylon saul);
+	void produceDateTime(Cylon saul);
+	void produceProcessorInfo(Cylon saul);
+	void produceMemoryInfo(Cylon saul);
+	void produceInputDevices(Cylon saul);
 	
+	void produceSaul(Cylon saul);
 }

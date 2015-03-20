@@ -9,8 +9,9 @@ package com.mindaptiv.saul;
 import java.lang.Integer;
 import java.lang.String;
 
-public class Cylon 
+public class Cylon implements Saul
 {
+	//Variable Declaration:
 	//names
 	String username;
 	String deviceName;
@@ -65,4 +66,7 @@ public class Cylon
 	
 	//error
 	Integer error;
+	//END variable declaration
+	
+	//
 }
