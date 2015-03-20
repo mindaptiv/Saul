@@ -1,9 +1,12 @@
+//Mouse.java
+//Java version of the mouseStruct structure from Cylon.h
+//josh@mindaptiv.com
+
 package com.mindaptiv.saul;
 
 //imports
 import java.lang.Integer;
 
-//Java version of the mouseStruct structure from Cylon.h
 public class Mouse 
 {
 	//parent device

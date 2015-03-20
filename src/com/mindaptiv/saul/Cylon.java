@@ -1,10 +1,13 @@
+//Cylon.java
+//Java version of the cylonStruct C++ structure from Cylon.h
+//"By your command," - Cylon Centurion
+//josh@mindaptiv.com
+
 package com.mindaptiv.saul;
 
 //imports
 import java.lang.Integer;
 
-
-//Java version of the cylonStruct C++ structure from Cylon.h
 public class Cylon 
 {
 	//names
