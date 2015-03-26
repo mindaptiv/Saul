@@ -9,12 +9,15 @@ package com.mindaptiv.saul;
 import java.lang.Integer;
 import java.lang.String;
 
+import android.os.Build;
+
+
 public class Cylon implements Saul
 {
 	//Variable Declaration:
 	//names
 	String username;
-	String deviceName;
+	public String deviceName;
 	
 	//time
 	Integer milliseconds;
@@ -68,5 +71,55 @@ public class Cylon implements Saul
 	Integer error;
 	//END variable declaration
 	
-	//
+	//Constructor
+	public Cylon()
+	{
+		//producers
+		this.produceDeviceName();
+	}
+	
+	//Saul Methods
+	//Producers
+	public void produceUsername(Cylon saul)
+	{
+		//TODO: Grab content URI
+		
+	}
+	
+	public void produceDeviceName()
+	{	
+		//Grab model name
+		this.deviceName = Build.MODEL;
+	}
+	
+	public void produceDateTime(Cylon saul)
+	{
+		
+	}
+	
+	public void produceProcessorInfo(Cylon saul)
+	{
+		
+	}
+	
+	public void produceMemoryInfo(Cylon saul)
+	{
+		
+	}
+	
+	public void produceInputDevices(Cylon saul)
+	{
+		
+	}
+	
+	//wraps all other producers
+	public void produceSaul(Cylon saul)
+	{
+		produceUsername(saul);
+		produceDeviceName();
+		produceDateTime(saul);
+		produceMemoryInfo(saul);
+		produceInputDevices(saul);
+	}
+	//END producers
 }

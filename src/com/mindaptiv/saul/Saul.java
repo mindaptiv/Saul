@@ -9,7 +9,7 @@ public interface Saul
 {
 	//Producers
 	void produceUsername(Cylon saul);
-	void produceDeviceName(Cylon saul);
+	void produceDeviceName();
 	void produceDateTime(Cylon saul);
 	void produceProcessorInfo(Cylon saul);
 	void produceMemoryInfo(Cylon saul);
