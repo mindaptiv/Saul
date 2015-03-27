@@ -6,12 +6,18 @@
 package com.mindaptiv.saul;
 
 //imports
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.lang.Integer;
 import java.lang.String;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+
+
+
 
 import android.os.Build;
 
@@ -41,13 +47,13 @@ public class Cylon implements Saul
 	public String timeZoneName;
 	
 	//processor
-	String architecture;
-	Integer pageSize;
+	public String architecture;
+	public Integer pageSize;
 	Integer processorCount;
-	Integer allocationGranularity;
+	public Integer allocationGranularity;
 	//TODO: add minAppAddress
 	//TODO: add maxAppAddress
-	Integer hertz;
+	public Float hertz;
 	
 	//memory
 	Integer memoryBytes;
@@ -72,7 +78,7 @@ public class Cylon implements Saul
 	//TODO: add mice
 	
 	//error
-	Integer error;
+	public Integer error;
 	//END variable declaration
 	
 	//Constructor
@@ -81,6 +87,7 @@ public class Cylon implements Saul
 		//producers
 		this.produceDeviceName();
 		this.produceDateTime();
+		this.produceProcessorInfo();
 	}
 	
 	//Saul Methods
@@ -196,9 +203,40 @@ public class Cylon implements Saul
 		}
 	}
 	
-	public void produceProcessorInfo(Cylon saul)
+	public void produceProcessorInfo()
 	{
-
+		//Grab and set OS Architecture
+		String osArch 		= System.getProperty("os.arch", "0");
+		this.architecture 	= osArch;
+		
+		//Set unobtainables to default error values
+		this.pageSize 				= 0;
+		this.allocationGranularity  = 0;
+		//TODO: add min/max app addresses?
+		
+		//grab and set hertz
+		try 
+		{
+			String cpuMaxFreq = "";
+			RandomAccessFile file = new RandomAccessFile("/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq", "r");
+			cpuMaxFreq = file.readLine();
+			file.close();
+			Float hertz = Float.parseFloat(cpuMaxFreq);
+			this.hertz = 1000 * hertz;
+		} 
+		catch (FileNotFoundException e) 
+		{
+			this.hertz = 0f;
+		} 
+		catch (IOException e) 
+		{
+			this.hertz = 0f;
+		}
+		catch (NumberFormatException e)
+		{
+			this.hertz = 0f;
+		}
+		this.error = 1111;
 		
 	}
 	
