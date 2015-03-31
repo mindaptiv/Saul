@@ -6,6 +6,8 @@
 package com.mindaptiv.saul;
 
 //imports
+import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -18,6 +20,9 @@ import java.util.TimeZone;
 
 
 
+
+
+import java.util.regex.Pattern;
 
 import android.os.Build;
 
@@ -49,7 +54,7 @@ public class Cylon implements Saul
 	//processor
 	public String architecture;
 	public Integer pageSize;
-	Integer processorCount;
+	public Integer processorCount;
 	public Integer allocationGranularity;
 	//TODO: add minAppAddress
 	//TODO: add maxAppAddress
@@ -236,7 +241,39 @@ public class Cylon implements Saul
 		{
 			this.hertz = 0f;
 		}
-		this.error = 1111;
+		
+		//grab and set processor count
+		//CpuFilter implementation credit to David @ stackoverflow
+		class CpuFilter implements FileFilter
+		{
+			@Override
+			public boolean accept(File pathname)
+			{
+				//Check if filename is cpu, followed by single digit number
+				if(Pattern.matches("cpu[0-9]+", pathname.getName()))
+				{
+					return true;
+				}
+				return false;
+			}//end accept()
+		}//end class CpuFilter
+		
+		try
+		{
+			//Get CPU info directory
+			File dir = new File("/sys/devices/system/cpu/");
+			
+			//Filter to only list the devices we care about
+			File[] files = dir.listFiles(new CpuFilter());
+			
+			//Set core count to list length
+			this.processorCount = files.length;
+		} //end try
+		catch(Exception e)
+		{
+			//set default value of 1 core (can't have 0 cores...can you? :O)
+			this.processorCount = 1;
+		}
 		
 	}
 	
