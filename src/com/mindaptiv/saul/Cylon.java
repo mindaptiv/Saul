@@ -16,14 +16,12 @@ import java.lang.String;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.regex.Pattern;
 import java.util.TimeZone;
 
-
-
-
-
-import java.util.regex.Pattern;
-
+//import android.app.ActivityManager;
+//import android.app.ActivityManager.MemoryInfo;
+//import android.content.Context;
 import android.os.Build;
 
 
@@ -61,8 +59,9 @@ public class Cylon implements Saul
 	public Float hertz;
 	
 	//memory
-	Integer memoryBytes;
-	Integer osArchitecture;
+	public long	   memoryBytes;
+	public Integer osArchitecture;
+	public String bitStringTest;
 	
 	//avatar
 	//TODO: add pictureLocation
@@ -90,9 +89,11 @@ public class Cylon implements Saul
 	public Cylon()
 	{
 		//producers
+		//TODO: add username
 		this.produceDeviceName();
 		this.produceDateTime();
 		this.produceProcessorInfo();
+		this.produceMemoryInfo();
 	}
 	
 	//Saul Methods
@@ -277,9 +278,39 @@ public class Cylon implements Saul
 		
 	}
 	
-	public void produceMemoryInfo(Cylon saul)
+	public void produceMemoryInfo()
 	{
+		/*
+		//grab and set total memory
+		//credit to Badal @ stackoverflow
+		MemoryInfo mi = new MemoryInfo();
+		MockContext mock = new MockContext();
+		try
+		{
+			//NEED CONTEXT CLASS :(
+			ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+			activityManager.getMemoryInfo(mi);
+			this.memoryBytes = mi.totalMem;
+		}
+		catch (Exception e)
+		{
+			//if this fails set the default
+			this.memoryBytes = 0;
+		}
+		*/
 		
+		//grab and set os bit-level architecture type
+		//Android uses VM's but can still determine JVM's architecture for native code to use
+		String osArch = System.getProperty("sun.arch.data.model");
+		
+		//error/unknown/invalid/missing case
+		this.osArchitecture = 0;
+		
+		//otherwise
+		if(osArch == "32" || osArch == "64")
+		{
+			this.osArchitecture = Integer.parseInt(osArch);
+		}
 	}
 	
 	public void produceInputDevices(Cylon saul)
