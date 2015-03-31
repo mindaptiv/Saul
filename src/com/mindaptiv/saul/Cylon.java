@@ -16,13 +16,16 @@ import java.lang.String;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
 import java.util.regex.Pattern;
 import java.util.TimeZone;
+
 
 //import android.app.ActivityManager;
 //import android.app.ActivityManager.MemoryInfo;
 //import android.content.Context;
 import android.os.Build;
+import android.view.InputDevice;
 
 
 public class Cylon implements Saul
@@ -59,7 +62,7 @@ public class Cylon implements Saul
 	public Float hertz;
 	
 	//memory
-	public long	   memoryBytes;
+	public Integer memoryBytes;
 	public Integer osArchitecture;
 	public String bitStringTest;
 	
@@ -76,7 +79,7 @@ public class Cylon implements Saul
 	Integer speakerCount;
 	Integer locationCount;
 	Integer scannerCount;
-	//TODO: add detectedDevices
+	LinkedList<Device> detectedDevices;
 	//TODO: add displayDevices
 	//TODO: add controllers
 	//TODO: add mice
@@ -94,6 +97,7 @@ public class Cylon implements Saul
 		this.produceDateTime();
 		this.produceProcessorInfo();
 		this.produceMemoryInfo();
+		this.produceInputDevices();
 	}
 	
 	//Saul Methods
@@ -313,10 +317,21 @@ public class Cylon implements Saul
 		}
 	}
 	
-	public void produceInputDevices(Cylon saul)
+	public void produceInputDevices()
 	{
+		//Retrieve ids of available input devices
+		int[] ids = InputDevice.getDeviceIds();
+		InputDevice[] devices = new InputDevice[ids.length];
 		
-	}
+		//iterate through the ids and populate the devices array with new InputDevice objects
+		for (int i = 0; i < ids.length; i++)
+		{
+			//ith device is retrieved from ith id
+			devices[i] = InputDevice.getDevice(ids[i]);
+		}//end for
+		
+		
+	}//end produceInputDevices()
 	
 
 	//END producers

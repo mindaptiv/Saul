@@ -8,6 +8,8 @@ package com.mindaptiv.saul;
 import java.lang.Integer;
 import java.lang.String;
 
+import android.view.InputDevice;
+
 public class Device 
 {
 	//device properties
@@ -21,8 +23,17 @@ public class Device
 	
 	//type
 	Integer deviceType;
+	String  stringType;
 	
 	//indexes
 	Integer displayIndex;
 	Integer controllerIndex;
-}
+	
+	//Constructor
+	public Device(InputDevice idvice)
+	{
+		
+	}//END constructor
+	
+}//end class
+

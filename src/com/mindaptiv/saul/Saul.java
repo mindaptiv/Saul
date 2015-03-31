@@ -13,6 +13,6 @@ public interface Saul
 	void produceDateTime();
 	void produceProcessorInfo();
 	void produceMemoryInfo();
-	void produceInputDevices(Cylon saul);
+	void produceInputDevices();
 	
 }
