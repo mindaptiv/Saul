@@ -8,6 +8,7 @@ package com.mindaptiv.saul;
 import java.lang.Integer;
 import java.lang.String;
 
+import android.os.Build;
 import android.view.InputDevice;
 
 public class Device 
@@ -20,6 +21,7 @@ public class Device
 	Integer isEnabled;
 	public String 	name;
 	public String	id;
+	public Integer  vendorID;
 	
 	//type
 	public Integer deviceType;
@@ -38,8 +40,17 @@ public class Device
 		//Grab and set name
 		this.name = idvice.getName();
 		
-		//Grab and set id
-		this.id = Integer.toString(idvice.getId());
+		//Grab and set ids
+		this.id 		= Integer.toString(idvice.getId());
+		
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+		{	
+			this.vendorID = idvice.getVendorId();
+		}
+		else
+		{
+			this.vendorID = 0;
+		}
 		
 		//Assume true/false values that are otherwise unavailable from InputDevice
 		this.isDefault 		= 0;

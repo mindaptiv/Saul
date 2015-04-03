@@ -24,4 +24,12 @@ public class Controller
 	Integer thumbLeftY;
 	Integer thumbRightX;
 	Integer thumbRightY;
+
+	
+	//Constructor
+	public Controller()
+	{
+		
+	}
+
 }
