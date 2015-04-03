@@ -80,8 +80,8 @@ public class Cylon implements Saul
 	Integer locationCount;
 	Integer scannerCount;
 	public LinkedList<Device> detectedDevices;
+	public LinkedList<Controller> controllers;
 	//TODO: add displayDevices
-	//TODO: add controllers
 	//TODO: add mice
 	
 	//error
@@ -330,14 +330,27 @@ public class Cylon implements Saul
 			devices[i] = InputDevice.getDevice(ids[i]);
 			Device device = new Device(InputDevice.getDevice(ids[i]));
 			this.detectedDevices.addLast(device);
+			
+			//build controller (if appropriate)
+			if (device.deviceType == 11)
+			{
+				Controller controller = new Controller(device, devices[i]);
+				
+				//insert into controllers
+				this.controllers.addLast(controller);
+				
+				//set the controller index of the corresponding device
+				device.controllerIndex = this.controllers.size();
+			}
 		}//end for
 		
 	}//end produceInputDevices()
 
 	public void produceDevices()
 	{
-		//create list
+		//create lists
 		this.detectedDevices = new LinkedList<Device>();
+		this.controllers	 = new LinkedList<Controller>();
 		
 		//wrap all other device producers
 		produceInputDevices();
