@@ -14,5 +14,6 @@ public interface Saul
 	void produceProcessorInfo();
 	void produceMemoryInfo();
 	void produceInputDevices();
+	void produceDevices();
 	
 }

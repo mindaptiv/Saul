@@ -72,14 +72,14 @@ public class Cylon implements Saul
 	
 	//devices
 	Integer installedDeviceCount;
-	Integer detectedDeviceCount;
+	public Integer detectedDeviceCount;
 	Integer portableStorageCount;
 	Integer videoCount;
 	Integer micCount;
 	Integer speakerCount;
 	Integer locationCount;
 	Integer scannerCount;
-	LinkedList<Device> detectedDevices;
+	public LinkedList<Device> detectedDevices;
 	//TODO: add displayDevices
 	//TODO: add controllers
 	//TODO: add mice
@@ -97,7 +97,7 @@ public class Cylon implements Saul
 		this.produceDateTime();
 		this.produceProcessorInfo();
 		this.produceMemoryInfo();
-		this.produceInputDevices();
+		this.produceDevices();
 	}
 	
 	//Saul Methods
@@ -328,11 +328,25 @@ public class Cylon implements Saul
 		{
 			//ith device is retrieved from ith id
 			devices[i] = InputDevice.getDevice(ids[i]);
+			Device device = new Device(InputDevice.getDevice(ids[i]));
+			this.detectedDevices.addLast(device);
 		}//end for
 		
-		
 	}//end produceInputDevices()
-	
 
+	public void produceDevices()
+	{
+		//create list
+		this.detectedDevices = new LinkedList<Device>();
+		
+		//wrap all other device producers
+		produceInputDevices();
+		
+		//TODO: grab vibration sensor
+		
+		
+		//set count
+		this.detectedDeviceCount = this.detectedDevices.size();
+	}
 	//END producers
 }
