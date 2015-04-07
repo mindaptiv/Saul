@@ -5,6 +5,8 @@
 
 package com.mindaptiv.saul;
 
+import android.view.KeyEvent;
+
 public interface Saul 
 {
 	//Producers
@@ -15,5 +17,6 @@ public interface Saul
 	void produceMemoryInfo();
 	void produceInputDevices();
 	void produceDevices();
+	boolean handleKeyEvent(KeyEvent event);
 	
 }

@@ -21,11 +21,14 @@ import java.util.regex.Pattern;
 import java.util.TimeZone;
 
 
+
+
 //import android.app.ActivityManager;
 //import android.app.ActivityManager.MemoryInfo;
 //import android.content.Context;
 import android.os.Build;
 import android.view.InputDevice;
+import android.view.KeyEvent;
 
 
 public class Cylon implements Saul
@@ -81,6 +84,7 @@ public class Cylon implements Saul
 	Integer scannerCount;
 	public LinkedList<Device> detectedDevices;
 	public LinkedList<Controller> controllers;
+	public Integer keycode;
 	//TODO: add displayDevices
 	//TODO: add mice
 	
@@ -362,4 +366,103 @@ public class Cylon implements Saul
 		this.detectedDeviceCount = this.detectedDevices.size();
 	}
 	//END producers
-}
+	
+	//controller.buttons mapping
+	/*
+	 * 1st Byte: (Right)(Left)(Down)(Up)
+	 * 2nd Byte: (Right Thumbstick)(Left Thumbstick)(Back)(Start)
+	 * 3rd Byte: (Don't Care)(Don't Care)(R1)(L1)
+	 * 4th Byte: (Y)(X)(B)(A)
+	 */
+	
+	//key event handler
+	public boolean handleKeyEvent(KeyEvent event)
+	{
+		this.keycode = event.getKeyCode();
+		
+		//Verify ID of source
+		for (int i = 0; i < this.controllers.size(); i++)
+		{
+			
+			//check if any controller ID matches the source of the event
+			if(Integer.parseInt(controllers.get(i).superDevice.id) == event.getDeviceId())
+			{
+				//if true, then parse code of event
+				//Variable declaration
+				int key = event.getKeyCode();
+				
+				//test
+				controllers.get(i).keycode = key;
+				
+				//parse event code
+				//parse keycode
+				if (key == KeyEvent.KEYCODE_BUTTON_A)
+				{
+				 
+				}
+				else if (key == KeyEvent.KEYCODE_BUTTON_B)
+				{
+					
+				}
+				else if (key == KeyEvent.KEYCODE_BUTTON_X)
+				{
+					
+				}
+				else if (key == KeyEvent.KEYCODE_BUTTON_Y)
+				{
+					
+				}
+				else if (key == KeyEvent.KEYCODE_BUTTON_B)
+				{
+					
+				}
+				else if (key == KeyEvent.KEYCODE_BUTTON_L1)
+				{
+					
+				}
+				else if (key == KeyEvent.KEYCODE_BUTTON_R1)
+				{
+					
+				}
+				else if (key == KeyEvent.KEYCODE_BUTTON_START)
+				{
+					
+				}
+				else if (key == KeyEvent.KEYCODE_BUTTON_SELECT)
+				{
+					
+				}
+				else if (key == KeyEvent.KEYCODE_BUTTON_THUMBL)
+				{
+					
+				}
+				else if (key == KeyEvent.KEYCODE_BUTTON_THUMBR)
+				{
+					
+				}
+				else if (key == KeyEvent.KEYCODE_DPAD_UP)
+				{
+					
+				}
+				else if (key == KeyEvent.KEYCODE_DPAD_DOWN)
+				{
+					
+				}
+				else if (key == KeyEvent.KEYCODE_DPAD_LEFT)
+				{
+					
+				}
+				else if (key == KeyEvent.KEYCODE_DPAD_RIGHT)
+				{
+					
+				}
+				
+				//return
+				return true;
+			}
+		}//END for
+		
+		//if no controller matched, return false
+		return false;
+	}//END handler
+}//END class
