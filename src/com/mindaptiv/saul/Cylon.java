@@ -23,10 +23,12 @@ import java.util.TimeZone;
 
 
 
+
 //import android.app.ActivityManager;
 //import android.app.ActivityManager.MemoryInfo;
 //import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 
@@ -378,6 +380,7 @@ public class Cylon implements Saul
 	//key event handler
 	public boolean handleKeyEvent(KeyEvent event)
 	{
+		Log.i("Saul", "Fired handler.");
 		this.keycode = event.getKeyCode();
 		
 		//Verify ID of source
@@ -387,6 +390,9 @@ public class Cylon implements Saul
 			//check if any controller ID matches the source of the event
 			if(Integer.parseInt(controllers.get(i).superDevice.id) == event.getDeviceId())
 			{
+				//test
+				Log.i("Saul", "Controller bitmask before:" + controllers.get(i).buttons);
+				
 				//if true, then parse code of event
 				//Variable declaration
 				int key = event.getKeyCode();
@@ -457,12 +463,57 @@ public class Cylon implements Saul
 					
 				}
 				
+				//test
+				Log.i("Saul", "Controller bitmask after:" + controllers.get(i).buttons);
+				
 				//return
 				return true;
 			}
 		}//END for
 		
+		//test
+		Log.i("Saul", "No controller located.");
+		
 		//if no controller matched, return false
 		return false;
 	}//END handler
+	
+	public void testLog()
+	{
+        //Logging
+        Log.i("Saul", "REPORT:\n");
+        Log.i("Saul", "Cylon: " + this.toString() + "\n");
+        Log.i("Saul", "Username: " + this.username + "\n");
+		Log.i("Saul", "Device Name: " + this.deviceName + "\n");
+		Log.i("Saul", "Date: " + this.day + " " + this.month + "/" + this.date + "/" + this.year + "\n");
+		Log.i("Saul", "Time: " + this.hours + ":" + this.minutes + ":" + this.seconds + ":" + this.milliseconds + "\n");
+		Log.i("Saul", "Time Zone: " + this.timeZoneName + "=" + this.timeZone + ", dst = " + this.dst + "\n");
+		Log.i("Saul", "System Architecture: " + this.architecture + "\n");
+		Log.i("Saul", "Page Size: " + this.pageSize + "\n");
+		Log.i("Saul", "Allocation Granularity: " + this.allocationGranularity + "\n");
+		Log.i("Saul", "CPU Speed: " + this.hertz + "\n");
+		Log.i("Saul", "CPU Core Count: " + this.processorCount + "\n");
+		//Log.i("Saul", "Installed Memory: " + this.memoryBytes + "\n");
+		Log.i("Saul", "Bit Architecture: " + this.osArchitecture + "\n");
+		Log.i("Saul", "Detected Device Count: " + this.detectedDeviceCount + "\n");
+		
+		for(int i = 0; i < this.detectedDevices.size(); i++)
+		{
+			Log.i("Saul", "     Device #" + i + ": " + "\n" + "          Name = " + this.detectedDevices.get(i).name + 
+					"\n" + "          ID = " +Integer.toHexString(Integer.parseInt(this.detectedDevices.get(i).id)) + 
+					"\n" + "          Vendor ID = " + Integer.toHexString(this.detectedDevices.get(i).vendorID) + 
+					"\n" + "          Bitmask = " + Integer.toHexString(this.detectedDevices.get(i).testMask) + "\n"
+ 				  + "\n" + "          Type = " + this.detectedDevices.get(i).deviceType + "\n");
+		}
+		for(int i =0; i < this.controllers.size(); i++)
+		{
+			Log.i("Saul", "     Controller #" + i + ": " + "\n" + "          Key Code = " + this.controllers.get(i).keycode + 
+					"\n" + "          ID = " +Integer.toHexString(Integer.parseInt(this.detectedDevices.get(i).id)) + 
+					"\n" + "          Vendor ID = " + Integer.toHexString(this.detectedDevices.get(i).vendorID) + 
+					"\n" + "          Bitmask = " + Integer.toHexString(this.detectedDevices.get(i).testMask) + "\n"
+ 				  + "\n" + "          Type = " + this.detectedDevices.get(i).deviceType + "\n");
+		}
+	
+		Log.i("Saul", "Error Code: " + this.error + "\n");
+	}//end testLog
 }//END class
