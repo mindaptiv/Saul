@@ -386,12 +386,12 @@ public class Cylon implements Saul
 		//Verify ID of source
 		for (int i = 0; i < this.controllers.size(); i++)
 		{
-			
 			//check if any controller ID matches the source of the event
 			if(Integer.parseInt(controllers.get(i).superDevice.id) == event.getDeviceId())
 			{
 				//test
-				Log.i("Saul", "Controller bitmask before:" + controllers.get(i).buttons);
+				//Log.i("Saul", "Controller bitmask before:" + Integer.toHexString(controllers.get(i).buttons));
+				//Log.i("Saul", "Action: " + event.getAction());
 				
 				//if true, then parse code of event
 				//Variable declaration
@@ -404,67 +404,172 @@ public class Cylon implements Saul
 				//parse keycode
 				if (key == KeyEvent.KEYCODE_BUTTON_A)
 				{
-				 
+					if(event.getAction() == KeyEvent.ACTION_DOWN || event.getAction() == KeyEvent.ACTION_MULTIPLE)
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons | Controller.A_BUTTON;
+					}
+					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.A_BUTTON) == Controller.A_BUTTON) )
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons - Controller.A_BUTTON;
+					}
 				}
 				else if (key == KeyEvent.KEYCODE_BUTTON_B)
 				{
-					
+					if(event.getAction() == KeyEvent.ACTION_DOWN || event.getAction() == KeyEvent.ACTION_MULTIPLE)
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons | Controller.B_BUTTON;
+					}
+					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.B_BUTTON) == Controller.B_BUTTON) )
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons - Controller.B_BUTTON;
+					}
 				}
 				else if (key == KeyEvent.KEYCODE_BUTTON_X)
 				{
-					
+					if(event.getAction() == KeyEvent.ACTION_DOWN || event.getAction() == KeyEvent.ACTION_MULTIPLE)
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons | Controller.X_BUTTON;
+					}
+					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.X_BUTTON) == Controller.X_BUTTON) )
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons - Controller.X_BUTTON;
+					}
 				}
 				else if (key == KeyEvent.KEYCODE_BUTTON_Y)
 				{
-					
+					if(event.getAction() == KeyEvent.ACTION_DOWN || event.getAction() == KeyEvent.ACTION_MULTIPLE)
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons | Controller.Y_BUTTON;
+					}
+					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.Y_BUTTON) == Controller.Y_BUTTON) )
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons - Controller.Y_BUTTON;
+					}
 				}
 				else if (key == KeyEvent.KEYCODE_BUTTON_B)
 				{
-					
+					if(event.getAction() == KeyEvent.ACTION_DOWN || event.getAction() == KeyEvent.ACTION_MULTIPLE)
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons | Controller.B_BUTTON;
+					}
+					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.B_BUTTON) == Controller.B_BUTTON) )
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons - Controller.B_BUTTON;
+					}
 				}
 				else if (key == KeyEvent.KEYCODE_BUTTON_L1)
 				{
-					
+					if(event.getAction() == KeyEvent.ACTION_DOWN || event.getAction() == KeyEvent.ACTION_MULTIPLE)
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons | Controller.LEFT_SHOULDER;
+					}
+					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.LEFT_SHOULDER) == Controller.LEFT_SHOULDER) )
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons - Controller.LEFT_SHOULDER;
+					}
 				}
 				else if (key == KeyEvent.KEYCODE_BUTTON_R1)
 				{
-					
+					if(event.getAction() == KeyEvent.ACTION_DOWN || event.getAction() == KeyEvent.ACTION_MULTIPLE)
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons | Controller.RIGHT_SHOULDER;
+					}
+					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.RIGHT_SHOULDER) == Controller.RIGHT_SHOULDER) )
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons - Controller.RIGHT_SHOULDER;
+					}
 				}
 				else if (key == KeyEvent.KEYCODE_BUTTON_START)
 				{
-					
+					if(event.getAction() == KeyEvent.ACTION_DOWN || event.getAction() == KeyEvent.ACTION_MULTIPLE)
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons | Controller.START_BUTTON;
+					}
+					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.START_BUTTON) == Controller.START_BUTTON) )
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons - Controller.START_BUTTON;
+					}
 				}
 				else if (key == KeyEvent.KEYCODE_BUTTON_SELECT)
 				{
-					
+					if(event.getAction() == KeyEvent.ACTION_DOWN || event.getAction() == KeyEvent.ACTION_MULTIPLE)
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons | Controller.SELECT_BUTTON;
+					}
+					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.SELECT_BUTTON) == Controller.SELECT_BUTTON) )
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons - Controller.SELECT_BUTTON;
+					}
 				}
 				else if (key == KeyEvent.KEYCODE_BUTTON_THUMBL)
 				{
-					
+					if(event.getAction() == KeyEvent.ACTION_DOWN || event.getAction() == KeyEvent.ACTION_MULTIPLE)
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons | Controller.LEFT_THUMB;
+					}
+					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.LEFT_THUMB) == Controller.LEFT_THUMB) )
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons - Controller.LEFT_THUMB;
+					}
 				}
 				else if (key == KeyEvent.KEYCODE_BUTTON_THUMBR)
 				{
-					
+					if(event.getAction() == KeyEvent.ACTION_DOWN || event.getAction() == KeyEvent.ACTION_MULTIPLE)
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons | Controller.RIGHT_THUMB;
+					}
+					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.RIGHT_THUMB) == Controller.RIGHT_THUMB) )
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons - Controller.RIGHT_THUMB;
+					}
 				}
 				else if (key == KeyEvent.KEYCODE_DPAD_UP)
 				{
-					
+					if(event.getAction() == KeyEvent.ACTION_DOWN || event.getAction() == KeyEvent.ACTION_MULTIPLE)
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons | Controller.UP_DPAD;
+					}
+					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.UP_DPAD) == Controller.UP_DPAD) )
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons - Controller.UP_DPAD;
+					}
 				}
 				else if (key == KeyEvent.KEYCODE_DPAD_DOWN)
 				{
-					
+					if(event.getAction() == KeyEvent.ACTION_DOWN || event.getAction() == KeyEvent.ACTION_MULTIPLE)
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons | Controller.DOWN_DPAD;
+					}
+					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.DOWN_DPAD) == Controller.DOWN_DPAD) )
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons - Controller.DOWN_DPAD;
+					}
 				}
 				else if (key == KeyEvent.KEYCODE_DPAD_LEFT)
 				{
-					
+					if(event.getAction() == KeyEvent.ACTION_DOWN || event.getAction() == KeyEvent.ACTION_MULTIPLE)
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons | Controller.LEFT_DPAD;
+					}
+					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.LEFT_DPAD) == Controller.LEFT_DPAD) )
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons - Controller.LEFT_DPAD;
+					}
 				}
 				else if (key == KeyEvent.KEYCODE_DPAD_RIGHT)
 				{
-					
+					if(event.getAction() == KeyEvent.ACTION_DOWN || event.getAction() == KeyEvent.ACTION_MULTIPLE)
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons | Controller.RIGHT_DPAD;
+					}
+					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.RIGHT_DPAD) == Controller.RIGHT_DPAD) )
+					{
+						controllers.get(i).buttons = controllers.get(i).buttons - Controller.RIGHT_DPAD;
+					}
 				}
 				
 				//test
-				Log.i("Saul", "Controller bitmask after:" + controllers.get(i).buttons);
+				//Log.i("Saul", "Controller bitmask after:" + Integer.toHexString(controllers.get(i).buttons));
 				
 				//return
 				return true;
@@ -472,7 +577,7 @@ public class Cylon implements Saul
 		}//END for
 		
 		//test
-		Log.i("Saul", "No controller located.");
+		//Log.i("Saul", "No controller located.");
 		
 		//if no controller matched, return false
 		return false;
