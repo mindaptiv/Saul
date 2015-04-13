@@ -44,6 +44,9 @@ public class Display
 		//set parent device
 		this.superDevice = device;
 		
+		//set values otherwise unavailable on current Android platforms
+		this.isStereoscopicEnabled = 0;
+		
 		//Get configuration then rotation
 		Configuration configuration = displayContext.getResources().getConfiguration();
 		int rotation 				= source.getRotation();
