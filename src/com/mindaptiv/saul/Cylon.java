@@ -24,9 +24,17 @@ import java.util.TimeZone;
 
 
 
+
+
+
+
+
+import android.annotation.SuppressLint;
+import android.content.Context;
 //import android.app.ActivityManager;
 //import android.app.ActivityManager.MemoryInfo;
 //import android.content.Context;
+import android.hardware.display.*; //some contents that we want to access are only available in later versions, hence ".*" (no ifdef in Java)
 import android.os.Build;
 import android.util.Log;
 import android.view.InputDevice;
@@ -86,17 +94,24 @@ public class Cylon implements Saul
 	Integer scannerCount;
 	public LinkedList<Device> detectedDevices;
 	public LinkedList<Controller> controllers;
+	public LinkedList<Display> displays;
 	public Integer keycode;
-	//TODO: add displayDevices
 	//TODO: add mice
+	
+	//Android
+	Context context;
 	
 	//error
 	public Integer error;
 	//END variable declaration
 	
+	
 	//Constructor
-	public Cylon()
+	public Cylon(Context context)
 	{
+		//Context
+		this.context = context;
+		
 		//producers
 		//TODO: add username
 		this.produceDeviceName();
@@ -351,18 +366,62 @@ public class Cylon implements Saul
 		}//end for
 		
 	}//end produceInputDevices()
-
+	
+	@SuppressLint("InlinedApi")
+	public void produceDisplayDevices()
+	{
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+		{	
+			//Variable Declaration
+			//NOTE: API 17+ only
+			DisplayManager displayManager = (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
+			android.view.Display[] displaysies = displayManager.getDisplays();
+			
+			
+			//create Device and  Display objects for each item in displaysies
+			for (int i = 0; i < displaysies.length; i++)
+			{	
+				//Create display-based context for each Display
+				//NOTE: API 17+ only
+				//partial code credit to Tommy Visic @ stackoverflow
+				Context displayContext = this.context.createDisplayContext(displaysies[i]);
+				
+				//Create new device using Display
+				//TODO: add device call
+				//Device device = new Device();
+				
+				//TODO: add to devices list
+				
+				
+				//Create display device
+				//TODO: add device to constructor
+				com.mindaptiv.saul.Display display = new Display(displaysies[i], displayContext);
+				
+				//Add to list of displays
+				this.displays.addLast(display);				
+			}//END FOR
+		}//END if
+		else
+		{
+			return;
+		}//END else
+		
+	}//END produce display devices
+	
 	public void produceDevices()
 	{
 		//create lists
 		this.detectedDevices = new LinkedList<Device>();
 		this.controllers	 = new LinkedList<Controller>();
+		this.displays		 = new LinkedList<Display>();
 		
 		//wrap all other device producers
 		produceInputDevices();
 		
-		//TODO: grab vibration sensor
-		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+		{	
+			produceDisplayDevices();
+		}
 		
 		//set count
 		this.detectedDeviceCount = this.detectedDevices.size();
@@ -618,7 +677,12 @@ public class Cylon implements Saul
 					"\n" + "          Bitmask = " + Integer.toHexString(this.detectedDevices.get(i).testMask) + "\n"
  				  + "\n" + "          Type = " + this.detectedDevices.get(i).deviceType + "\n");
 		}
-	
+		for(int i =0; i < this.displays.size(); i++)
+		{
+			Log.i("Saul", "     Display #" + i + ": " + "\n" + "          Current Rotation = " + Integer.toHexString(this.displays.get(i).currentRotation) + 
+					"\n" + "          Native Rotation = " +Integer.toHexString(this.displays.get(i).nativeRotation) + 
+					"\n" + "          Prefferred Rotation = " + Integer.toHexString(this.displays.get(i).rotationPreference) + "\n");
+		}
 		Log.i("Saul", "Error Code: " + this.error + "\n");
 	}//end testLog
 }//END class

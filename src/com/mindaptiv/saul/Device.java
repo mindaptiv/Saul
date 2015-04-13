@@ -146,5 +146,10 @@ public class Device
 		}
 	}//END constructor
 	
+	public Device(android.view.Display display)
+	{
+		
+	}
+	
 }//end class
 

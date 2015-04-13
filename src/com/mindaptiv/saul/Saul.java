@@ -16,7 +16,10 @@ public interface Saul
 	void produceProcessorInfo();
 	void produceMemoryInfo();
 	void produceInputDevices();
+	void produceDisplayDevices();
 	void produceDevices();
+	
+	//Handler
 	boolean handleKeyEvent(KeyEvent event);
 	
 }
