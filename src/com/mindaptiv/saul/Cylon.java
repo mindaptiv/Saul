@@ -361,7 +361,7 @@ public class Cylon implements Saul
 				this.controllers.addLast(controller);
 				
 				//set the controller index of the corresponding device
-				device.controllerIndex = this.controllers.size();
+				device.controllerIndex = this.controllers.size() - 1;
 			}
 		}//end for
 		
@@ -387,18 +387,18 @@ public class Cylon implements Saul
 				Context displayContext = this.context.createDisplayContext(displaysies[i]);
 				
 				//Create new device using Display
-				//TODO: add device call
-				//Device device = new Device();
+				Device device = new Device(displaysies[i]);
 				
-				//TODO: add to devices list
-				
+				//add to devices list
+				this.detectedDevices.addLast(device);
 				
 				//Create display device
 				//TODO: add device to constructor
 				com.mindaptiv.saul.Display display = new Display(displaysies[i], displayContext);
 				
 				//Add to list of displays
-				this.displays.addLast(display);				
+				this.displays.addLast(display);
+				device.displayIndex = this.displays.size() - 1;
 			}//END FOR
 		}//END if
 		else
@@ -667,7 +667,10 @@ public class Cylon implements Saul
 					"\n" + "          ID = " +Integer.toHexString(Integer.parseInt(this.detectedDevices.get(i).id)) + 
 					"\n" + "          Vendor ID = " + Integer.toHexString(this.detectedDevices.get(i).vendorID) + 
 					"\n" + "          Bitmask = " + Integer.toHexString(this.detectedDevices.get(i).testMask) + "\n"
- 				  + "\n" + "          Type = " + this.detectedDevices.get(i).deviceType + "\n");
+ 				  + "\n" + "          Type = " + this.detectedDevices.get(i).deviceType + 
+ 				  "\n" +   "          Controller Index = " + this.detectedDevices.get(i).controllerIndex + 
+ 				  "\n" +   "          Display Index = " + this.detectedDevices.get(i).displayIndex);
+			 
 		}
 		for(int i =0; i < this.controllers.size(); i++)
 		{
@@ -675,13 +678,15 @@ public class Cylon implements Saul
 					"\n" + "          ID = " +Integer.toHexString(Integer.parseInt(this.detectedDevices.get(i).id)) + 
 					"\n" + "          Vendor ID = " + Integer.toHexString(this.detectedDevices.get(i).vendorID) + 
 					"\n" + "          Bitmask = " + Integer.toHexString(this.detectedDevices.get(i).testMask) + "\n"
- 				  + "\n" + "          Type = " + this.detectedDevices.get(i).deviceType + "\n");
+ 				  + "\n" + "          Type = " + this.detectedDevices.get(i).deviceType + "\n"
+					);
 		}
 		for(int i =0; i < this.displays.size(); i++)
 		{
 			Log.i("Saul", "     Display #" + i + ": " + "\n" + "          Current Rotation = " + Integer.toHexString(this.displays.get(i).currentRotation) + 
 					"\n" + "          Native Rotation = " +Integer.toHexString(this.displays.get(i).nativeRotation) + 
-					"\n" + "          Prefferred Rotation = " + Integer.toHexString(this.displays.get(i).rotationPreference) + "\n");
+					"\n" + "          Prefferred Rotation = " + Integer.toHexString(this.displays.get(i).rotationPreference) + 
+					"\n");
 		}
 		Log.i("Saul", "Error Code: " + this.error + "\n");
 	}//end testLog

@@ -35,6 +35,10 @@ public class Device
 	//Build device using InputDevice object
 	public Device(InputDevice idvice)
 	{
+		//temporary zeroing of values that may change later
+		this.controllerIndex = 0;
+		this.displayIndex 	 = 0;
+		
 		//Parse through all the metadata of the InputDevice and map it to the Device
 		
 		//Grab and set name
@@ -148,7 +152,33 @@ public class Device
 	
 	public Device(android.view.Display display)
 	{
+		//Temporary zeroing of values that may change later
+		this.displayIndex = 0;
 		
+		//Set values not available in this context (creating from an android Display object)
+		this.panelLocation 	 = 0;
+		this.inLid 			 = 0;
+		this.inDock			 = 0;
+		this.isEnabled		 = 1;
+		this.controllerIndex = 0;
+		this.testMask		 = 0;
+		this.vendorID		 = 0;
+		
+		//Set name
+		this.name = display.getName();
+		
+		//Set id
+		this.id = Integer.toString(display.getDisplayId());
+		
+		//set deviceType for Saul
+		this.deviceType = 8;
+		
+		//set isDefault
+		this.isDefault = 0;
+		if(display.getDisplayId() == android.view.Display.DEFAULT_DISPLAY)
+		{
+			this.isDefault = 1;
+		}
 	}
 	
 }//end class
