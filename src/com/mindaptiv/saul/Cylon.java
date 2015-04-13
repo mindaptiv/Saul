@@ -394,7 +394,7 @@ public class Cylon implements Saul
 				
 				//Create display device
 				//TODO: add device to constructor
-				com.mindaptiv.saul.Display display = new Display(displaysies[i], displayContext);
+				com.mindaptiv.saul.Display display = new Display(displaysies[i], displayContext, device);
 				
 				//Add to list of displays
 				this.displays.addLast(display);

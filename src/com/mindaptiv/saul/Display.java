@@ -39,8 +39,11 @@ public class Display
 	
 	
 	//Constructor
-	public Display(android.view.Display source, Context displayContext)
+	public Display(android.view.Display source, Context displayContext, Device device)
 	{
+		//set parent device
+		this.superDevice = device;
+		
 		//Get configuration then rotation
 		Configuration configuration = displayContext.getResources().getConfiguration();
 		int rotation 				= source.getRotation();
