@@ -685,8 +685,11 @@ public class Cylon implements Saul
 		{
 			Log.i("Saul", "     Display #" + i + ": " + "\n" + "          Current Rotation = " + Integer.toHexString(this.displays.get(i).currentRotation) + 
 					"\n" + "          Native Rotation = " +Integer.toHexString(this.displays.get(i).nativeRotation) + 
-					"\n" + "          Prefferred Rotation = " + Integer.toHexString(this.displays.get(i).rotationPreference) + 
-					"\n");
+					"\n" + "          Preferred Rotation = " + Integer.toHexString(this.displays.get(i).rotationPreference) + 
+					"\n" + "          Raw X DPI = " + this.displays.get(i).rawDPIX + 
+					"\n" + "          Raw Y DPI = " + this.displays.get(i).rawDPIY + 
+					"\n" + "          Logical DPI = " + this.displays.get(i).logicalDPI + 
+					"\n" + "          Resolution Scale = " + this.displays.get(i).resolutionScale);
 		}
 		Log.i("Saul", "Error Code: " + this.error + "\n");
 	}//end testLog

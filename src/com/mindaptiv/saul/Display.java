@@ -9,6 +9,7 @@ import java.lang.Float;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.util.DisplayMetrics;
 import android.view.Surface;
 
 public class Display 
@@ -30,7 +31,7 @@ public class Display
 	Integer rotationPreference;
 	Integer currentRotation;
 	Integer nativeRotation;
-	Integer resolutionScale;
+	Float resolutionScale;
 	Integer isStereoscopicEnabled;
 	Float   logicalDPI;
 	Float	rawDPIX;
@@ -114,6 +115,17 @@ public class Display
 			this.currentRotation  	 = 0;
 			this.rotationPreference  = 0;
 		}//END ROTATIONS
+		
+		//Grab metrics
+		DisplayMetrics metrics = new DisplayMetrics(); 
+		source.getRealMetrics(metrics);  //NOTE: API 17+ 
+		
+		//Get estimated DPI's
+		this.rawDPIX 			= metrics.xdpi;
+		this.rawDPIY 			= metrics.ydpi;
+		this.logicalDPI		 	= (float) metrics.densityDpi;
+		this.resolutionScale	= metrics.density;
+		
 	}//END constructor
 	
 }//END class
