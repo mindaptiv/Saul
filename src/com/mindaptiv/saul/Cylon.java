@@ -20,22 +20,12 @@ import java.util.LinkedList;
 import java.util.regex.Pattern;
 import java.util.TimeZone;
 
-
-
-
-
-
-
-
-
-
 import android.annotation.SuppressLint;
 import android.content.Context;
-//import android.app.ActivityManager;
-//import android.app.ActivityManager.MemoryInfo;
-//import android.content.Context;
 import android.hardware.display.*; //some contents that we want to access are only available in later versions, hence ".*" (no ifdef in Java)
 import android.os.Build;
+import android.print.PrinterInfo; //only available in API 19 +
+import android.printservice.PrinterDiscoverySession; //Only available in API 19+
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -370,7 +360,7 @@ public class Cylon implements Saul
 	@SuppressLint("InlinedApi")
 	public void produceDisplayDevices()
 	{
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
 		{	
 			//Variable Declaration
 			//NOTE: API 17+ only
@@ -408,6 +398,24 @@ public class Cylon implements Saul
 		
 	}//END produce display devices
 	
+	public void producePrintingDevices()
+	{
+		//only run on 19+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+		{
+			//List for handling retrieved Printer info
+			//LinkedList<PrinterInfo> printers = new LinkedList<PrinterInfo>();
+			
+			
+			
+		}//end if
+		else
+		{
+			return;
+		}
+		
+	}//end printers
+	
 	public void produceDevices()
 	{
 		//create lists
@@ -418,11 +426,15 @@ public class Cylon implements Saul
 		//wrap all other device producers
 		produceInputDevices();
 		
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
 		{	
 			produceDisplayDevices();
 		}
-		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+		{
+			producePrintingDevices();
+		}
+			
 		//set count
 		this.detectedDeviceCount = this.detectedDevices.size();
 	}

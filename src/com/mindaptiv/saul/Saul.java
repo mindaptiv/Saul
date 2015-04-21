@@ -17,6 +17,7 @@ public interface Saul
 	void produceMemoryInfo();
 	void produceInputDevices();
 	void produceDisplayDevices();
+	void producePrintingDevices();
 	void produceDevices();
 	
 	//Handler
