@@ -24,6 +24,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.hardware.display.*; //some contents that we want to access are only available in later versions, hence ".*" (no ifdef in Java)
 import android.os.Build;
+import android.os.Environment;
+import android.os.StatFs;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -519,6 +521,38 @@ public class Cylon implements Saul
 	}//end printers
 	*/
 	
+	@SuppressWarnings("deprecation")
+	public void produceStorageDevices()
+	{
+		//Primary External Storage
+		//Credit to Yaroslav Boichuk @ stackoverflow for partial code
+		//Create new stats for file system
+		StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+		
+		//Variable declartion
+		long bytesAvails = 0;
+		long totalBytes = 0;
+		
+		
+		//retrieve byte values
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+		{
+			//code added in API 18
+			totalBytes = stat.getBlockSizeLong() * stat.getBlockCountLong();
+			bytesAvails = stat.getBlockSizeLong() * stat.getAvailableBlocksLong();
+		}
+		else
+		{
+			//code deprecated in API 18
+			totalBytes = (long)stat.getBlockSize() * (long)stat.getBlockCount();
+			bytesAvails = (long)stat.getBlockSize() * (long)stat.getAvailableBlocks();
+		}
+		
+		Log.i("Saul", "Primary External Storage Bytes Avail: " + bytesAvails);
+		Log.i("Saul", "Primary External Storage Total Bytes: " + totalBytes);
+		
+	}//end produce storage
+	
 	public void produceDevices()
 	{
 		//create lists
@@ -528,6 +562,7 @@ public class Cylon implements Saul
 		
 		//wrap all other device producers
 		produceInputDevices();
+		produceStorageDevices();
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
 		{	
