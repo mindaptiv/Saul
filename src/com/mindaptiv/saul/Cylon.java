@@ -24,8 +24,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.hardware.display.*; //some contents that we want to access are only available in later versions, hence ".*" (no ifdef in Java)
 import android.os.Build;
-import android.print.PrinterInfo; //only available in API 19 +
-import android.printservice.PrinterDiscoverySession; //Only available in API 19+
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -398,23 +396,128 @@ public class Cylon implements Saul
 		
 	}//END produce display devices
 	
+	/*
+	 * TODO: eventually get a working printer function in place
 	public void producePrintingDevices()
 	{
 		//only run on 19+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-		{
+		{	
+			//internal service class
+			class SaulPrintService extends android.printservice.PrintService
+			{
+				//
+				private final String TAG = SaulPrintService.class.getSimpleName();
+				
+				private Handler mHandler = new Handler();
+				
+				
+				@Override
+				protected PrinterDiscoverySession onCreatePrinterDiscoverySession() 
+				{
+					return null;
+				}
+
+				@Override
+				protected void onRequestCancelPrintJob(PrintJob printJob) 
+				{
+				
+				}
+
+				@Override
+				protected void onPrintJobQueued(PrintJob printJob) 
+				{
+					
+				}
+			}
+			
+			//internal discovery class
+			//credit to yagi on HDfpga for partial discovery code and the chromium open source project for partial discovery code
+			class SaulPrintDiscovery extends android.printservice.PrinterDiscoverySession
+			{
+				//Variable Declarations
+				private android.printservice.PrintService printService;
+				
+				private final static String PRINTER_ID = "Saul.Print.Service";
+				
+				//Constructor
+				public SaulPrintDiscovery(android.printservice.PrintService service)
+				{
+					this.printService = service;
+				}
+				
+				
+				@SuppressLint("InlinedApi")
+				@Override
+				public void onStartPrinterDiscovery(List<PrinterId> priorityList) 
+				{	
+					//Variable Declaration
+					PrinterId id = this.printService.generatePrinterId(PRINTER_ID);
+					PrinterInfo.Builder builder = new PrinterInfo.Builder(id, PRINTER_ID, PrinterInfo.STATUS_IDLE);
+					PrinterInfo info = builder.build();
+					List<PrinterInfo> infos = new ArrayList<PrinterInfo>();
+					infos.add(info);
+					addPrinters(infos);
+				}
+
+				@Override
+				public void onStopPrinterDiscovery() 
+				{
+					//meh
+				}
+
+				@Override
+				public void onValidatePrinters(List<PrinterId> printerIds) 
+				{
+					//meh
+				}
+
+				@Override
+				public void onStartPrinterStateTracking(PrinterId printerId) 
+				{
+					//meh?
+				}
+
+				@Override
+				public void onStopPrinterStateTracking(PrinterId printerId) 
+				{
+					//meh
+				}
+
+				@Override
+				public void onDestroy() 
+				{
+					//meh
+				}	
+			}//end class
+			
+			
 			//List for handling retrieved Printer info
-			//LinkedList<PrinterInfo> printers = new LinkedList<PrinterInfo>();
+			List<android.print.PrinterId> printers = new ArrayList<android.print.PrinterId>();
+			List<android.print.PrinterInfo> printerInfo = new ArrayList<android.print.PrinterInfo>();
 			
+			//Variable declaration
+			SaulPrintService service = new SaulPrintService();
+			SaulPrintDiscovery session = new SaulPrintDiscovery(service);
 			
+			//start session
+			session.onStartPrinterDiscovery(printers);
+	
+			//get printers
+			printerInfo = session.getPrinters();
+			session.addPrinters(printerInfo);
 			
+			//stop session
+			session.onStopPrinterDiscovery();
+			
+			Log.i("Saul", "Printer Count: " + printerInfo.size()); 
 		}//end if
 		else
 		{
 			return;
 		}
-		
 	}//end printers
+	*/
 	
 	public void produceDevices()
 	{
@@ -429,10 +532,6 @@ public class Cylon implements Saul
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
 		{	
 			produceDisplayDevices();
-		}
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-		{
-			producePrintingDevices();
 		}
 			
 		//set count
