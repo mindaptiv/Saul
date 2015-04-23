@@ -14,9 +14,12 @@ import java.io.RandomAccessFile;
 import java.lang.Integer;
 import java.lang.String;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.TimeZone;
 
@@ -26,6 +29,7 @@ import android.hardware.display.*; //some contents that we want to access are on
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -550,6 +554,106 @@ public class Cylon implements Saul
 		
 		Log.i("Saul", "Primary External Storage Bytes Avail: " + bytesAvails);
 		Log.i("Saul", "Primary External Storage Total Bytes: " + totalBytes);
+		
+		//Credit to Dmitriy Lozenko @ Stackoverflow for storage partial storage directories code
+		//directory separator
+		final Pattern DIR_SEPORATOR = Pattern.compile("/");
+		
+		//Final set of paths
+		final Set<String> rv = new HashSet<String>();
+		
+		//Primary External Storage (may be internal flash on some devices)
+		final String rawExternalStorage = System.getenv("EXTERNAL_STORAGE");
+		
+		//Second SD-cards separated by ":"
+		final String rawSecondaryStoragesStr = System.getenv("SECONDARY_STORAGE");
+		
+		//Primary emulated SD-Card
+		final String rawEmulatedStorageTarget = System.getenv("EMULATED_STORAGE_TARGET");
+		
+		if(TextUtils.isEmpty(rawEmulatedStorageTarget))
+		{
+			//Device has "physical external storage", use plain paths
+			if(TextUtils.isEmpty(rawExternalStorage))
+			{
+				//EXTERNAL_STORAGE undefined; use default sdcard path
+				rv.add("/storage/sdcard0");
+			}//end if external undef
+			else
+			{
+				rv.add(rawExternalStorage);
+			}//END else
+		}
+		else
+		{
+			//Device has emulated storage; external storage paths should have userIdburned into them
+			final String rawUserId;
+			if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1)
+			{
+				//Default to empty for older platforms
+				rawUserId = "";
+			}
+			else
+			{
+				//Variable Declaration
+				final String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+				final String[] folders = DIR_SEPORATOR.split(path);
+				final String lastFolder = folders[folders.length - 1];
+				boolean isDigit = false;
+				
+				try
+				{
+					Integer.valueOf(lastFolder);
+					isDigit = true;
+				}
+				catch(NumberFormatException ignored)
+				{
+					//empty
+				}
+				
+				rawUserId = isDigit ? lastFolder :"";
+			}//END else
+			
+			// /storage/emulation/n
+			if(TextUtils.isEmpty(rawUserId))
+			{
+				rv.add(rawEmulatedStorageTarget);
+			}
+			else
+			{
+				rv.add(rawEmulatedStorageTarget + File.separator + rawUserId);
+			}
+		}//END outer else
+		
+		//Add all secondary storages
+		if(!TextUtils.isEmpty(rawSecondaryStoragesStr))
+		{
+			//All secondary SD-Cards split into array
+			final String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
+			Collections.addAll(rv, rawSecondaryStorages);
+		}
+		
+		String[] paths = rv.toArray(new String[rv.size()]);
+		
+		//Test
+		Log.i("Saul", "paths size: " + paths.length);
+		for (int i = 0; i < paths.length; i++ )
+		{
+			Log.i("Saul", "rv entry " + i + ": " + paths[i]);
+			
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+			{
+				StatFs statTwo = new StatFs(paths[i]);
+				
+				//code added in API 18
+				totalBytes = statTwo.getBlockSizeLong() * statTwo.getBlockCountLong();
+				bytesAvails = statTwo.getBlockSizeLong() * statTwo.getAvailableBlocksLong();
+			
+				Log.i("Saul", "Primary External Storage Bytes Avail: " + bytesAvails);
+				Log.i("Saul", "Primary External Storage Total Bytes: " + totalBytes);
+			}
+		}
+		
 		
 	}//end produce storage
 	
