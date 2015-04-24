@@ -616,8 +616,6 @@ public class Cylon implements Saul
 		//Cast to array of paths (of type String)
 		String[] paths = rv.toArray(new String[rv.size()]);
 		
-		//Test
-		Log.i("Saul", "paths size: " + paths.length);
 		for (int i = 0; i < paths.length; i++ )
 		{	
 			//Create new File system stats
@@ -625,7 +623,7 @@ public class Cylon implements Saul
 			
 			//Check if default
 			boolean isDefault = false;
-			if (paths[i] == Environment.getExternalStorageDirectory().getPath())
+			if (paths[i].equals(Environment.getExternalStorageDirectory().getPath()))
 			{
 				//if path is the same as the environment's primary external storage directory, treat as default storage location
 				isDefault = true;
@@ -644,8 +642,10 @@ public class Cylon implements Saul
 				bytesAvails = (long)stats.getBlockSize() * (long)stats.getAvailableBlocks();
 			}
 			
-			//TODO: create new Device object
-			//Device device = 
+			//Create new Device object
+			Device device = new Device(paths[i], isDefault);
+			this.detectedDevices.addLast(device);
+			
 		}//END for
 	}//end produce storage
 	
@@ -911,8 +911,8 @@ public class Cylon implements Saul
 					"\n" + "          Bitmask = " + Integer.toHexString(this.detectedDevices.get(i).testMask) + "\n"
  				  + "\n" + "          Type = " + this.detectedDevices.get(i).deviceType + 
  				  "\n" +   "          Controller Index = " + this.detectedDevices.get(i).controllerIndex + 
- 				  "\n" +   "          Display Index = " + this.detectedDevices.get(i).displayIndex);
-			 
+ 				  "\n" +   "          Display Index = " + this.detectedDevices.get(i).displayIndex +
+ 				  "\n" +   "          Default = " + this.detectedDevices.get(i).isDefault);
 		}
 		for(int i =0; i < this.controllers.size(); i++)
 		{

@@ -198,6 +198,7 @@ public class Device
 		this.displayIndex	= 0;
 		this.controllerIndex = 0;
 		this.testMask		= 0;
+		this.id				= "0";
 		
 		//Set value for being default storage location
 		this.isDefault = 0;
@@ -206,9 +207,8 @@ public class Device
 			this.isDefault = 1;
 		}
 		
-		//set name/id values to that of the storage path
+		//set name value to that of the storage path
 		this.name = path;
-		this.id	  = path;
 	}//END storage constructor
 	
 }//end class
