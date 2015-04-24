@@ -531,7 +531,7 @@ public class Cylon implements Saul
 		//Credit to Yaroslav Boichuk @ stackoverflow for partial storage size code
 		//Credit to Dmitriy Lozenko @ Stackoverflow for partial storage directories code
 		
-		//Variable declartion
+		//Variable declaration
 		long bytesAvails = 0;
 		long totalBytes = 0;
 		
