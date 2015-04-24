@@ -619,11 +619,17 @@ public class Cylon implements Saul
 		//Test
 		Log.i("Saul", "paths size: " + paths.length);
 		for (int i = 0; i < paths.length; i++ )
-		{
-			Log.i("Saul", "rv entry " + i + ": " + paths[i]);
-			
+		{	
 			//Create new File system stats
 			StatFs stats = new StatFs(paths[i]);
+			
+			//Check if default
+			boolean isDefault = false;
+			if (paths[i] == Environment.getExternalStorageDirectory().getPath())
+			{
+				//if path is the same as the environment's primary external storage directory, treat as default storage location
+				isDefault = true;
+			}
 			
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
 			{
@@ -638,9 +644,8 @@ public class Cylon implements Saul
 				bytesAvails = (long)stats.getBlockSize() * (long)stats.getAvailableBlocks();
 			}
 			
-			//Log
-			Log.i("Saul", "Storage Bytes Avail: " + bytesAvails);
-			Log.i("Saul", "Storage Total Bytes: " + totalBytes);
+			//TODO: create new Device object
+			//Device device = 
 		}//END for
 	}//end produce storage
 	

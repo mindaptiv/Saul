@@ -29,9 +29,10 @@ public class Device
 	//indexes
 	Integer displayIndex;
 	Integer controllerIndex;
+	Integer storageIndex;
 	public Integer testMask;
 	
-	//Constructor
+	//Constructors
 	//Build device using InputDevice object
 	public Device(InputDevice idvice)
 	{
@@ -148,8 +149,9 @@ public class Device
 		{
 			this.deviceType = 0;
 		}
-	}//END constructor
+	}//END input constructor
 	
+	//Constructor for Device tied to Display object
 	public Device(android.view.Display display)
 	{
 		//Temporary zeroing of values that may change later
@@ -179,7 +181,35 @@ public class Device
 		{
 			this.isDefault = 1;
 		}
-	}
+	}//END display constructor
+	
+	//Constructor built for device tied to a Storage object
+	public Device(String path, boolean isDefault)
+	{
+		//temporary zeroing of values that may change later
+		this.storageIndex = 0;
+		
+		//Set values not available in this context (creating from a storage path)
+		this.panelLocation 	= 0;
+		this.inDock 		= 0;
+		this.inLid			= 0;
+		this.isEnabled		= 1;
+		this.vendorID  		= 0;
+		this.displayIndex	= 0;
+		this.controllerIndex = 0;
+		this.testMask		= 0;
+		
+		//Set value for being default storage location
+		this.isDefault = 0;
+		if(isDefault == true)
+		{
+			this.isDefault = 1;
+		}
+		
+		//set name/id values to that of the storage path
+		this.name = path;
+		this.id	  = path;
+	}//END storage constructor
 	
 }//end class
 
