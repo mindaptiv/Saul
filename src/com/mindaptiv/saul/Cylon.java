@@ -89,6 +89,7 @@ public class Cylon implements Saul
 	public LinkedList<Device> detectedDevices;
 	public LinkedList<Controller> controllers;
 	public LinkedList<Display> displays;
+	public LinkedList<Storage> storages;
 	public Integer keycode;
 	//TODO: add mice
 	
@@ -646,6 +647,11 @@ public class Cylon implements Saul
 			Device device = new Device(paths[i], isDefault);
 			this.detectedDevices.addLast(device);
 			
+			//Create new Storage object
+			Storage storage = new Storage(device, paths[i], bytesAvails, totalBytes);
+			this.storages.addLast(storage);
+			device.storageIndex = this.storages.size() - 1;
+			
 		}//END for
 	}//end produce storage
 	
@@ -655,6 +661,7 @@ public class Cylon implements Saul
 		this.detectedDevices = new LinkedList<Device>();
 		this.controllers	 = new LinkedList<Controller>();
 		this.displays		 = new LinkedList<Display>();
+		this.storages		 = new LinkedList<Storage>();
 		
 		//wrap all other device producers
 		produceInputDevices();
