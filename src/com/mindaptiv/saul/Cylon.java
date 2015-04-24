@@ -527,35 +527,14 @@ public class Cylon implements Saul
 	
 	@SuppressWarnings("deprecation")
 	public void produceStorageDevices()
-	{
-		//Primary External Storage
-		//Credit to Yaroslav Boichuk @ stackoverflow for partial code
-		//Create new stats for file system
-		StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+	{	
+		//Credit to Yaroslav Boichuk @ stackoverflow for partial storage size code
+		//Credit to Dmitriy Lozenko @ Stackoverflow for partial storage directories code
 		
 		//Variable declartion
 		long bytesAvails = 0;
 		long totalBytes = 0;
 		
-		
-		//retrieve byte values
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
-		{
-			//code added in API 18
-			totalBytes = stat.getBlockSizeLong() * stat.getBlockCountLong();
-			bytesAvails = stat.getBlockSizeLong() * stat.getAvailableBlocksLong();
-		}
-		else
-		{
-			//code deprecated in API 18
-			totalBytes = (long)stat.getBlockSize() * (long)stat.getBlockCount();
-			bytesAvails = (long)stat.getBlockSize() * (long)stat.getAvailableBlocks();
-		}
-		
-		Log.i("Saul", "Primary External Storage Bytes Avail: " + bytesAvails);
-		Log.i("Saul", "Primary External Storage Total Bytes: " + totalBytes);
-		
-		//Credit to Dmitriy Lozenko @ Stackoverflow for storage partial storage directories code
 		//directory separator
 		final Pattern DIR_SEPORATOR = Pattern.compile("/");
 		
@@ -571,6 +550,7 @@ public class Cylon implements Saul
 		//Primary emulated SD-Card
 		final String rawEmulatedStorageTarget = System.getenv("EMULATED_STORAGE_TARGET");
 		
+		//NOTE: in cases where an SD card may not be present, etc. multiple paths located may be referring to the same physical storage (with one path emulated, and one path physical)
 		if(TextUtils.isEmpty(rawEmulatedStorageTarget))
 		{
 			//Device has "physical external storage", use plain paths
@@ -633,6 +613,7 @@ public class Cylon implements Saul
 			Collections.addAll(rv, rawSecondaryStorages);
 		}
 		
+		//Cast to array of paths (of type String)
 		String[] paths = rv.toArray(new String[rv.size()]);
 		
 		//Test
@@ -641,20 +622,26 @@ public class Cylon implements Saul
 		{
 			Log.i("Saul", "rv entry " + i + ": " + paths[i]);
 			
+			//Create new File system stats
+			StatFs stats = new StatFs(paths[i]);
+			
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
 			{
-				StatFs statTwo = new StatFs(paths[i]);
-				
 				//code added in API 18
-				totalBytes = statTwo.getBlockSizeLong() * statTwo.getBlockCountLong();
-				bytesAvails = statTwo.getBlockSizeLong() * statTwo.getAvailableBlocksLong();
-			
-				Log.i("Saul", "Primary External Storage Bytes Avail: " + bytesAvails);
-				Log.i("Saul", "Primary External Storage Total Bytes: " + totalBytes);
+				totalBytes = stats.getBlockSizeLong() * stats.getBlockCountLong();
+				bytesAvails = stats.getBlockSizeLong() * stats.getAvailableBlocksLong();
 			}
-		}
-		
-		
+			else
+			{
+				//code deprecated in API 18
+				totalBytes = (long)stats.getBlockSize() * (long)stats.getBlockCount();
+				bytesAvails = (long)stats.getBlockSize() * (long)stats.getAvailableBlocks();
+			}
+			
+			//Log
+			Log.i("Saul", "Storage Bytes Avail: " + bytesAvails);
+			Log.i("Saul", "Storage Total Bytes: " + totalBytes);
+		}//END for
 	}//end produce storage
 	
 	public void produceDevices()
