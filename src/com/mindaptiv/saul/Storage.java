@@ -22,12 +22,13 @@ public class Storage
 	//end variable declaration
 	
 	//Constructor
-	public Storage(Device suprah, String location, long available, long total)
+	public Storage(Device suprah, String location, long available, long total, boolean emulated)
 	{
 		//Set arguments
 		this.superDevice = suprah;
 		this.path		 = location;
 		this.bytesAvails = available;
 		this.totalBytes  = total; 
+		this.isEmulated  = emulated;
 	}
 }//end class 

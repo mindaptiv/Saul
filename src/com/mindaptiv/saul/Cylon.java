@@ -630,6 +630,14 @@ public class Cylon implements Saul
 				isDefault = true;
 			}
 			
+			//check if emulated
+			boolean isEmulated = false;
+			if(Pattern.compile(Pattern.quote(rawEmulatedStorageTarget), Pattern.CASE_INSENSITIVE).matcher(paths[i]).find())
+			{
+				isEmulated = true;
+			}
+			
+			//get size in bytes
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
 			{
 				//code added in API 18
@@ -648,13 +656,11 @@ public class Cylon implements Saul
 			this.detectedDevices.addLast(device);
 			
 			//Create new Storage object
-			Storage storage = new Storage(device, paths[i], bytesAvails, totalBytes);
+			Storage storage = new Storage(device, paths[i], bytesAvails, totalBytes, isEmulated);
 			this.storages.addLast(storage);
 			device.storageIndex = this.storages.size() - 1;
 			
-			//TODO: set device type!!!
-			
-			//TODO: set is emulated
+			//TODO: log storage stats
 			
 		}//END for
 	}//end produce storage
