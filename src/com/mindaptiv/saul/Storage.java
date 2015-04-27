@@ -16,6 +16,9 @@ public class Storage
 	//Space
 	long bytesAvails;
 	long totalBytes;
+	
+	//type of storage
+	boolean isEmulated;
 	//end variable declaration
 	
 	//Constructor

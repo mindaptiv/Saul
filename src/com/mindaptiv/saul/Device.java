@@ -200,6 +200,9 @@ public class Device
 		this.testMask		= 0;
 		this.id				= "0";
 		
+		//set device type
+		this.deviceType = 17; //storage
+		
 		//Set value for being default storage location
 		this.isDefault = 0;
 		if(isDefault == true)

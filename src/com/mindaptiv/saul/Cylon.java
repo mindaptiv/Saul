@@ -652,6 +652,10 @@ public class Cylon implements Saul
 			this.storages.addLast(storage);
 			device.storageIndex = this.storages.size() - 1;
 			
+			//TODO: set device type!!!
+			
+			//TODO: set is emulated
+			
 		}//END for
 	}//end produce storage
 	
