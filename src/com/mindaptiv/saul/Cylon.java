@@ -659,7 +659,7 @@ public class Cylon implements Saul
 			//Create new Storage object
 			Storage storage = new Storage(device, paths[i], bytesAvails, totalBytes, isEmulated);
 			this.storages.addLast(storage);
-			device.storageIndex = this.storages.size() - 1;
+			this.detectedDevices.getLast().storageIndex = this.storages.size() - 1;
 		}//END for
 	}//end produce storage
 	
@@ -927,7 +927,7 @@ public class Cylon implements Saul
  				  + "\n" + "          Type = " + this.detectedDevices.get(i).deviceType + 
  				  "\n" +   "          Controller Index = " + this.detectedDevices.get(i).controllerIndex + 
  				  "\n" +   "          Display Index = " + this.detectedDevices.get(i).displayIndex +
- 				  "\n" +   "          Storage Index = " + this.detectedDevices.get(i).displayIndex +
+ 				  "\n" +   "          Storage Index = " + this.detectedDevices.get(i).storageIndex +
  				  "\n" +   "          Default = " + this.detectedDevices.get(i).isDefault);
 		}
 		for(int i =0; i < this.controllers.size(); i++)
