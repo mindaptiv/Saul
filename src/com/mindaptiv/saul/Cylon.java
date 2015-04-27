@@ -631,6 +631,7 @@ public class Cylon implements Saul
 			}
 			
 			//check if emulated
+			//credit to Matt Quail @ stackoverflow for pattern checking code
 			boolean isEmulated = false;
 			if(Pattern.compile(Pattern.quote(rawEmulatedStorageTarget), Pattern.CASE_INSENSITIVE).matcher(paths[i]).find())
 			{
@@ -659,9 +660,6 @@ public class Cylon implements Saul
 			Storage storage = new Storage(device, paths[i], bytesAvails, totalBytes, isEmulated);
 			this.storages.addLast(storage);
 			device.storageIndex = this.storages.size() - 1;
-			
-			//TODO: log storage stats
-			
 		}//END for
 	}//end produce storage
 	
@@ -929,6 +927,7 @@ public class Cylon implements Saul
  				  + "\n" + "          Type = " + this.detectedDevices.get(i).deviceType + 
  				  "\n" +   "          Controller Index = " + this.detectedDevices.get(i).controllerIndex + 
  				  "\n" +   "          Display Index = " + this.detectedDevices.get(i).displayIndex +
+ 				  "\n" +   "          Storage Index = " + this.detectedDevices.get(i).displayIndex +
  				  "\n" +   "          Default = " + this.detectedDevices.get(i).isDefault);
 		}
 		for(int i =0; i < this.controllers.size(); i++)
@@ -950,6 +949,17 @@ public class Cylon implements Saul
 					"\n" + "          Logical DPI = " + this.displays.get(i).logicalDPI + 
 					"\n" + "          Resolution Scale = " + this.displays.get(i).resolutionScale);
 		}
+		for(int i =0; i < this.storages.size(); i++)
+		{
+			Log.i("Saul", "     Storage #" + i + ": " + "\n" + "          Emulated = " + this.storages.get(i).isEmulated + 
+					"\n" + "          Bytes Available = " + this.storages.get(i).bytesAvails + 
+					"\n" + "          Total Bytes = " + this.storages.get(i).totalBytes + 
+					"\n" + "          Path = " + this.storages.get(i).path);// + 
+				/*	"\n" + "          Raw Y DPI = " + this.displays.get(i).rawDPIY + 
+					"\n" + "          Logical DPI = " + this.displays.get(i).logicalDPI + 
+					"\n" + "          Resolution Scale = " + this.displays.get(i).resolutionScale);*/
+		}
+		
 		Log.i("Saul", "Error Code: " + this.error + "\n");
 	}//end testLog
 }//END class
