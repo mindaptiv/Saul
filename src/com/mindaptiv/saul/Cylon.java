@@ -24,6 +24,8 @@ import java.util.regex.Pattern;
 import java.util.TimeZone;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
+import android.app.ActivityManager.MemoryInfo;
 import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
@@ -72,7 +74,10 @@ public class Cylon implements Saul
 	public Float hertz;
 	
 	//memory
-	public Integer memoryBytes;
+	public long memoryBytes;
+	public long threshold;
+	public long bytesAvails;
+	public Integer lowMemory;
 	public Integer osArchitecture;
 	public String bitStringTest;
 	
@@ -321,24 +326,31 @@ public class Cylon implements Saul
 	
 	public void produceMemoryInfo()
 	{
-		/*
 		//grab and set total memory
 		//credit to Badal @ stackoverflow
 		MemoryInfo mi = new MemoryInfo();
-		MockContext mock = new MockContext();
+		
 		try
 		{
-			//NEED CONTEXT CLASS :(
-			ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+			//retireve memory metrics
+			ActivityManager activityManager = (ActivityManager) this.context.getSystemService(Context.ACTIVITY_SERVICE);
 			activityManager.getMemoryInfo(mi);
 			this.memoryBytes = mi.totalMem;
+			this.bytesAvails = mi.availMem;
+			this.threshold   = mi.threshold;
+			this.lowMemory   = 0;
+			if(mi.lowMemory)
+			{
+				this.lowMemory = 1;
+			}
+			
 		}
 		catch (Exception e)
 		{
 			//if this fails set the default
 			this.memoryBytes = 0;
 		}
-		*/
+		
 		
 		//grab and set os bit-level architecture type
 		//Android uses VM's but can still determine JVM's architecture for native code to use
@@ -935,7 +947,10 @@ public class Cylon implements Saul
 		Log.i("Saul", "Allocation Granularity: " + this.allocationGranularity + "\n");
 		Log.i("Saul", "CPU Speed: " + this.hertz + "\n");
 		Log.i("Saul", "CPU Core Count: " + this.processorCount + "\n");
-		//Log.i("Saul", "Installed Memory: " + this.memoryBytes + "\n");
+		Log.i("Saul", "Installed Memory: " + this.memoryBytes + "\n");
+		Log.i("Saul", "Available Memory: " + this.bytesAvails + "\n");
+		Log.i("Saul", "Mem Threshold: " + this.threshold + "\n");
+		Log.i("Saul", "Is Memory Low: " + this.lowMemory + "\n");
 		Log.i("Saul", "Bit Architecture: " + this.osArchitecture + "\n");
 		Log.i("Saul", "Detected Device Count: " + this.detectedDeviceCount + "\n");
 		
