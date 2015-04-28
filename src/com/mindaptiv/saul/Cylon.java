@@ -24,11 +24,14 @@ import java.util.regex.Pattern;
 import java.util.TimeZone;
 
 import android.annotation.SuppressLint;
+import android.app.Application;
 import android.content.Context;
+import android.database.Cursor;
 import android.hardware.display.*; //some contents that we want to access are only available in later versions, hence ".*" (no ifdef in Java)
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
+import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.InputDevice;
@@ -95,6 +98,7 @@ public class Cylon implements Saul
 	
 	//Android
 	Context context;
+	Application app;
 	
 	//error
 	public Integer error;
@@ -102,13 +106,14 @@ public class Cylon implements Saul
 	
 	
 	//Constructor
-	public Cylon(Context context)
+	public Cylon(Context context, Application app)
 	{
 		//Context
 		this.context = context;
+		this.app     = app;
 		
 		//producers
-		//TODO: add username
+		this.produceUsername();
 		this.produceDeviceName();
 		this.produceDateTime();
 		this.produceProcessorInfo();
@@ -118,11 +123,27 @@ public class Cylon implements Saul
 	
 	//Saul Methods
 	//Producers
-	public void produceUsername(Cylon saul)
+	public void produceUsername()
 	{
 		//TODO: Grab content URI
-		
-	}
+		//Credit to JoelFernandes @ stack overflow for partial display_name code
+		Cursor c = this.app.getContentResolver().query(ContactsContract.Profile.CONTENT_URI, null, null, null, null);
+		if(!(c.getCount() <= 0))
+		{
+			c.moveToFirst();
+			
+			//set username
+			this.username = c.getString(c.getColumnIndex(ContactsContract.Profile.DISPLAY_NAME_PRIMARY));
+		}
+		else
+		{
+			//username unavailable, set to missing value to prevent exception
+			this.username = "0";
+		}
+			
+		//Close the cursor
+		c.close();
+	}//END produce username
 	
 	public void produceDeviceName()
 	{	

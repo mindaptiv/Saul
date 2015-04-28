@@ -10,7 +10,7 @@ import android.view.KeyEvent;
 public interface Saul 
 {
 	//Producers
-	void produceUsername(Cylon saul);
+	void produceUsername();
 	void produceDeviceName();
 	void produceDateTime();
 	void produceProcessorInfo();
