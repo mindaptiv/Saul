@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.lang.Integer;
 import java.lang.String;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -30,6 +31,7 @@ import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 import android.hardware.display.*; //some contents that we want to access are only available in later versions, hence ".*" (no ifdef in Java)
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
@@ -780,6 +782,29 @@ public class Cylon implements Saul
 		}
 	} //END rumble producer
 	
+
+	public void produceGPS()
+	{
+		LocationManager manager = (LocationManager)this.context.getSystemService(Context.LOCATION_SERVICE);
+		
+		ArrayList<String> providers = (ArrayList<String>) manager.getAllProviders();
+		boolean flag = false;
+		for (int i = 0; i < providers.size(); i++)
+		{
+			Log.i("Saul", providers.get(i));
+			if(providers.get(i).equals(LocationManager.GPS_PROVIDER))
+			{
+				flag = true;
+			}
+		}
+		
+		if(flag)
+		{
+			//TODO: create device
+		}
+		
+	}
+	
 	public void produceDevices()
 	{
 		//create lists
@@ -792,6 +817,7 @@ public class Cylon implements Saul
 		produceInputDevices();
 		produceStorageDevices();
 		produceSystemRumble();
+		produceGPS();
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
 		{	
