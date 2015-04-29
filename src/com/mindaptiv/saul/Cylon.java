@@ -100,7 +100,9 @@ public class Cylon implements Saul
 	public LinkedList<Display> displays;
 	public LinkedList<Storage> storages;
 	public Integer keycode;
-	//TODO: add mice
+	//TODO: see later todo on location stuff w/ GPS
+	/*LocationManager locMan;
+	GpsStatus.Listener listener;*/
 	
 	//Android
 	Context context;
@@ -117,6 +119,38 @@ public class Cylon implements Saul
 		//Context
 		this.context = context;
 		this.app     = app;
+		//TODO: figure out what else we need to add for this listener to get called?  Currently only fires when other GPS apps are running (google maps, etc.)
+		/*this.locMan = (LocationManager) this.context.getSystemService(Context.LOCATION_SERVICE);
+		this.listener = new GpsStatus.Listener() {
+			
+			@Override
+			public void onGpsStatusChanged(int event) {
+				Log.i("Saul", "SCUBRUABGFUEABGIUEABGEA");
+				//Credit to Nohsib & Squonk @ Stackoverflow for satellite listing code
+				GpsStatus gpsStatus = locMan.getGpsStatus(null);
+				
+				
+				if(gpsStatus != null)
+				{
+					//Retrieve satellites
+					Iterable<GpsSatellite> satellites = gpsStatus.getSatellites();
+					Iterator<GpsSatellite> sat = satellites.iterator();
+					int i = 0;
+					
+					while(sat.hasNext())
+					{
+					
+						//Iterate sats
+						GpsSatellite satellite = sat.next();
+						Log.i("Saul", "Satellite #" + i + ": " + satellite.toString());
+						i++;
+					}//end while			
+				}
+			}
+		};
+		
+		this.locMan.addGpsStatusListener(this.listener);*/
+		
 		
 		//producers
 		this.produceUsername();
@@ -703,18 +737,20 @@ public class Cylon implements Saul
 	//produce rumble device info
 	public void produceSystemRumble()
 	{
+		//Credit to 
 		//Retrieve the service
 		Vibrator rumble = (Vibrator) this.context.getSystemService(Context.VIBRATOR_SERVICE);
 		
 		//Check if a rumble device is present onboard
 		if(rumble.hasVibrator())
 		{
-			//test
+			//Credit to Conroy Whitney @ android.konreu.com for SOS code
 			int dot = 200;      // Length of a Morse Code "dot" in milliseconds
 			int dash = 500;     // Length of a Morse Code "dash" in milliseconds
 			int short_gap = 200;    // Length of Gap Between dots/dashes
 			int medium_gap = 500;   // Length of Gap Between Letters
 			int long_gap = 100;    // Length of Gap Between Words
+			@SuppressWarnings("unused")
 			long[] sos = {
 			    0,  // Start immediately
 			    dot, short_gap, dot, short_gap, dot,    // s
@@ -725,12 +761,18 @@ public class Cylon implements Saul
 			    long_gap
 			};
 			
+			//Credit to gearside.com for the vibration patterns
+			@SuppressWarnings("unused")
 			long[] mario = {0, 125,75,125,275,200,275,125,75,125,275,200,600,200,600};
+			@SuppressWarnings("unused")
 			long[] empire = {0, 500,110,500,110,450,110,200,110,170,40,450,110,200,110,170,40,500};
+			@SuppressWarnings("unused")
 			long[] turtles = {0, 75,75,75,75,75,75,75,75,150,150,150,450,75,75,75,75,75,525};
+			@SuppressWarnings("unused")
 			long [] mj = {0, 0,300,100,50,100,50,100,50,100,50,100,50,100,50,150,150,150,450,100,50,100,50,150,150,150,450,100,50,100,50,150,150,150,450,150,150};
+			@SuppressWarnings("unused")
 			long[] powerRangers = {0, 150,150,150,150,75,75,150,150,150,150,450};
-			rumble.vibrate(empire, -1);
+			//rumble.vibrate(empire, -1);
 			
 			//Create new device
 			Device device = new Device();
@@ -1041,4 +1083,6 @@ public class Cylon implements Saul
 		
 		Log.i("Saul", "Error Code: " + this.error + "\n");
 	}//end testLog
+
+
 }//END class
