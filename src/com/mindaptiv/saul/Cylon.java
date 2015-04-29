@@ -33,6 +33,7 @@ import android.hardware.display.*; //some contents that we want to access are on
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
+import android.os.Vibrator;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
@@ -332,7 +333,7 @@ public class Cylon implements Saul
 		
 		try
 		{
-			//retireve memory metrics
+			//retrieve memory metrics
 			ActivityManager activityManager = (ActivityManager) this.context.getSystemService(Context.ACTIVITY_SERVICE);
 			activityManager.getMemoryInfo(mi);
 			this.memoryBytes = mi.totalMem;
@@ -694,7 +695,48 @@ public class Cylon implements Saul
 			this.storages.addLast(storage);
 			this.detectedDevices.getLast().storageIndex = this.storages.size() - 1;
 		}//END for
+		
+		//TODO: handle OTG storage
+	
 	}//end produce storage
+	
+	//produce rumble device info
+	public void produceSystemRumble()
+	{
+		//Retrieve the service
+		Vibrator rumble = (Vibrator) this.context.getSystemService(Context.VIBRATOR_SERVICE);
+		
+		//Check if a rumble device is present onboard
+		if(rumble.hasVibrator())
+		{
+			//test
+			int dot = 200;      // Length of a Morse Code "dot" in milliseconds
+			int dash = 500;     // Length of a Morse Code "dash" in milliseconds
+			int short_gap = 200;    // Length of Gap Between dots/dashes
+			int medium_gap = 500;   // Length of Gap Between Letters
+			int long_gap = 100;    // Length of Gap Between Words
+			long[] sos = {
+			    0,  // Start immediately
+			    dot, short_gap, dot, short_gap, dot,    // s
+			    medium_gap,
+			    dash, short_gap, dash, short_gap, dash, // o
+			    medium_gap,
+			    dot, short_gap, dot, short_gap, dot,    // s
+			    long_gap
+			};
+			
+			long[] mario = {0, 125,75,125,275,200,275,125,75,125,275,200,600,200,600};
+			long[] empire = {0, 500,110,500,110,450,110,200,110,170,40,450,110,200,110,170,40,500};
+			long[] turtles = {0, 75,75,75,75,75,75,75,75,150,150,150,450,75,75,75,75,75,525};
+			long [] mj = {0, 0,300,100,50,100,50,100,50,100,50,100,50,100,50,150,150,150,450,100,50,100,50,150,150,150,450,100,50,100,50,150,150,150,450,150,150};
+			long[] powerRangers = {0, 150,150,150,150,75,75,150,150,150,150,450};
+			rumble.vibrate(empire, -1);
+			
+			//Create new device
+			Device device = new Device();
+			this.detectedDevices.addLast(device);
+		}
+	} //END rumble producer
 	
 	public void produceDevices()
 	{
@@ -707,6 +749,7 @@ public class Cylon implements Saul
 		//wrap all other device producers
 		produceInputDevices();
 		produceStorageDevices();
+		produceSystemRumble();
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
 		{	

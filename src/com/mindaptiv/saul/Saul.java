@@ -18,6 +18,7 @@ public interface Saul
 	void produceInputDevices();
 	void produceDisplayDevices();
 	void produceStorageDevices();
+	void produceSystemRumble();
 	void produceDevices();
 	
 	//Handler

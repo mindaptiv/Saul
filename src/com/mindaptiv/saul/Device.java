@@ -214,5 +214,28 @@ public class Device
 		this.name = path;
 	}//END storage constructor
 	
+	//Constructor from rumble device
+	public Device()
+	{
+		//Set values not available in this context (creating from system rumble)
+		this.panelLocation = 0;
+		this.inDock = 0;
+		this.inLid = 0;
+		this.isEnabled = 1;
+		this.isDefault = 1;
+		this.vendorID = 0;
+		this.displayIndex = 0;
+		this.controllerIndex = 0;
+		this.storageIndex = 0;
+		this.testMask = 0;
+		this.id = "0";
+		
+		//set device type
+		this.deviceType = 18; //rumble
+		
+		//set name
+		this.name = "System Rumble Service";
+	}
+	
 }//end class
 
