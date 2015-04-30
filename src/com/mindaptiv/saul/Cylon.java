@@ -31,7 +31,6 @@ import android.app.ActivityManager.MemoryInfo;
 import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
-import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.hardware.display.*; //some contents that we want to access are only available in later versions, hence ".*" (no ifdef in Java)
 import android.location.LocationManager;
@@ -819,11 +818,15 @@ public class Cylon implements Saul
 		SensorManager manager = (SensorManager) this.context.getSystemService(Context.SENSOR_SERVICE);
 		
 		//Grab sensors
-		List<Sensor> sensors = manager.getSensorList(Sensor.TYPE_ALL);
+		List<android.hardware.Sensor> sensors = manager.getSensorList(android.hardware.Sensor.TYPE_ALL);
 		
 		for(int i = 0; i < sensors.size(); i++)
 		{
+			//test
 			Log.i("Saul", sensors.get(i).getName() + ": " + sensors.get(i).getType());
+			Device device = new Device();
+			Sensor sensor = new Sensor(sensors.get(i), device);
+			//END test
 		}
 	}
 	
