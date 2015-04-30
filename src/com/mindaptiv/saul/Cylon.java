@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.TimeZone;
@@ -30,6 +31,8 @@ import android.app.ActivityManager.MemoryInfo;
 import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.hardware.display.*; //some contents that we want to access are only available in later versions, hence ".*" (no ifdef in Java)
 import android.location.LocationManager;
 import android.os.Build;
@@ -808,7 +811,20 @@ public class Cylon implements Saul
 			Device device = new Device(enabled);
 			this.detectedDevices.addLast(device);
 		}//end if detected
+	}//END produce GPS
+	
+	public void produceSensors()
+	{
+		//grab manager
+		SensorManager manager = (SensorManager) this.context.getSystemService(Context.SENSOR_SERVICE);
 		
+		//Grab sensors
+		List<Sensor> sensors = manager.getSensorList(Sensor.TYPE_ALL);
+		
+		for(int i = 0; i < sensors.size(); i++)
+		{
+			Log.i("Saul", sensors.get(i).getName() + ": " + sensors.get(i).getType());
+		}
 	}
 	
 	public void produceDevices()
@@ -824,6 +840,7 @@ public class Cylon implements Saul
 		produceStorageDevices();
 		produceSystemRumble();
 		produceGPS();
+		produceSensors();
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
 		{	

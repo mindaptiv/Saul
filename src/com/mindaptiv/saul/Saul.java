@@ -20,6 +20,7 @@ public interface Saul
 	void produceStorageDevices();
 	void produceSystemRumble();
 	void produceGPS();
+	void produceSensors();
 	void produceDevices();
 	
 	//Handler
