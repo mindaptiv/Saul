@@ -237,5 +237,34 @@ public class Device
 		this.name = "System Rumble Service";
 	}
 	
+	//Constructor from GPS device
+	public Device(boolean enabled)
+	{
+		//Set values not available in this conext (creating from system GPS)
+		this.panelLocation = 0;
+		this.inDock		   = 0;
+		this.inLid		   = 0;
+		this.vendorID      = 0;
+		this.displayIndex  = 0;
+		this.controllerIndex = 0;
+		this.storageIndex  = 0;
+		this.testMask      = 0;
+		this.id            = "0";
+		this.isDefault	   = 0;
+		
+		//set device type to locationAware
+		this.deviceType = 7;
+		
+		//set name
+		this.name = "System GPS Service";
+		
+		//set enabled
+		this.isEnabled = 0;
+		if (enabled)
+		{
+			this.isEnabled = 1;
+		}
+	}
+	
 }//end class
 

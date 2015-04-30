@@ -785,13 +785,14 @@ public class Cylon implements Saul
 
 	public void produceGPS()
 	{
+		//Grab location manager
 		LocationManager manager = (LocationManager)this.context.getSystemService(Context.LOCATION_SERVICE);
 		
+		//Determine if GPS is listed as a provider for location data
 		ArrayList<String> providers = (ArrayList<String>) manager.getAllProviders();
 		boolean flag = false;
 		for (int i = 0; i < providers.size(); i++)
 		{
-			Log.i("Saul", providers.get(i));
 			if(providers.get(i).equals(LocationManager.GPS_PROVIDER))
 			{
 				flag = true;
@@ -800,8 +801,13 @@ public class Cylon implements Saul
 		
 		if(flag)
 		{
-			//TODO: create device
-		}
+			//determine if enabled
+			boolean enabled = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+			
+			//Create device
+			Device device = new Device(enabled);
+			this.detectedDevices.addLast(device);
+		}//end if detected
 		
 	}
 	
