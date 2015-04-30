@@ -824,10 +824,19 @@ public class Cylon implements Saul
 		for(int i = 0; i < sensorList.size(); i++)
 		{
 			//Create objects, add to appropriate lists, and map to each other
-			Device device = new Device(sensorList.get(i));
+			Integer defaulty = 0;
+			
+			//determine if the sensors is the default for its type
+			if(sensorList.get(i) == manager.getDefaultSensor(sensorList.get(i).getType()))
+			{
+				defaulty = 1;
+			}//end IF
+			
+			Device device = new Device(sensorList.get(i), defaulty);
 			Sensor sensor = new Sensor(sensorList.get(i), device);
 			sensors.addLast(sensor);
 			device.sensorsIndex = sensors.size() - 1;
+			this.detectedDevices.addLast(device);
 		}
 	}
 	
@@ -1123,7 +1132,7 @@ public class Cylon implements Saul
 					"\n" + "          Raw X DPI = " + this.displays.get(i).rawDPIX + 
 					"\n" + "          Raw Y DPI = " + this.displays.get(i).rawDPIY + 
 					"\n" + "          Logical DPI = " + this.displays.get(i).logicalDPI + 
-					"\n" + "          Resolution Scale = " + this.displays.get(i).resolutionScale);
+					"\n" + "          Resolution Scale = " + this.displays.get(i).resolutionScale + "\n");
 		}
 		for(int i =0; i < this.storages.size(); i++)
 		{
@@ -1134,10 +1143,21 @@ public class Cylon implements Saul
 		}
 		for(int i =0; i < this.sensors.size(); i++)
 		{
-			Log.i("Saul", "     Sensor #" + i + ": " + "\n");/* + "          Emulated = " + this.storages.get(i).isEmulated + 
-					"\n" + "          Bytes Available = " + this.storages.get(i).bytesAvails + 
-					"\n" + "          Total Bytes = " + this.storages.get(i).totalBytes + 
-					"\n" + "          Path = " + this.storages.get(i).path);*/
+			Log.i("Saul", "     Sensor #" + i + ": " + "\n" + "          Minimum Delay = " + this.sensors.get(i).minDelay + 
+					"\n" + "          Type = " + this.sensors.get(i).type + 
+					"\n" + "          Version = " + this.sensors.get(i).version + 
+					"\n" + "          Name = " + this.sensors.get(i).name +
+					"\n" + "          Vendor = " + this.sensors.get(i).vendor +
+					"\n" + "          Name = " + this.sensors.get(i).power +
+					"\n" + "          Resolution = " + this.sensors.get(i).resolution +
+					"\n" + "          Max Range = " + this.sensors.get(i).maxRange +
+					"\n" + "          FIFO Max Event Count = " + this.sensors.get(i).fifoMaxEventCount +
+					"\n" + "          FIFO Reserved Event Count = " + this.sensors.get(i).fifoReservedEventCount +
+					"\n" + "          String Type = " + this.sensors.get(i).stringType +
+					"\n" + "          Max Delay = " + this.sensors.get(i).maxDelay +
+					"\n" + "          Reporting Mode = " + this.sensors.get(i).reportingMode +
+					"\n" + "          Is Wake Up Sensor? = " + this.sensors.get(i).isWakeUpSensor + "\n"
+					);
 			//TODO: add rest of sensor logging
 		}
 		

@@ -275,7 +275,7 @@ public class Device
 	}
 	
 	//Constructor from Sensor device
-	public Device(android.hardware.Sensor sensor)
+	public Device(android.hardware.Sensor sensor, Integer defaulty)
 	{
 		//set values that may change later
 		this.sensorsIndex = 0;
@@ -288,13 +288,15 @@ public class Device
 		this.displayIndex   = 0;
 		this.controllerIndex = 0;
 		this.storageIndex    = 0;
-		this.isDefault = 0;
 		this.isEnabled = 1;
 		this.testMask = 0;
 		this.id = "0";
 		
 		//set device type to sensor
 		this.deviceType = 19;
+		
+		//set if this is the default for its type
+		this.isDefault = defaulty;
 		
 		//set name
 		this.name = sensor.getName();

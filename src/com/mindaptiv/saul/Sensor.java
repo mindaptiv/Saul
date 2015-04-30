@@ -5,7 +5,6 @@
 package com.mindaptiv.saul;
 
 import android.os.Build;
-import android.util.Log;
 
 public class Sensor 
 {
@@ -74,12 +73,20 @@ public class Sensor
 		//if we're on version 21 or later
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
 		{
-			
+			this.maxDelay = sensor.getMaxDelay();
+			this.reportingMode = sensor.getReportingMode();
+			this.isWakeUpSensor = 0;
+			if (sensor.isWakeUpSensor())
+			{
+				this.isWakeUpSensor = 1;
+			}//end wake up
 		}
 		else
 		{
 			//default values for unavailable fields
-			Log.i("Saul", "LOLLIPOPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP");
+			this.maxDelay = 0;
+			this.reportingMode = 0;
+			this.isWakeUpSensor = 0;
 		}
 	}
 }
