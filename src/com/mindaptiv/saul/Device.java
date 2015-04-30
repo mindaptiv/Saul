@@ -30,6 +30,7 @@ public class Device
 	Integer displayIndex;
 	Integer controllerIndex;
 	Integer storageIndex;
+	Integer sensorsIndex;
 	public Integer testMask;
 	
 	//Constructors
@@ -39,6 +40,8 @@ public class Device
 		//temporary zeroing of values that may change later
 		this.controllerIndex = 0;
 		this.displayIndex 	 = 0;
+		this.storageIndex = 0;
+		this.sensorsIndex = 0;
 		
 		//Parse through all the metadata of the InputDevice and map it to the Device
 		
@@ -165,6 +168,8 @@ public class Device
 		this.controllerIndex = 0;
 		this.testMask		 = 0;
 		this.vendorID		 = 0;
+		this.sensorsIndex	 = 0;
+		this.storageIndex    = 0;
 		
 		//Set name
 		this.name = display.getName();
@@ -199,6 +204,7 @@ public class Device
 		this.controllerIndex = 0;
 		this.testMask		= 0;
 		this.id				= "0";
+		this.sensorsIndex   = 0;
 		
 		//set device type
 		this.deviceType = 17; //storage
@@ -227,6 +233,7 @@ public class Device
 		this.displayIndex = 0;
 		this.controllerIndex = 0;
 		this.storageIndex = 0;
+		this.sensorsIndex = 0;
 		this.testMask = 0;
 		this.id = "0";
 		
@@ -248,6 +255,7 @@ public class Device
 		this.displayIndex  = 0;
 		this.controllerIndex = 0;
 		this.storageIndex  = 0;
+		this.sensorsIndex  = 0;
 		this.testMask      = 0;
 		this.id            = "0";
 		this.isDefault	   = 0;
@@ -264,6 +272,32 @@ public class Device
 		{
 			this.isEnabled = 1;
 		}
+	}
+	
+	//Constructor from Sensor device
+	public Device(android.hardware.Sensor sensor)
+	{
+		//set values that may change later
+		this.sensorsIndex = 0;
+		
+		//set values not available in this context
+		this.panelLocation = 0;
+		this.inLid 			= 0;
+		this.inDock			= 0;
+		this.vendorID		= 0;
+		this.displayIndex   = 0;
+		this.controllerIndex = 0;
+		this.storageIndex    = 0;
+		this.isDefault = 0;
+		this.isEnabled = 1;
+		this.testMask = 0;
+		this.id = "0";
+		
+		//set device type to sensor
+		this.deviceType = 19;
+		
+		//set name
+		this.name = sensor.getName();
 	}
 	
 }//end class

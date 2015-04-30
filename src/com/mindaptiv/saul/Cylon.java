@@ -103,6 +103,7 @@ public class Cylon implements Saul
 	public LinkedList<Controller> controllers;
 	public LinkedList<Display> displays;
 	public LinkedList<Storage> storages;
+	public LinkedList<Sensor> sensors;
 	public Integer keycode;
 	//TODO: see later todo on location stuff w/ GPS
 	/*LocationManager locMan;
@@ -818,15 +819,15 @@ public class Cylon implements Saul
 		SensorManager manager = (SensorManager) this.context.getSystemService(Context.SENSOR_SERVICE);
 		
 		//Grab sensors
-		List<android.hardware.Sensor> sensors = manager.getSensorList(android.hardware.Sensor.TYPE_ALL);
+		List<android.hardware.Sensor> sensorList = manager.getSensorList(android.hardware.Sensor.TYPE_ALL);
 		
-		for(int i = 0; i < sensors.size(); i++)
+		for(int i = 0; i < sensorList.size(); i++)
 		{
-			//test
-			Log.i("Saul", sensors.get(i).getName() + ": " + sensors.get(i).getType());
-			Device device = new Device();
-			Sensor sensor = new Sensor(sensors.get(i), device);
-			//END test
+			//Create objects, add to appropriate lists, and map to each other
+			Device device = new Device(sensorList.get(i));
+			Sensor sensor = new Sensor(sensorList.get(i), device);
+			sensors.addLast(sensor);
+			device.sensorsIndex = sensors.size() - 1;
 		}
 	}
 	
@@ -837,6 +838,7 @@ public class Cylon implements Saul
 		this.controllers	 = new LinkedList<Controller>();
 		this.displays		 = new LinkedList<Display>();
 		this.storages		 = new LinkedList<Storage>();
+		this.sensors		 = new LinkedList<Sensor>();
 		
 		//wrap all other device producers
 		produceInputDevices();
@@ -1101,6 +1103,7 @@ public class Cylon implements Saul
  				  "\n" +   "          Controller Index = " + this.detectedDevices.get(i).controllerIndex + 
  				  "\n" +   "          Display Index = " + this.detectedDevices.get(i).displayIndex +
  				  "\n" +   "          Storage Index = " + this.detectedDevices.get(i).storageIndex +
+ 				  "\n" +   "          Sensor Index = " + this.detectedDevices.get(i).sensorsIndex +
  				  "\n" +   "          Default = " + this.detectedDevices.get(i).isDefault);
 		}
 		for(int i =0; i < this.controllers.size(); i++)
@@ -1127,10 +1130,15 @@ public class Cylon implements Saul
 			Log.i("Saul", "     Storage #" + i + ": " + "\n" + "          Emulated = " + this.storages.get(i).isEmulated + 
 					"\n" + "          Bytes Available = " + this.storages.get(i).bytesAvails + 
 					"\n" + "          Total Bytes = " + this.storages.get(i).totalBytes + 
-					"\n" + "          Path = " + this.storages.get(i).path);// + 
-				/*	"\n" + "          Raw Y DPI = " + this.displays.get(i).rawDPIY + 
-					"\n" + "          Logical DPI = " + this.displays.get(i).logicalDPI + 
-					"\n" + "          Resolution Scale = " + this.displays.get(i).resolutionScale);*/
+					"\n" + "          Path = " + this.storages.get(i).path);
+		}
+		for(int i =0; i < this.sensors.size(); i++)
+		{
+			Log.i("Saul", "     Sensor #" + i + ": " + "\n");/* + "          Emulated = " + this.storages.get(i).isEmulated + 
+					"\n" + "          Bytes Available = " + this.storages.get(i).bytesAvails + 
+					"\n" + "          Total Bytes = " + this.storages.get(i).totalBytes + 
+					"\n" + "          Path = " + this.storages.get(i).path);*/
+			//TODO: add rest of sensor logging
 		}
 		
 		Log.i("Saul", "Error Code: " + this.error + "\n");
