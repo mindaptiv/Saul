@@ -8,6 +8,7 @@ package com.mindaptiv.saul;
 import java.lang.Integer;
 import java.lang.String;
 
+import android.hardware.Camera.CameraInfo;
 import android.os.Build;
 import android.view.InputDevice;
 
@@ -19,6 +20,7 @@ public class Device
 	Integer inDock;
 	Integer isDefault;
 	Integer isEnabled;
+	Integer orientation;
 	public String 	name;
 	public String	id;
 	public Integer  vendorID;
@@ -31,6 +33,7 @@ public class Device
 	Integer controllerIndex;
 	Integer storageIndex;
 	Integer sensorsIndex;
+	Integer camerasIndex;
 	public Integer testMask;
 	
 	//Constructors
@@ -66,6 +69,8 @@ public class Device
 		this.inDock 		= 0;
 		this.inLid			= 0;
 		this.panelLocation 	= 0;
+		this.camerasIndex	= 0;
+		this.orientation    = 0;
 		
 		//Parse source mask
 		this.testMask = idvice.getSources();
@@ -170,6 +175,8 @@ public class Device
 		this.vendorID		 = 0;
 		this.sensorsIndex	 = 0;
 		this.storageIndex    = 0;
+		this.camerasIndex	 = 0;
+		this.orientation     = 0;
 		
 		//Set name
 		this.name = display.getName();
@@ -205,6 +212,8 @@ public class Device
 		this.testMask		= 0;
 		this.id				= "0";
 		this.sensorsIndex   = 0;
+		this.camerasIndex	= 0;
+		this.orientation     = 0;
 		
 		//set device type
 		this.deviceType = 17; //storage
@@ -236,6 +245,8 @@ public class Device
 		this.sensorsIndex = 0;
 		this.testMask = 0;
 		this.id = "0";
+		this.camerasIndex	= 0;
+		this.orientation     = 0;
 		
 		//set device type
 		this.deviceType = 18; //rumble
@@ -259,6 +270,8 @@ public class Device
 		this.testMask      = 0;
 		this.id            = "0";
 		this.isDefault	   = 0;
+		this.camerasIndex	= 0;
+		this.orientation     = 0;
 		
 		//set device type to locationAware
 		this.deviceType = 7;
@@ -291,6 +304,8 @@ public class Device
 		this.isEnabled = 1;
 		this.testMask = 0;
 		this.id = "0";
+		this.camerasIndex	= 0;
+		this.orientation     = 0;
 		
 		//set device type to sensor
 		this.deviceType = 19;
@@ -300,6 +315,50 @@ public class Device
 		
 		//set name
 		this.name = sensor.getName();
+	}
+	
+	//Constructor from Camera object
+	@SuppressWarnings("deprecation")
+	public Device(int id, CameraInfo info)
+	{
+		//set values that may change later
+		this.camerasIndex = 0;
+		
+		//set values not available in this context
+		this.inLid 			= 0;
+		this.inDock			= 0;
+		this.vendorID		= 0;
+		this.displayIndex   = 0;
+		this.controllerIndex = 0;
+		this.storageIndex    = 0;
+		this.isEnabled 		= 1;
+		this.testMask 		= 0;
+		this.sensorsIndex 	= 0;
+		this.isDefault		= 0;
+		
+		//set device type to sensor
+		this.deviceType = 5;
+		
+		//set location
+		if (info.facing == 0)
+		{
+			this.panelLocation = 1;
+		}
+		else if (info.facing == 1)
+		{
+			this.panelLocation = 2;
+		}
+		else
+		{
+			this.panelLocation = 0;
+		}
+		
+		//set orientation
+		this.orientation = info.orientation;
+		
+		//set name + id
+		this.name = "Camera " + id;
+		this.id   = Integer.toString(id);
 	}
 	
 }//end class

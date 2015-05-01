@@ -31,6 +31,8 @@ import android.app.ActivityManager.MemoryInfo;
 import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
+import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
 import android.hardware.SensorManager;
 import android.hardware.display.*; //some contents that we want to access are only available in later versions, hence ".*" (no ifdef in Java)
 import android.location.LocationManager;
@@ -105,9 +107,6 @@ public class Cylon implements Saul
 	public LinkedList<Storage> storages;
 	public LinkedList<Sensor> sensors;
 	public Integer keycode;
-	//TODO: see later todo on location stuff w/ GPS
-	/*LocationManager locMan;
-	GpsStatus.Listener listener;*/
 	
 	//Android
 	Context context;
@@ -124,39 +123,7 @@ public class Cylon implements Saul
 		//Context
 		this.context = context;
 		this.app     = app;
-		//TODO: figure out what else we need to add for this listener to get called?  Currently only fires when other GPS apps are running (google maps, etc.)
-		/*this.locMan = (LocationManager) this.context.getSystemService(Context.LOCATION_SERVICE);
-		this.listener = new GpsStatus.Listener() {
-			
-			@Override
-			public void onGpsStatusChanged(int event) {
-				Log.i("Saul", "SCUBRUABGFUEABGIUEABGEA");
-				//Credit to Nohsib & Squonk @ Stackoverflow for satellite listing code
-				GpsStatus gpsStatus = locMan.getGpsStatus(null);
 				
-				
-				if(gpsStatus != null)
-				{
-					//Retrieve satellites
-					Iterable<GpsSatellite> satellites = gpsStatus.getSatellites();
-					Iterator<GpsSatellite> sat = satellites.iterator();
-					int i = 0;
-					
-					while(sat.hasNext())
-					{
-					
-						//Iterate sats
-						GpsSatellite satellite = sat.next();
-						Log.i("Saul", "Satellite #" + i + ": " + satellite.toString());
-						i++;
-					}//end while			
-				}
-			}
-		};
-		
-		this.locMan.addGpsStatusListener(this.listener);*/
-		
-		
 		//producers
 		this.produceUsername();
 		this.produceDeviceName();
@@ -170,7 +137,6 @@ public class Cylon implements Saul
 	//Producers
 	public void produceUsername()
 	{
-		//TODO: Grab content URI
 		//Credit to JoelFernandes @ stack overflow for partial display_name code
 		Cursor c = this.app.getContentResolver().query(ContactsContract.Profile.CONTENT_URI, null, null, null, null);
 		if(!(c.getCount() <= 0))
@@ -461,7 +427,6 @@ public class Cylon implements Saul
 				this.detectedDevices.addLast(device);
 				
 				//Create display device
-				//TODO: add device to constructor
 				com.mindaptiv.saul.Display display = new Display(displaysies[i], displayContext, device);
 				
 				//Add to list of displays
@@ -840,6 +805,33 @@ public class Cylon implements Saul
 		}
 	}
 	
+	//produce info on cameras
+	@SuppressWarnings("deprecation")
+	public void produceCameras()
+	{
+		//Use old deprecated Camera class
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+		{
+			int numCams = Camera.getNumberOfCameras();
+			
+			for(int i = 0; i < numCams; i++)
+			{
+				//Grab info for the camera
+				CameraInfo info = new CameraInfo();
+				Camera.getCameraInfo(i, info);
+				
+				//Create and store Device object
+				Device device = new Device(i, info);
+				this.detectedDevices.addLast(device);
+			}//END for
+		}//END if
+		//use camera2 package
+		else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+		{
+			
+		}
+	}//END produceCameras
+	
 	public void produceDevices()
 	{
 		//create lists
@@ -855,6 +847,7 @@ public class Cylon implements Saul
 		produceSystemRumble();
 		produceGPS();
 		produceSensors();
+		produceCameras();
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
 		{	
@@ -1158,7 +1151,6 @@ public class Cylon implements Saul
 					"\n" + "          Reporting Mode = " + this.sensors.get(i).reportingMode +
 					"\n" + "          Is Wake Up Sensor? = " + this.sensors.get(i).isWakeUpSensor + "\n"
 					);
-			//TODO: add rest of sensor logging
 		}
 		
 		Log.i("Saul", "Error Code: " + this.error + "\n");

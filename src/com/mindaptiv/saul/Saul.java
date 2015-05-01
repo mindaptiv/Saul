@@ -21,6 +21,7 @@ public interface Saul
 	void produceSystemRumble();
 	void produceGPS();
 	void produceSensors();
+	void produceCameras();
 	void produceDevices();
 	
 	//Handler
