@@ -26,10 +26,14 @@ import java.util.regex.Pattern;
 import java.util.TimeZone;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
 import android.app.Application;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
@@ -863,6 +867,45 @@ public class Cylon implements Saul
 		}
 	}//END produceCameras
 	
+	public void produceBluetoothDevices()
+	{
+		//Get the bluetooth adapter
+		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+		
+		if(adapter == null)
+		{
+			//Bail!
+			return;
+		}
+		else
+		{
+			//Create a device for the radio and store it
+			Device radio = new Device(adapter);
+			this.detectedDevices.addLast(radio);
+			
+			//check if disabled
+			if(!adapter.isEnabled())
+			{	
+				//Bail!
+				return;
+			}
+			else
+			{
+				//Grab paired devices
+				Set<BluetoothDevice> pairedDevices = adapter.getBondedDevices();
+				
+				if (pairedDevices.size() > 0)
+				{
+					for (BluetoothDevice device : pairedDevices)
+					{
+						Log.i("Saul", device.getName() + ": " + device.getAddress());
+					}
+				}
+			}
+		}
+	}
+	
+	
 	public void produceDevices()
 	{
 		//create lists
@@ -873,12 +916,14 @@ public class Cylon implements Saul
 		this.sensors		 = new LinkedList<Sensor>();
 		
 		//wrap all other device producers
+		//Note: Android uses use-cases to determine audio playback and does not actually enumerate audio-rendering devices for onboard speakers, etc.
 		produceInputDevices();
 		produceStorageDevices();
 		produceSystemRumble();
 		produceGPS();
 		produceSensors();
 		produceCameras();
+		produceBluetoothDevices();
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
 		{	
@@ -1129,7 +1174,7 @@ public class Cylon implements Saul
 		for(int i = 0; i < this.detectedDevices.size(); i++)
 		{
 			Log.i("Saul", "     Device #" + i + ": " + "\n" + "          Name = " + this.detectedDevices.get(i).name + 
-					"\n" + "          ID = " +Integer.toHexString(Integer.parseInt(this.detectedDevices.get(i).id)) + 
+					"\n" + "          ID = " + this.detectedDevices.get(i).id + 
 					"\n" + "          Vendor ID = " + Integer.toHexString(this.detectedDevices.get(i).vendorID) + 
 					"\n" + "          Bitmask = " + Integer.toHexString(this.detectedDevices.get(i).testMask) + "\n"
  				  + "\n" + "          Type = " + this.detectedDevices.get(i).deviceType + 

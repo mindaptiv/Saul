@@ -7,7 +7,9 @@ package com.mindaptiv.saul;
 //imports
 import java.lang.Integer;
 import java.lang.String;
+
 import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.camera2.CameraCharacteristics;
 import android.os.Build;
@@ -408,5 +410,45 @@ public class Device
 			this.id   = Integer.toString(id);
 		}
 	}//end Constructor
+	
+	//Device formed from Bluetooth Adapter
+	public Device(BluetoothAdapter adapter)
+	{
+		//device properties that are out of scope for this constructor
+		this.panelLocation 	= 0;
+		this.inLid 			= 0;
+		this.inDock 		= 0;
+		this.orientation 	= 0;
+		this.vendorID 		= 0;
+		this.displayIndex 		= 0;
+		this.controllerIndex 	= 0;
+		this.storageIndex		= 0;
+		this.sensorsIndex		= 0;
+		this.camerasIndex		= 0;
+		this.testMask			= 0;
+		
+		//Set is default (adapter we retrieve is the default one by way of Android's API)
+		this.isDefault = 1;
+		
+		//Determine if the adapter is enabled
+		if(adapter.isEnabled())
+		{
+			this.isEnabled = 1;
+		}
+		else
+		{
+			this.isEnabled = 0;
+		}
+	
+		//Set name
+		this.name = adapter.getName();
+		
+		//Set ID based on bluetooth address
+		this.id = adapter.getAddress();
+		
+		//type for bluetooth radio
+		this.deviceType = 20;	
+	
+	}
 }//end class
 

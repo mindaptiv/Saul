@@ -22,6 +22,7 @@ public interface Saul
 	void produceGPS();
 	void produceSensors();
 	void produceCameras();
+	void produceBluetoothDevices();
 	void produceDevices();
 	
 	//Handler
