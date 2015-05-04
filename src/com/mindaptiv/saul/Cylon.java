@@ -34,6 +34,9 @@ import android.database.Cursor;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.SensorManager;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.hardware.display.*; //some contents that we want to access are only available in later versions, hence ".*" (no ifdef in Java)
 import android.location.LocationManager;
 import android.os.Build;
@@ -107,6 +110,7 @@ public class Cylon implements Saul
 	public LinkedList<Storage> storages;
 	public LinkedList<Sensor> sensors;
 	public Integer keycode;
+	String[] cameras; //For API 21+
 	
 	//Android
 	Context context;
@@ -806,6 +810,7 @@ public class Cylon implements Saul
 	}
 	
 	//produce info on cameras
+	@SuppressLint("InlinedApi")
 	@SuppressWarnings("deprecation")
 	public void produceCameras()
 	{
@@ -828,6 +833,32 @@ public class Cylon implements Saul
 		//use camera2 package
 		else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
 		{
+			//Grab manager
+			CameraManager manager = (CameraManager) this.context.getSystemService(Context.CAMERA_SERVICE);
+
+			try 
+			{
+				//Grab camera ID's
+				String[] cameras = manager.getCameraIdList();
+				this.cameras 	 = cameras;
+				
+				//Open Cameras
+				for (int i = 0; i < cameras.length; i++)
+				{
+					//Grab camera characteristics
+					CameraCharacteristics stats = manager.getCameraCharacteristics(cameras[i]);
+					
+					//Create Device and store
+					Device device = new Device(i, stats, cameras[i]);
+					this.detectedDevices.addLast(device);
+				}
+				
+			} 
+			catch (CameraAccessException e) 
+			{
+				//Bail!
+				return;
+			}
 			
 		}
 	}//END produceCameras

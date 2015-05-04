@@ -7,11 +7,13 @@ package com.mindaptiv.saul;
 //imports
 import java.lang.Integer;
 import java.lang.String;
-
+import android.annotation.SuppressLint;
 import android.hardware.Camera.CameraInfo;
+import android.hardware.camera2.CameraCharacteristics;
 import android.os.Build;
 import android.view.InputDevice;
 
+@SuppressWarnings("deprecation")
 public class Device 
 {
 	//device properties
@@ -317,7 +319,7 @@ public class Device
 		this.name = sensor.getName();
 	}
 	
-	//Constructor from Camera object
+	//Constructor from CameraInfo object
 	@SuppressWarnings("deprecation")
 	public Device(int id, CameraInfo info)
 	{
@@ -361,5 +363,50 @@ public class Device
 		this.id   = Integer.toString(id);
 	}
 	
+	//Create new Device from CameraCharacteristics
+	@SuppressLint("InlinedApi")
+	public Device(int id, CameraCharacteristics info, String name)
+	{
+		//set values that may change later
+		this.camerasIndex = 0;
+		
+		//set values not available in this context
+		this.inLid 			= 0;
+		this.inDock			= 0;
+		this.vendorID		= 0;
+		this.displayIndex   = 0;
+		this.controllerIndex = 0;
+		this.storageIndex    = 0;
+		this.isEnabled 		= 1;
+		this.testMask 		= 0;
+		this.sensorsIndex 	= 0;
+		this.isDefault		= 0;
+		
+		//set device type to sensor
+		this.deviceType = 5;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+		{
+			//set location
+			if ( info.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_FRONT)
+			{
+				this.panelLocation = 1;
+			}
+			else if (info.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_BACK)
+			{
+				this.panelLocation = 2;
+			}
+			else
+			{
+				this.panelLocation = 0;
+			}
+		
+			//set orientation
+			this.orientation = info.get(CameraCharacteristics.SENSOR_ORIENTATION);
+			
+			//set name + id
+			this.name = "Camera " + name;
+			this.id   = Integer.toString(id);
+		}
+	}//end Constructor
 }//end class
 
