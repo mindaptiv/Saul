@@ -54,8 +54,6 @@ public class Controller
 	//test
 	public Integer keycode;
 	
-	//TODO find a way to retrieve trigger and joystick values
-	
 	//Constructor
 	public Controller(Device superDevice, InputDevice idvice)
 	{
@@ -75,11 +73,6 @@ public class Controller
 		{
 			this.userIndex = 0;
 		}
-		
-		//parse buttons
-		
-		
-		
 	}//END constructor
 	
 	//state setter

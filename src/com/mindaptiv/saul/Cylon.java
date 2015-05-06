@@ -113,8 +113,6 @@ public class Cylon implements Saul
 	public Integer pageSize;
 	public Integer processorCount;
 	public Integer allocationGranularity;
-	//TODO: add minAppAddress
-	//TODO: add maxAppAddress
 	public Float hertz;
 	
 	//memory
@@ -126,8 +124,7 @@ public class Cylon implements Saul
 	public String bitStringTest;
 	
 	//avatar
-	//TODO: add pictureLocation
-	String pictureType;
+	String pictureType; //represents picture URI location
 	
 	//devices
 	Integer installedDeviceCount;
@@ -308,7 +305,6 @@ public class Cylon implements Saul
 		//Set unobtainables to default error values
 		this.pageSize 				= 0;
 		this.allocationGranularity  = 0;
-		//TODO: add min/max app addresses?
 		
 		//grab and set hertz
 		try 
@@ -736,9 +732,6 @@ public class Cylon implements Saul
 			this.storages.addLast(storage);
 			this.detectedDevices.getLast().storageIndex = this.storages.size() - 1;
 		}//END for
-		
-		//TODO: handle OTG storage
-	
 	}//end produce storage
 	
 	//produce rumble device info

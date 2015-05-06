@@ -31,8 +31,7 @@ public class Sensor
 	Integer reportingMode; //based on Android Sensor values
 	Integer isWakeUpSensor;
 	//END Variable Declaration
-	
-	//TODO: add Constructor
+
 	public Sensor(android.hardware.Sensor sensor, Device device)
 	{
 		//Grab data
