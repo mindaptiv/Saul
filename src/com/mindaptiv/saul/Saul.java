@@ -24,6 +24,7 @@ public interface Saul
 	void produceCameras();
 	void produceBluetoothDevices();
 	void produceDevices();
+	void produceAvatar();
 	
 	//Handler
 	boolean handleKeyEvent(KeyEvent event);

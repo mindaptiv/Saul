@@ -26,14 +26,13 @@ import java.util.regex.Pattern;
 import java.util.TimeZone;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
 import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
@@ -43,6 +42,7 @@ import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.hardware.display.*; //some contents that we want to access are only available in later versions, hence ".*" (no ifdef in Java)
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
@@ -54,6 +54,7 @@ import android.view.InputDevice;
 import android.view.KeyEvent;
 
 
+@SuppressWarnings("deprecation")
 public class Cylon implements Saul
 {
 	//Variable Declaration:
@@ -138,6 +139,7 @@ public class Cylon implements Saul
 		this.produceDateTime();
 		this.produceProcessorInfo();
 		this.produceMemoryInfo();
+		this.produceAvatar();
 		this.produceDevices();
 	}
 	
@@ -898,12 +900,82 @@ public class Cylon implements Saul
 				{
 					for (BluetoothDevice device : pairedDevices)
 					{
-						Log.i("Saul", device.getName() + ": " + device.getAddress());
+						Log.i("Saul", device.getName() + ": " + device.getAddress() + " " + device.getBluetoothClass().getDeviceClass() + " " + device.getBluetoothClass().getMajorDeviceClass());
 					}
 				}
 			}
 		}
 	}
+	
+	//Credit to Dandre' "imminent" Allison @ Github for partial code
+	//grab uri of user profile image (if available)
+	public void produceAvatar()
+	{	
+		final ContentResolver content = context.getContentResolver();
+		final Cursor cursor = content.query(
+				 // Retrieves data rows for the device user's 'profile' contact
+                Uri.withAppendedPath(
+                                     ContactsContract.Profile.CONTENT_URI,
+                                     ContactsContract.Contacts.Data.CONTENT_DIRECTORY),
+                                     ProfileQuery.PROJECTION,
+ 
+                                     // Selects only email addresses or names
+                                     ContactsContract.Contacts.Data.MIMETYPE + "=? OR "
+                                     + ContactsContract.Contacts.Data.MIMETYPE + "=? OR "
+                                     + ContactsContract.Contacts.Data.MIMETYPE + "=? OR "
+                                     + ContactsContract.Contacts.Data.MIMETYPE + "=?",
+                                     new String[]{
+                                             ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
+                                             ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE,
+                                             ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
+                                             ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE
+                                     },
+ 
+                                     // Show primary rows first. Note that there won't be a primary email address if the
+                                     // user hasn't specified one.
+                                     ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
+		
+        String mime_type;
+        while (cursor.moveToNext()) 
+        {
+            mime_type = cursor.getString(ProfileQuery.MIME_TYPE);
+            if (mime_type.equals(ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE))
+            {
+                if(cursor.getString(ProfileQuery.PHOTO) == null)
+                {
+                	this.pictureType = "0";
+                }
+                else
+                {
+                	this.pictureType = cursor.getString(ProfileQuery.PHOTO);
+                }//END else
+            }//END if
+        }//END while
+	}//END function
+	
+    /**
+     * Contacts user profile query interface.
+     */
+    private interface ProfileQuery {
+        /** The set of columns to extract from the profile query results */
+        String[] PROJECTION = {
+                                ContactsContract.CommonDataKinds.Email.ADDRESS,
+                                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
+                                ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME,
+                                ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME,
+                                ContactsContract.CommonDataKinds.Phone.NUMBER,
+                                ContactsContract.CommonDataKinds.Phone.IS_PRIMARY,
+                                ContactsContract.CommonDataKinds.Photo.PHOTO_URI,
+                                ContactsContract.Contacts.Data.MIMETYPE
+        };
+ 
+        /** Column index for the photo in the profile query results */
+        int PHOTO = 6;
+        /** Column index for the MIME type in the profile query results */
+        int MIME_TYPE = 7;
+    } //END interface
+	
+	
 	
 	
 	public void produceDevices()
@@ -1155,6 +1227,7 @@ public class Cylon implements Saul
         Log.i("Saul", "REPORT:\n");
         Log.i("Saul", "Cylon: " + this.toString() + "\n");
         Log.i("Saul", "Username: " + this.username + "\n");
+        Log.i("Saul", "Profile Image: " + this.pictureType + "\n");
 		Log.i("Saul", "Device Name: " + this.deviceName + "\n");
 		Log.i("Saul", "Date: " + this.day + " " + this.month + "/" + this.date + "/" + this.year + "\n");
 		Log.i("Saul", "Time: " + this.hours + ":" + this.minutes + ":" + this.seconds + ":" + this.milliseconds + "\n");
