@@ -37,7 +37,6 @@ public class Device
 	Integer controllerIndex;
 	Integer storageIndex;
 	Integer sensorsIndex;
-	Integer camerasIndex;
 	public Integer testMask;
 	
 	//Constructors
@@ -73,7 +72,6 @@ public class Device
 		this.inDock 		= 0;
 		this.inLid			= 0;
 		this.panelLocation 	= 0;
-		this.camerasIndex	= 0;
 		this.orientation    = 0;
 		
 		//Parse source mask
@@ -179,7 +177,6 @@ public class Device
 		this.vendorID		 = 0;
 		this.sensorsIndex	 = 0;
 		this.storageIndex    = 0;
-		this.camerasIndex	 = 0;
 		
 		//set orientation
 		//set orientation
@@ -238,7 +235,6 @@ public class Device
 		this.testMask		= 0;
 		this.id				= "0";
 		this.sensorsIndex   = 0;
-		this.camerasIndex	= 0;
 		this.orientation     = 0;
 		
 		//set device type
@@ -271,7 +267,6 @@ public class Device
 		this.sensorsIndex = 0;
 		this.testMask = 0;
 		this.id = "0";
-		this.camerasIndex	= 0;
 		this.orientation     = 0;
 		
 		//set device type
@@ -296,7 +291,6 @@ public class Device
 		this.testMask      = 0;
 		this.id            = "0";
 		this.isDefault	   = 0;
-		this.camerasIndex	= 0;
 		this.orientation     = 0;
 		
 		//set device type to locationAware
@@ -330,7 +324,6 @@ public class Device
 		this.isEnabled = 1;
 		this.testMask = 0;
 		this.id = "0";
-		this.camerasIndex	= 0;
 		this.orientation     = 0;
 		
 		//set device type to sensor
@@ -346,10 +339,7 @@ public class Device
 	//Constructor from CameraInfo object
 	@SuppressWarnings("deprecation")
 	public Device(int id, CameraInfo info)
-	{
-		//set values that may change later
-		this.camerasIndex = 0;
-		
+	{	
 		//set values not available in this context
 		this.inLid 			= 0;
 		this.inDock			= 0;
@@ -390,10 +380,7 @@ public class Device
 	//Create new Device from CameraCharacteristics
 	@SuppressLint("InlinedApi")
 	public Device(int id, CameraCharacteristics info, String name)
-	{
-		//set values that may change later
-		this.camerasIndex = 0;
-		
+	{	
 		//set values not available in this context
 		this.inLid 			= 0;
 		this.inDock			= 0;
@@ -446,7 +433,6 @@ public class Device
 		this.controllerIndex 	= 0;
 		this.storageIndex		= 0;
 		this.sensorsIndex		= 0;
-		this.camerasIndex		= 0;
 		this.testMask			= 0;
 		
 		//Set is default (adapter we retrieve is the default one by way of Android's API)

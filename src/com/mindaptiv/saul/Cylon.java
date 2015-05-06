@@ -115,7 +115,6 @@ public class Cylon implements Saul
 	public LinkedList<Storage> storages;
 	public LinkedList<Sensor> sensors;
 	public Integer keycode;
-	String[] cameras; //For API 21+
 	
 	//Android
 	Context context;
@@ -846,7 +845,6 @@ public class Cylon implements Saul
 			{
 				//Grab camera ID's
 				String[] cameras = manager.getCameraIdList();
-				this.cameras 	 = cameras;
 				
 				//Open Cameras
 				for (int i = 0; i < cameras.length; i++)
