@@ -441,7 +441,6 @@ public class Cylon implements Saul
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
 		{	
 			//Variable Declaration
-			//NOTE: API 17+ only
 			DisplayManager displayManager = (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
 			android.view.Display[] displaysies = displayManager.getDisplays();
 			
@@ -450,7 +449,6 @@ public class Cylon implements Saul
 			for (int i = 0; i < displaysies.length; i++)
 			{	
 				//Create display-based context for each Display
-				//NOTE: API 17+ only
 				//partial code credit to Tommy Visic @ stackoverflow
 				Context displayContext = this.context.createDisplayContext(displaysies[i]);
 				
@@ -1007,7 +1005,6 @@ public class Cylon implements Saul
 		this.sensors		 = new LinkedList<Sensor>();
 		
 		//wrap all other device producers
-		//Note: Android uses use-cases to determine audio playback and does not actually enumerate audio-rendering devices for onboard speakers, etc.
 		produceInputDevices();
 		produceStorageDevices();
 		produceSystemRumble();
