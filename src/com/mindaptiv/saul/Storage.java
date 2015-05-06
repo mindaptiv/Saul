@@ -18,7 +18,7 @@ public class Storage
 	long totalBytes;
 	
 	//type of storage
-	boolean isEmulated;
+	Integer isEmulated;
 	//end variable declaration
 	
 	//Constructor
@@ -29,6 +29,10 @@ public class Storage
 		this.path		 = location;
 		this.bytesAvails = available;
 		this.totalBytes  = total; 
-		this.isEmulated  = emulated;
+		this.isEmulated  = 0;
+		if(emulated)
+		{
+			this.isEmulated = 1;
+		}
 	}
 }//end class 

@@ -900,7 +900,8 @@ public class Cylon implements Saul
 				{
 					for (BluetoothDevice device : pairedDevices)
 					{
-						Log.i("Saul", device.getName() + ": " + device.getAddress() + " " + device.getBluetoothClass().getDeviceClass() + " " + device.getBluetoothClass().getMajorDeviceClass());
+						//test
+						//Log.i("Saul", device.getName() + ": " + device.getAddress() + " " + device.getBluetoothClass().getDeviceClass() + " " + device.getBluetoothClass().getMajorDeviceClass());
 					}
 				}
 			}
