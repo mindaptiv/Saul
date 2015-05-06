@@ -15,6 +15,14 @@ import android.view.Surface;
 public class Display 
 {
 	//Variable Declaration:
+	//CONSTANTS
+	final static int NO_ROTATION = 0;
+	final static int LANDSCAPE = 1;
+	final static int PORTRAIT = 2;
+	final static int FLIPPED_LANDSCAPE = 4;
+	final static int FLIPPED_PORTRAIT = 8;
+	//END Constants
+	
 	//parent device
 	Device superDevice;
 	
@@ -55,65 +63,65 @@ public class Display
 		//Compare values of current rotation and orientation to determine local values
 		if((rotation == Surface.ROTATION_0) && (Configuration.ORIENTATION_LANDSCAPE == configuration.orientation))
 		{
-			this.nativeRotation 	 = 1;
-			this.currentRotation  	 = 1;
-			this.rotationPreference  = 1;
+			this.nativeRotation 	 = Display.LANDSCAPE;
+			this.currentRotation  	 = Display.LANDSCAPE;
+			this.rotationPreference  = Display.LANDSCAPE;
 		}
 		else if((rotation == Surface.ROTATION_90) && (Configuration.ORIENTATION_LANDSCAPE == configuration.orientation))
 		{
-			this.nativeRotation 	 = 1;
-			this.currentRotation  	 = 2;
-			this.rotationPreference  = 1;
+			this.nativeRotation 	 = Display.LANDSCAPE;
+			this.currentRotation  	 = Display.PORTRAIT;
+			this.rotationPreference  = Display.LANDSCAPE;
 		}
 		else if((rotation == Surface.ROTATION_180) && (Configuration.ORIENTATION_LANDSCAPE == configuration.orientation))
 		{
-			this.nativeRotation 	 = 1;
-			this.currentRotation  	 = 4;
-			this.rotationPreference  = 1;
+			this.nativeRotation 	 = Display.LANDSCAPE;
+			this.currentRotation  	 = Display.FLIPPED_LANDSCAPE;
+			this.rotationPreference  = Display.LANDSCAPE;
 		}
 		else if((rotation == Surface.ROTATION_270) && (Configuration.ORIENTATION_LANDSCAPE == configuration.orientation))
 		{
-			this.nativeRotation 	 = 1;
-			this.currentRotation  	 = 8;
-			this.rotationPreference  = 1;
+			this.nativeRotation 	 = Display.LANDSCAPE;
+			this.currentRotation  	 = Display.FLIPPED_PORTRAIT;
+			this.rotationPreference  = Display.LANDSCAPE;
 		}
 		else if((rotation == Surface.ROTATION_0) && (Configuration.ORIENTATION_PORTRAIT == configuration.orientation))
 		{
-			this.nativeRotation 	 = 2;
-			this.currentRotation  	 = 2;
-			this.rotationPreference  = 2;
+			this.nativeRotation 	 = Display.PORTRAIT;
+			this.currentRotation  	 = Display.PORTRAIT;
+			this.rotationPreference  = Display.PORTRAIT;
 		}
 		else if((rotation == Surface.ROTATION_90) && (Configuration.ORIENTATION_PORTRAIT == configuration.orientation))
 		{
-			this.nativeRotation 	 = 2;
-			this.currentRotation  	 = 1;
-			this.rotationPreference  = 2;
+			this.nativeRotation 	 = Display.PORTRAIT;
+			this.currentRotation  	 = Display.LANDSCAPE;
+			this.rotationPreference  = Display.PORTRAIT;
 		}
 		else if((rotation == Surface.ROTATION_180) && (Configuration.ORIENTATION_PORTRAIT == configuration.orientation))
 		{
-			this.nativeRotation 	 = 2;
-			this.currentRotation  	 = 8;
-			this.rotationPreference  = 2;
+			this.nativeRotation 	 = Display.PORTRAIT;
+			this.currentRotation  	 = Display.FLIPPED_PORTRAIT;
+			this.rotationPreference  = Display.PORTRAIT;
 		}
 		else if((rotation == Surface.ROTATION_270) && (Configuration.ORIENTATION_PORTRAIT == configuration.orientation))
 		{
-			this.nativeRotation 	 = 2;
-			this.currentRotation  	 = 4;
-			this.rotationPreference  = 2;
+			this.nativeRotation 	 = Display.PORTRAIT;
+			this.currentRotation  	 = Display.FLIPPED_LANDSCAPE;
+			this.rotationPreference  = Display.PORTRAIT;
 		}
 		else if(Configuration.ORIENTATION_UNDEFINED == configuration.orientation)
 		{
 			//error/missing/unknown explicit undefined case
-			this.nativeRotation 	 = 0;
-			this.currentRotation  	 = 0;
-			this.rotationPreference  = 0;
+			this.nativeRotation 	 = Display.NO_ROTATION;
+			this.currentRotation  	 = Display.NO_ROTATION;
+			this.rotationPreference  = Display.NO_ROTATION;
 		}
 		else
 		{
 			//error/missing/unknown otherwise case
-			this.nativeRotation 	 = 0;
-			this.currentRotation  	 = 0;
-			this.rotationPreference  = 0;
+			this.nativeRotation 	 = Display.NO_ROTATION;
+			this.currentRotation  	 = Display.NO_ROTATION;
+			this.rotationPreference  = Display.NO_ROTATION;
 		}//END ROTATIONS
 		
 		//Grab metrics

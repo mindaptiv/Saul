@@ -18,6 +18,39 @@ import android.view.InputDevice;
 @SuppressWarnings("deprecation")
 public class Device 
 {
+	//Device Type
+	final static int ERROR_TYPE = 0;
+	final static int GENERIC_TYPE = 1;
+	final static int AUDIO_CAPTURE_TYPE = 2;
+	final static int AUDIO_RENDER_TYPE = 3;
+	final static int PORTABLE_STORAGE_TYPE = 4;
+	final static int VIDEO_CAPTURE_TYPE = 5;
+	final static int IMAGE_SCANNER_TYPE = 6;
+	final static int LOCATION_AWARE_TYPE = 7;
+	final static int DISPLAY_TYPE = 8;
+	final static int MOUSE_TYPE = 9;
+	final static int KEYBOARD_TYPE = 10;
+	final static int CONTROLLER_TYPE = 11;
+	final static int TOUCHSCREEN_TYPE = 12;
+	final static int TOUCH_PAD_TYPE = 13;
+	final static int TRACKBALL_TYPE = 14;
+	final static int STYLUS_TYPE = 15;
+	final static int POSITION_TYPE = 16;
+	final static int STORAGE_TYPE = 17;
+	final static int RUMBLE_TYPE = 18;
+	final static int SENSOR_TYPE = 19;
+	final static int BLUETOOTH_RADIO_TYPE = 20;
+	
+	//Location
+	final static int UNKNOWN_PANEL_LOCATION = 0;
+	final static int FRONT_PANEL = 1;
+	final static int BACK_PANEL = 2;
+	final static int TOP_PANEL = 3;
+	final static int BOTTOM_PANEL = 4;
+	final static int LEFT_PANEL = 5;
+	final static int RIGHT_PANEL = 6;
+	//END Constants
+	
 	//device properties
 	Integer panelLocation;
 	Integer inLid;
@@ -71,7 +104,7 @@ public class Device
 		this.isEnabled  	= 1;
 		this.inDock 		= 0;
 		this.inLid			= 0;
-		this.panelLocation 	= 0;
+		this.panelLocation 	= Device.UNKNOWN_PANEL_LOCATION;
 		this.orientation    = 0;
 		
 		//Parse source mask
@@ -80,84 +113,76 @@ public class Device
 		//gamepad takes precedence as it can have multiple features, but should just be considered a gamepad
 		if((this.testMask & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD)
 		{
-			this.deviceType = 11;
-			
-			//TODO: build controller
-			//build controller
-			
+			this.deviceType = Device.CONTROLLER_TYPE;
 		}
 		//joystick will also default to gamepad for our purposes for now
 		else if((this.testMask & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK)
 		{
-			this.deviceType = 11;
-			
-			//TODO: build controller
-			//build controller
-			
+			this.deviceType = Device.CONTROLLER_TYPE;			
 		}
 		else if((this.testMask & InputDevice.SOURCE_TOUCHSCREEN) == InputDevice.SOURCE_TOUCHSCREEN)
 		{
-			this.deviceType = 12;
+			this.deviceType = Device.TOUCHSCREEN_TYPE;
 		}
 		else if((this.testMask & InputDevice.SOURCE_TOUCHPAD) == InputDevice.SOURCE_TOUCHPAD)
 		{
-			this.deviceType = 13;
+			this.deviceType = Device.TOUCH_PAD_TYPE;
 		}
 		else if((this.testMask & InputDevice.SOURCE_TRACKBALL) == InputDevice.SOURCE_TRACKBALL)
 		{
-			this.deviceType = 14;
+			this.deviceType = Device.TRACKBALL_TYPE;
 		}
 		else if((this.testMask & InputDevice.SOURCE_STYLUS) == InputDevice.SOURCE_STYLUS)
 		{
-			this.deviceType = 15;
+			this.deviceType = Device.STYLUS_TYPE;
 		}
 		else if((this.testMask & InputDevice.SOURCE_MOUSE) == InputDevice.SOURCE_MOUSE)
 		{
-			this.deviceType = 9;
+			this.deviceType = Device.MOUSE_TYPE;
 		}
 		//if none of these other ones go through, but these bits are still hot, default to touchpad
 		else if((this.testMask & InputDevice.SOURCE_TOUCH_NAVIGATION) == InputDevice.SOURCE_TOUCH_NAVIGATION)
 		{
-			this.deviceType = 13;
+			this.deviceType = Device.TOUCH_PAD_TYPE;
 		}
 		else if((this.testMask & InputDevice.SOURCE_KEYBOARD) == InputDevice.SOURCE_KEYBOARD)
 		{
-			this.deviceType = 10;
+			this.deviceType = Device.KEYBOARD_TYPE;
 		}
 		//default dpad to gamepad if none of the previous values fit
 		else if((this.testMask & InputDevice.SOURCE_DPAD) == InputDevice.SOURCE_DPAD)
 		{
-			this.deviceType = 11;
+			this.deviceType = Device.CONTROLLER_TYPE;
 		}
 		//default classes to appropriate device type (or approximation) if none of the previous types have been addressed
 		else if((this.testMask & InputDevice.SOURCE_CLASS_JOYSTICK) == InputDevice.SOURCE_CLASS_JOYSTICK)
 		{
 			//default joystick class to gamepad if deviceType not already captured
-			this.deviceType = 11;
+			this.deviceType = Device.CONTROLLER_TYPE;
 		}
 		else if((this.testMask & InputDevice.SOURCE_CLASS_TRACKBALL) == InputDevice.SOURCE_CLASS_TRACKBALL)
 		{
-			this.deviceType = 14;
+			this.deviceType = Device.TRACKBALL_TYPE;
 		}
 		else if((this.testMask & InputDevice.SOURCE_CLASS_POINTER) == InputDevice.SOURCE_CLASS_POINTER)
 		{
 			//default pointer to mouse type
-			this.deviceType = 9;
+			this.deviceType = Device.MOUSE_TYPE;
 		}
 		else if((this.testMask & InputDevice.SOURCE_CLASS_POSITION) == InputDevice.SOURCE_CLASS_POSITION)
 		{
 			//default position to new position type if deviceType not already captured
-			this.deviceType = 16;
+			this.deviceType = Device.POSITION_TYPE;
 		}
 		//if any remaining bits are set, we know its not necessarily a bogus reading so save as generic
 		else if((this.testMask | 0xffffffff) > InputDevice.SOURCE_CLASS_NONE)
 		{
-			this.deviceType = 1;
+			this.deviceType = Device.GENERIC_TYPE;
 		}
 		//otherwise, error/missing/invalid/unknown
 		else
 		{
-			this.deviceType = 0;
+			this.deviceType = Device.ERROR_TYPE;
 		}
 	}//END input constructor
 	
@@ -168,7 +193,7 @@ public class Device
 		this.displayIndex = 0;
 		
 		//Set values not available in this context (creating from an android Display object)
-		this.panelLocation 	 = 0;
+		this.panelLocation 	 = Device.UNKNOWN_PANEL_LOCATION;
 		this.inLid 			 = 0;
 		this.inDock			 = 0;
 		this.isEnabled		 = 1;
@@ -208,7 +233,7 @@ public class Device
 		this.id = Integer.toString(display.getDisplayId());
 		
 		//set deviceType for Saul
-		this.deviceType = 8;
+		this.deviceType = Device.DISPLAY_TYPE;
 		
 		//set isDefault
 		this.isDefault = 0;
@@ -225,7 +250,7 @@ public class Device
 		this.storageIndex = 0;
 		
 		//Set values not available in this context (creating from a storage path)
-		this.panelLocation 	= 0;
+		this.panelLocation 	= Device.UNKNOWN_PANEL_LOCATION;
 		this.inDock 		= 0;
 		this.inLid			= 0;
 		this.isEnabled		= 1;
@@ -238,7 +263,7 @@ public class Device
 		this.orientation     = 0;
 		
 		//set device type
-		this.deviceType = 17; //storage
+		this.deviceType = Device.STORAGE_TYPE;
 		
 		//Set value for being default storage location
 		this.isDefault = 0;
@@ -255,7 +280,7 @@ public class Device
 	public Device()
 	{
 		//Set values not available in this context (creating from system rumble)
-		this.panelLocation = 0;
+		this.panelLocation = Device.UNKNOWN_PANEL_LOCATION;
 		this.inDock = 0;
 		this.inLid = 0;
 		this.isEnabled = 1;
@@ -270,7 +295,7 @@ public class Device
 		this.orientation     = 0;
 		
 		//set device type
-		this.deviceType = 18; //rumble
+		this.deviceType = Device.RUMBLE_TYPE;
 		
 		//set name
 		this.name = "System Rumble Service";
@@ -280,7 +305,7 @@ public class Device
 	public Device(boolean enabled)
 	{
 		//Set values not available in this conext (creating from system GPS)
-		this.panelLocation = 0;
+		this.panelLocation = Device.UNKNOWN_PANEL_LOCATION;
 		this.inDock		   = 0;
 		this.inLid		   = 0;
 		this.vendorID      = 0;
@@ -294,7 +319,7 @@ public class Device
 		this.orientation     = 0;
 		
 		//set device type to locationAware
-		this.deviceType = 7;
+		this.deviceType = Device.LOCATION_AWARE_TYPE;
 		
 		//set name
 		this.name = "System GPS Service";
@@ -314,7 +339,7 @@ public class Device
 		this.sensorsIndex = 0;
 		
 		//set values not available in this context
-		this.panelLocation = 0;
+		this.panelLocation = Device.UNKNOWN_PANEL_LOCATION;
 		this.inLid 			= 0;
 		this.inDock			= 0;
 		this.vendorID		= 0;
@@ -327,7 +352,7 @@ public class Device
 		this.orientation     = 0;
 		
 		//set device type to sensor
-		this.deviceType = 19;
+		this.deviceType = Device.SENSOR_TYPE;
 		
 		//set if this is the default for its type
 		this.isDefault = defaulty;
@@ -352,21 +377,21 @@ public class Device
 		this.sensorsIndex 	= 0;
 		this.isDefault		= 0;
 		
-		//set device type to sensor
-		this.deviceType = 5;
+		//set device type to camera
+		this.deviceType = Device.VIDEO_CAPTURE_TYPE;
 		
 		//set location
 		if (info.facing == 0)
 		{
-			this.panelLocation = 1;
+			this.panelLocation = Device.FRONT_PANEL;
 		}
 		else if (info.facing == 1)
 		{
-			this.panelLocation = 2;
+			this.panelLocation = Device.BACK_PANEL;
 		}
 		else
 		{
-			this.panelLocation = 0;
+			this.panelLocation = Device.UNKNOWN_PANEL_LOCATION;
 		}
 		
 		//set orientation
@@ -393,22 +418,22 @@ public class Device
 		this.sensorsIndex 	= 0;
 		this.isDefault		= 0;
 		
-		//set device type to sensor
-		this.deviceType = 5;
+		//set device type to camera
+		this.deviceType = Device.VIDEO_CAPTURE_TYPE;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
 		{
 			//set location
 			if ( info.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_FRONT)
 			{
-				this.panelLocation = 1;
+				this.panelLocation = Device.FRONT_PANEL;
 			}
 			else if (info.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_BACK)
 			{
-				this.panelLocation = 2;
+				this.panelLocation = Device.BACK_PANEL;
 			}
 			else
 			{
-				this.panelLocation = 0;
+				this.panelLocation = Device.UNKNOWN_PANEL_LOCATION;
 			}
 		
 			//set orientation
@@ -424,7 +449,7 @@ public class Device
 	public Device(BluetoothAdapter adapter)
 	{
 		//device properties that are out of scope for this constructor
-		this.panelLocation 	= 0;
+		this.panelLocation 	= Device.UNKNOWN_PANEL_LOCATION;
 		this.inLid 			= 0;
 		this.inDock 		= 0;
 		this.orientation 	= 0;
@@ -455,7 +480,7 @@ public class Device
 		this.id = adapter.getAddress();
 		
 		//type for bluetooth radio
-		this.deviceType = 20;	
+		this.deviceType = Device.BLUETOOTH_RADIO_TYPE;	
 	
 	}
 }//end class

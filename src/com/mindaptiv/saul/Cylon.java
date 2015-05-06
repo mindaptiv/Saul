@@ -58,6 +58,35 @@ import android.view.KeyEvent;
 public class Cylon implements Saul
 {
 	//Variable Declaration:
+	//Constants
+	//Days
+	final static int SUNDAY = 0;
+	final static 	int MONDAY = 1;
+	final static int TUESDAY =2;
+	final static int WEDNESDAY = 3;
+	final static int THURSDAY = 4;
+	final static int FRIDAY = 5;
+	final static int SATURDAY = 6;
+	
+	//Months
+	final static int JANUARY = 1;
+	final static int FEBRUARY = 2;
+	final static int MARCH = 3;
+	final static int APRIL = 4;
+	final static int MAY = 5;
+	final static int JUNE = 6;
+	final static int JULY = 7;
+	final static int AUGUST = 8;
+	final static int SEPTEMBER = 9;
+	final static int OCTOBER = 10;
+	final static int NOVEMBER = 11;
+	final static int DECEMBER = 12;
+	
+	//DST
+	final static int STANDARD_TIME = 0;
+	final static int DAYLIGHT_TIME = 1;
+	//END constants
+	
 	//names
 	public String username;
 	public String deviceName;
@@ -181,10 +210,10 @@ public class Cylon implements Saul
 		TimeZone timeZone = calendar.getTimeZone();
 		
 		//Set dst boolean
-		this.dst = 0;
+		this.dst = Cylon.STANDARD_TIME;
 		if(timeZone.inDaylightTime(now) == true)
 		{
-			this.dst = 1;
+			this.dst = Cylon.DAYLIGHT_TIME;
 		}
 		
 		//Calculate offset in minutes +/- UTC, then set timeZone value
@@ -211,7 +240,7 @@ public class Cylon implements Saul
 		this.day = 0;
 		if(day >= 1 || day <= 7)
 		{
-			this.day = day;
+			this.day = day - 1 ; //java starts counting days at 1
 		}
 		
 		//Grab and set Month
@@ -396,7 +425,7 @@ public class Cylon implements Saul
 			this.detectedDevices.addLast(device);
 			
 			//build controller (if appropriate)
-			if (device.deviceType == 11)
+			if (device.deviceType == Device.CONTROLLER_TYPE)
 			{
 				Controller controller = new Controller(device, devices[i]);
 				
@@ -573,7 +602,6 @@ public class Cylon implements Saul
 	}//end printers
 	*/
 	
-	@SuppressWarnings("deprecation")
 	public void produceStorageDevices()
 	{	
 		//Credit to Yaroslav Boichuk @ stackoverflow for partial storage size code
@@ -816,7 +844,6 @@ public class Cylon implements Saul
 	
 	//produce info on cameras
 	@SuppressLint("InlinedApi")
-	@SuppressWarnings("deprecation")
 	public void produceCameras()
 	{
 		//Use old deprecated Camera class
@@ -896,11 +923,11 @@ public class Cylon implements Saul
 				
 				if (pairedDevices.size() > 0)
 				{
-					for (BluetoothDevice device : pairedDevices)
+					/*for (BluetoothDevice device : pairedDevices)
 					{
 						//test
 						//Log.i("Saul", device.getName() + ": " + device.getAddress() + " " + device.getBluetoothClass().getDeviceClass() + " " + device.getBluetoothClass().getMajorDeviceClass());
-					}
+					}*/
 				}
 			}
 		}
@@ -1255,6 +1282,7 @@ public class Cylon implements Saul
  				  "\n" +   "          Storage Index = " + this.detectedDevices.get(i).storageIndex +
  				  "\n" +   "          Sensor Index = " + this.detectedDevices.get(i).sensorsIndex +
  				  "\n" +   "          Default = " + this.detectedDevices.get(i).isDefault +
+ 				  "\n" +   "          Panel Location = " + this.detectedDevices.get(i).panelLocation +
  				  "\n" +   "          Orientation = " + this.detectedDevices.get(i).orientation);
 		}
 		for(int i =0; i < this.controllers.size(); i++)
