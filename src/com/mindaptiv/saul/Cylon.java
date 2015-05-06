@@ -1256,7 +1256,8 @@ public class Cylon implements Saul
  				  "\n" +   "          Display Index = " + this.detectedDevices.get(i).displayIndex +
  				  "\n" +   "          Storage Index = " + this.detectedDevices.get(i).storageIndex +
  				  "\n" +   "          Sensor Index = " + this.detectedDevices.get(i).sensorsIndex +
- 				  "\n" +   "          Default = " + this.detectedDevices.get(i).isDefault);
+ 				  "\n" +   "          Default = " + this.detectedDevices.get(i).isDefault +
+ 				  "\n" +   "          Orientation = " + this.detectedDevices.get(i).orientation);
 		}
 		for(int i =0; i < this.controllers.size(); i++)
 		{

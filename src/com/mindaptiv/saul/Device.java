@@ -180,7 +180,29 @@ public class Device
 		this.sensorsIndex	 = 0;
 		this.storageIndex    = 0;
 		this.camerasIndex	 = 0;
-		this.orientation     = 0;
+		
+		//set orientation
+		//set orientation
+		if(display.getRotation() == 0)
+		{
+			this.orientation = 0;
+		}
+		else if(display.getRotation() == 2)
+		{
+			this.orientation = 180;
+		}
+		else if (display.getRotation()==3)
+		{
+			this.orientation = 270;
+		}
+		else if (display.getRotation() == 1)
+		{
+			this.orientation = 90;
+		}
+		else
+		{
+			this.orientation = 0;
+		}
 		
 		//Set name
 		this.name = display.getName();
