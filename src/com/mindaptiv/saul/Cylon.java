@@ -18,9 +18,11 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.TimeZone;
@@ -41,6 +43,9 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.hardware.display.*; //some contents that we want to access are only available in later versions, hence ".*" (no ifdef in Java)
+import android.hardware.usb.UsbConstants;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
@@ -730,7 +735,160 @@ public class Cylon implements Saul
 			this.storages.addLast(storage);
 			this.detectedDevices.getLast().storageIndex = this.storages.size() - 1;
 		}//END for
+		
 	}//end produce storage
+
+	public void produceUsbDevices()
+	{
+		//OTG storage paths
+		 
+		//Grab manager
+		UsbManager usbMan = (UsbManager) this.context.getSystemService(Context.USB_SERVICE);
+		
+		//Grab Devices
+		HashMap<String, UsbDevice> usbDevices = usbMan.getDeviceList();
+		
+		//Variable declaration
+		long bytesAvails = 0;
+		long totalBytes = 0;
+		boolean isDefaultEmulated = false;
+		
+		//Inspect device class for all attached/detected usb devices
+		for(String key : usbDevices.keySet())
+		{	
+			//reset
+			totalBytes  = 0;
+			bytesAvails = 0;
+			
+			//Create new File system stats
+			StatFs stats = new StatFs(usbDevices.get(key).getDeviceName());
+			
+			//get size in bytes
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+			{
+				//code added in API 18
+				totalBytes = stats.getBlockSizeLong() * stats.getBlockCountLong();
+				bytesAvails = stats.getBlockSizeLong() * stats.getAvailableBlocksLong();
+			}
+			else
+			{
+				//code deprecated in API 18
+				totalBytes = (long)stats.getBlockSize() * (long)stats.getBlockCount();
+				bytesAvails = (long)stats.getBlockSize() * (long)stats.getAvailableBlocks();
+			}
+			
+			//only store these directories if they actually have storage space avails
+			if (totalBytes > 0)
+			{
+				//Create new Device object
+				Device device = new Device(usbDevices.get(key).getDeviceName(), isDefaultEmulated);
+				this.detectedDevices.addLast(device);
+			
+				//Create new Storage object
+				Storage storage = new Storage(device, usbDevices.get(key).getDeviceName(), bytesAvails, totalBytes, isDefaultEmulated);
+				this.storages.addLast(storage);
+				this.detectedDevices.getLast().storageIndex = this.storages.size() - 1;
+			}
+		}
+		
+		//Space located in the Storage directory
+		try
+		{
+			//Get CPU info directory
+			File dir = new File("/storage/");
+			
+			//Filter to only list the devices we care about
+			File[] files = dir.listFiles();
+			
+			//iterate through the files
+			for(File file : files)
+			{	
+				//reset bytes
+				totalBytes = 0;
+				bytesAvails = 0;
+				
+				if(file.isDirectory())
+				{
+					//if file is a directory
+					
+					//Create new File system stats
+					StatFs stats = new StatFs(file.getAbsolutePath());
+					
+					//get size in bytes
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+					{
+						//code added in API 18
+						totalBytes = stats.getBlockSizeLong() * stats.getBlockCountLong();
+						bytesAvails = stats.getBlockSizeLong() * stats.getAvailableBlocksLong();
+					}
+					else
+					{
+						//code deprecated in API 18
+						totalBytes = (long)stats.getBlockSize() * (long)stats.getBlockCount();
+						bytesAvails = (long)stats.getBlockSize() * (long)stats.getAvailableBlocks();
+					} //END INNER IF
+					
+					
+					boolean stored = false;
+					//if directory is already stored as a storage device
+					for (Storage storage : storages)
+					{
+						if(storage.path.equals(file.getAbsolutePath()))
+						{
+							stored = true;
+						}
+					}
+					
+					//if the device isn't already stored in the storages LinkedList AND if the size is greater than 0 bytes
+					//and if the directory isn't the parent emulated directory (cont.) -
+					//- (as this can show up, but holds paths to emulated storage, and should not be treated as its own device)
+					if (!stored && !file.getAbsolutePath().equals("/storage/emulated") && totalBytes > 0)
+					{	
+						//Create new Device object
+						Device device = new Device(file.getAbsolutePath(), isDefaultEmulated);
+						this.detectedDevices.addLast(device);
+						
+						//Create new Storage object
+						Storage storage = new Storage(device, file.getAbsolutePath(), bytesAvails, totalBytes, isDefaultEmulated);
+						this.storages.addLast(storage);
+						this.detectedDevices.getLast().storageIndex = this.storages.size() - 1;
+					}//END STORED
+				} //END IF
+			}//END FOR
+		} //end try
+		catch(Exception e)
+		{
+			//I got nothing...
+		}//END CATCH
+	}//end method
+	
+	public void rumbleTest()
+	{
+		//variable declaration
+		long[] storageBeepOne = {0, 100, 0};
+		long[] storageBeepTwo = {0, 100, 110, 100, 0};
+		long[] storageBeepThree = {0, 100, 110, 100, 110, 100, 0};
+		
+		int storageDevices = this.storages.size();
+		Vibrator rumble = (Vibrator) this.context.getSystemService(Context.VIBRATOR_SERVICE);
+		
+			if(rumble.hasVibrator())
+			{
+				if(storageDevices == 1)
+				{
+					rumble.vibrate(storageBeepOne, -1);
+				}
+				if(storageDevices == 2)
+				{
+					rumble.vibrate(storageBeepTwo, -1);
+				}
+				if(storageDevices == 3)
+				{
+					rumble.vibrate(storageBeepThree, -1);
+				}
+			}
+		
+	}//end rumble test
 	
 	//produce rumble device info
 	public void produceSystemRumble()
@@ -747,7 +905,7 @@ public class Cylon implements Saul
 			int dash = 500;     // Length of a Morse Code "dash" in milliseconds
 			int short_gap = 200;    // Length of Gap Between dots/dashes
 			int medium_gap = 500;   // Length of Gap Between Letters
-			int long_gap = 100;    // Length of Gap Between Words
+			int long_gap = 1000;    // Length of Gap Between Words
 			@SuppressWarnings("unused")
 			long[] sos = {
 			    0,  // Start immediately
@@ -1012,6 +1170,7 @@ public class Cylon implements Saul
 		produceSensors();
 		produceCameras();
 		produceBluetoothDevices();
+		produceUsbDevices();
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
 		{	
@@ -1020,6 +1179,9 @@ public class Cylon implements Saul
 			
 		//set count
 		this.detectedDeviceCount = this.detectedDevices.size();
+		
+		//test
+		rumbleTest();
 	}
 	//END producers
 	
