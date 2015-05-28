@@ -6,6 +6,7 @@
 package com.mindaptiv.saul;
 
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 
 public interface Saul 
 {
@@ -29,5 +30,6 @@ public interface Saul
 	
 	//Handler
 	boolean handleKeyEvent(KeyEvent event);
+	boolean handleMotionEvent(MotionEvent event);
 	
 }

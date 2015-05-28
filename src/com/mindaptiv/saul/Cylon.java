@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.TimeZone;
@@ -42,8 +41,7 @@ import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
-import android.hardware.display.*; //some contents that we want to access are only available in later versions, hence ".*" (no ifdef in Java)
-import android.hardware.usb.UsbConstants;
+import android.hardware.display.*;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.location.LocationManager;
@@ -57,6 +55,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 
 
 @SuppressWarnings("deprecation")
@@ -1185,6 +1184,31 @@ public class Cylon implements Saul
 	}
 	//END producers
 	
+	//motion event handler
+	public boolean handleMotionEvent(MotionEvent event)
+	{	
+		//Verify ID of source
+		for (int i = 0; i < this.controllers.size(); i++)
+		{
+			//check if any controller ID matches the source of the event
+			if(Integer.parseInt(controllers.get(i).superDevice.id) == event.getDeviceId())
+			{
+				//set the appropriate trigger and joystick values
+				controllers.get(i).fLeftTrigger  = event.getAxisValue(MotionEvent.AXIS_LTRIGGER);
+				controllers.get(i).fRightTrigger = event.getAxisValue(MotionEvent.AXIS_RTRIGGER);
+				controllers.get(i).fThumbLeftX	 = event.getAxisValue(MotionEvent.AXIS_X);
+				controllers.get(i).fThumbLeftY	 = event.getAxisValue(MotionEvent.AXIS_Y);
+				controllers.get(i).fThumbRightX  = event.getAxisValue(MotionEvent.AXIS_Z);
+				controllers.get(i).fThumbRightY  = event.getAxisValue(MotionEvent.AXIS_RZ);
+				
+				return true;
+			}//end if
+		}//end for
+		
+		//if no controller matched, return false
+		return false;
+	}
+	
 	//controller.buttons mapping
 	/*
 	 * 1st Byte: (Right)(Left)(Down)(Up)
@@ -1196,7 +1220,6 @@ public class Cylon implements Saul
 	//key event handler
 	public boolean handleKeyEvent(KeyEvent event)
 	{
-		Log.i("Saul", "Fired handler.");
 		this.keycode = event.getKeyCode();
 		
 		//Verify ID of source
@@ -1205,10 +1228,6 @@ public class Cylon implements Saul
 			//check if any controller ID matches the source of the event
 			if(Integer.parseInt(controllers.get(i).superDevice.id) == event.getDeviceId())
 			{
-				//test
-				//Log.i("Saul", "Controller bitmask before:" + Integer.toHexString(controllers.get(i).buttons));
-				//Log.i("Saul", "Action: " + event.getAction());
-				
 				//if true, then parse code of event
 				//Variable declaration
 				int key = event.getKeyCode();
@@ -1227,6 +1246,7 @@ public class Cylon implements Saul
 					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.A_BUTTON) == Controller.A_BUTTON) )
 					{
 						controllers.get(i).buttons = controllers.get(i).buttons - Controller.A_BUTTON;
+						this.testLog();
 					}
 				}
 				else if (key == KeyEvent.KEYCODE_BUTTON_B)
@@ -1260,17 +1280,6 @@ public class Cylon implements Saul
 					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.Y_BUTTON) == Controller.Y_BUTTON) )
 					{
 						controllers.get(i).buttons = controllers.get(i).buttons - Controller.Y_BUTTON;
-					}
-				}
-				else if (key == KeyEvent.KEYCODE_BUTTON_B)
-				{
-					if(event.getAction() == KeyEvent.ACTION_DOWN || event.getAction() == KeyEvent.ACTION_MULTIPLE)
-					{
-						controllers.get(i).buttons = controllers.get(i).buttons | Controller.B_BUTTON;
-					}
-					else if (event.getAction() == KeyEvent.ACTION_UP && ((controllers.get(i).buttons & Controller.B_BUTTON) == Controller.B_BUTTON) )
-					{
-						controllers.get(i).buttons = controllers.get(i).buttons - Controller.B_BUTTON;
 					}
 				}
 				else if (key == KeyEvent.KEYCODE_BUTTON_L1)
@@ -1384,16 +1393,10 @@ public class Cylon implements Saul
 					}
 				}
 				
-				//test
-				//Log.i("Saul", "Controller bitmask after:" + Integer.toHexString(controllers.get(i).buttons));
-				
 				//return
 				return true;
 			}
 		}//END for
-		
-		//test
-		//Log.i("Saul", "No controller located.");
 		
 		//if no controller matched, return false
 		return false;
@@ -1439,11 +1442,17 @@ public class Cylon implements Saul
 		}
 		for(int i =0; i < this.controllers.size(); i++)
 		{
-			Log.i("Saul", "     Controller #" + i + ": " + "\n" + "          Key Code = " + this.controllers.get(i).keycode + 
-					"\n" + "          ID = " +Integer.toHexString(Integer.parseInt(this.detectedDevices.get(i).id)) + 
-					"\n" + "          Vendor ID = " + Integer.toHexString(this.detectedDevices.get(i).vendorID) + 
-					"\n" + "          Bitmask = " + Integer.toHexString(this.detectedDevices.get(i).testMask) + "\n"
- 				  + "\n" + "          Type = " + this.detectedDevices.get(i).deviceType + "\n"
+			Log.i("Saul", "     Controller #" + i + ": " + "\n" +
+					"\n" + "          ID = " + this.controllers.get(i).superDevice.id + 
+ 				    "\n" + "          Left X = " + this.controllers.get(i).fThumbLeftX + 
+ 				    "\n" + "          Left Y = " + this.controllers.get(i).fThumbLeftY + 
+ 				    "\n" + "          Right X = " + this.controllers.get(i).fThumbRightX + 
+ 				    "\n" + "          Right Y = " + this.controllers.get(i).fThumbRightY + 
+ 				    "\n" + "          Left Trigger = " + this.controllers.get(i).fLeftTrigger + 
+ 				    "\n" + "          Right Trigger = " + this.controllers.get(i).fRightTrigger + 
+ 				   "\n" + "          Buttons = " + this.controllers.get(i).buttons + 
+ 				  "\n" + "          User Index = " + this.controllers.get(i).userIndex + 
+ 				    "\n"
 					);
 		}
 		for(int i =0; i < this.displays.size(); i++)

@@ -67,7 +67,7 @@ public class Controller
 		
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
 		{	
-			this.userIndex = idvice.getControllerNumber();
+			this.userIndex = idvice.getControllerNumber() - 1;
 		}
 		else
 		{
