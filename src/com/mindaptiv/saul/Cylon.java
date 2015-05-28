@@ -1197,9 +1197,9 @@ public class Cylon implements Saul
 				controllers.get(i).fLeftTrigger  = event.getAxisValue(MotionEvent.AXIS_LTRIGGER);
 				controllers.get(i).fRightTrigger = event.getAxisValue(MotionEvent.AXIS_RTRIGGER);
 				controllers.get(i).fThumbLeftX	 = event.getAxisValue(MotionEvent.AXIS_X);
-				controllers.get(i).fThumbLeftY	 = event.getAxisValue(MotionEvent.AXIS_Y);
+				controllers.get(i).fThumbLeftY	 = -event.getAxisValue(MotionEvent.AXIS_Y);
 				controllers.get(i).fThumbRightX  = event.getAxisValue(MotionEvent.AXIS_Z);
-				controllers.get(i).fThumbRightY  = event.getAxisValue(MotionEvent.AXIS_RZ);
+				controllers.get(i).fThumbRightY  = -event.getAxisValue(MotionEvent.AXIS_RZ);
 				
 				return true;
 			}//end if
