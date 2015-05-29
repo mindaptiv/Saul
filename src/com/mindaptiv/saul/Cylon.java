@@ -61,6 +61,8 @@ import android.view.MotionEvent;
 @SuppressWarnings("deprecation")
 public class Cylon implements Saul
 {
+
+	
 	//Variable Declaration:
 	//Constants
 	//Days
@@ -1201,6 +1203,7 @@ public class Cylon implements Saul
 				controllers.get(i).fThumbRightX  = event.getAxisValue(MotionEvent.AXIS_Z);
 				controllers.get(i).fThumbRightY  = -event.getAxisValue(MotionEvent.AXIS_RZ);
 				
+				//return true because event was not an anomaly 
 				return true;
 			}//end if
 		}//end for
@@ -1492,7 +1495,12 @@ public class Cylon implements Saul
 		}
 		
 		Log.i("Saul", "Error Code: " + this.error + "\n");
+		
+		//Native Test!!!
+		helloLog("This wil log to LogCat via the native call.");
 	}//end testLog
-
-
+	
+	private native void helloLog(String logThis);
+	
+	
 }//END class
