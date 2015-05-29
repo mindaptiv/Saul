@@ -61,7 +61,11 @@ import android.view.MotionEvent;
 @SuppressWarnings("deprecation")
 public class Cylon implements Saul
 {
-
+	//native code init
+	static
+	{
+		System.loadLibrary("saulStuff");
+	}
 	
 	//Variable Declaration:
 	//Constants
