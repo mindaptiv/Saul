@@ -362,7 +362,6 @@ public class Device
 	}
 	
 	//Constructor from CameraInfo object
-	@SuppressWarnings("deprecation")
 	public Device(int id, CameraInfo info)
 	{	
 		//set values not available in this context

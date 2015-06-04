@@ -2,7 +2,6 @@
 #include <jni.h>
 #include <string.h>
 #include <android/log.h>
-
 #define DEBUG_TAG "NDK_Android_Saul_Test"
 
 //Test method
@@ -16,3 +15,5 @@ void Java_com_mindaptiv_saul_Cylon_helloLog (JNIEnv* env, jobject this, jstring 
 	(*env)->ReleaseStringUTFChars(env, logThis, szLogThis);
 
 }//end method
+
+

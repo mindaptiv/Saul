@@ -1499,12 +1499,17 @@ public class Cylon implements Saul
 		}
 		
 		Log.i("Saul", "Error Code: " + this.error + "\n");
+		Log.i("Saul", stringFromJNI());
+		Log.i("Saul", buildCylon(this));
+		
 		
 		//Native Test!!!
 		helloLog("This wil log to LogCat via the native call.");
 	}//end testLog
 	
 	private native void helloLog(String logThis);
+	private native String stringFromJNI();
+	private native String buildCylon(Cylon saul);
 	
 	
 }//END class
