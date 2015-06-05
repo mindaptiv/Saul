@@ -130,7 +130,7 @@ struct cylonStruct
 	std::string					username;
 
 	//processor
-	uint16_t					architecture; //0=error, 1=x64, 2=ARM, 3=Itanium, 4=x86
+	std::string					architecture; //0=error, 1=x64, 2=ARM, 3=Itanium, 4=x86
 	uint16_t					processorLevel; //architecture-dependent processor level
 	uint32_t					pageSize;  //size of page in bytes
 	uint32_t					allocationGranularity; //granularity for starting address where virtual memory can be allocated (assuming in bits?)
@@ -142,10 +142,14 @@ struct cylonStruct
 	//memory
 	uint64_t					memoryBytes; //system memory measured in bytes
 	uint32_t					osArchitecture; //operating system architecture, 16, 32, 64, 128, etc.
+	uint32_t					lowMemory;
+	uint64_t					threshold;
+	uint64_t					bytesAvails;
 
 	//account picture
 	//TODO add picture location from IStorageFile
 	std::string					pictureType;
+	std::string					picturePath;
 	uintptr_t					pictureLocation;
 
 	//devices

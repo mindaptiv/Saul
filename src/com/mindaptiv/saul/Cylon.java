@@ -102,62 +102,61 @@ public class Cylon implements Saul
 	public String deviceName;
 	
 	//time
-	public Integer milliseconds;
-	public Integer seconds;
-	public Integer minutes;
-	public Integer hours;
+	public int milliseconds;
+	public int seconds;
+	public int minutes;
+	public int hours;
 	
 	//date
-	public Integer day;
-	public Integer date;
-	public Integer month;
-	public Integer year;
+	public int day;
+	public int date;
+	public int month;
+	public int year;
 	
 	//time zone
-	public Integer dst;
-	public Integer timeZone;
+	public int dst;
+	public int timeZone;
 	public String timeZoneName;
 	
 	//processor
 	public String architecture;
-	public Integer pageSize;
-	public Integer processorCount;
-	public Integer allocationGranularity;
+	public int pageSize;
+	public int processorCount;
+	public int allocationGranularity;
 	public Float hertz;
 	
 	//memory
 	public long memoryBytes;
 	public long threshold;
 	public long bytesAvails;
-	public Integer lowMemory;
-	public Integer osArchitecture;
-	public String bitStringTest;
+	public int lowMemory;
+	public int osArchitecture;
 	
 	//avatar
 	String pictureType; //represents picture URI location
 	
 	//devices
-	Integer installedDeviceCount;
-	public Integer detectedDeviceCount;
-	Integer portableStorageCount;
-	Integer videoCount;
-	Integer micCount;
-	Integer speakerCount;
-	Integer locationCount;
-	Integer scannerCount;
+	int installedDeviceCount;
+	public int detectedDeviceCount;
+	int portableStorageCount;
+	int videoCount;
+	int micCount;
+	int speakerCount;
+	int locationCount;
+	int scannerCount;
 	public LinkedList<Device> detectedDevices;
 	public LinkedList<Controller> controllers;
 	public LinkedList<Display> displays;
 	public LinkedList<Storage> storages;
 	public LinkedList<Sensor> sensors;
-	public Integer keycode;
+	public int keycode;
 	
 	//Android
 	Context context;
 	Application app;
 	
 	//error
-	public Integer error;
+	public int error;
 	//END variable declaration
 	
 	
@@ -1500,6 +1499,7 @@ public class Cylon implements Saul
 		
 		Log.i("Saul", "Error Code: " + this.error + "\n");
 		Log.i("Saul", stringFromJNI());
+		Log.i("Saul", stringTest(this));
 		Log.i("Saul", buildCylon(this));
 		
 		
@@ -1509,6 +1509,7 @@ public class Cylon implements Saul
 	
 	private native void helloLog(String logThis);
 	private native String stringFromJNI();
+	private native String stringTest(Cylon saul);
 	private native String buildCylon(Cylon saul);
 	
 	
