@@ -118,7 +118,7 @@ extern "C"
 		cylon.timeZoneName  = timeZoneName;
 		cylon.architecture  = architecture;
 		cylon.picturePath   = picturePath;
-		__android_log_print(ANDROID_LOG_DEBUG, DEBUG_TAG, "NDK:LC: [%s]", "strings: done");
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "cylonStruct strings: done");
 
 
 		//===INTS===
@@ -162,9 +162,34 @@ extern "C"
 		//set cylonStruct uint64_ts
 		cylon.processorCount = (uint64_t) env->GetIntField(saul, fid_processorCount);
 
-		//test
-		__android_log_print(ANDROID_LOG_DEBUG, DEBUG_TAG, "NDK:LC: [%d]", cylon.milliseconds );
+		//log progress
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "cylonStruct ints: done");
 
+
+		//===LONGS===
+		//Retrieve fields
+		jfieldID fid_memoryBytes = env->GetFieldID(cylonClass, "memoryBytes", "J");
+		jfieldID fid_threshold = env ->GetFieldID(cylonClass, "threshold", "J");
+		jfieldID fid_bytesAvails = env-> GetFieldID(cylonClass, "bytesAvails", "J");
+
+		//set cylonStruct uint64_ts
+		cylon.memoryBytes = (uint64_t) env->GetLongField(saul, fid_memoryBytes);
+		cylon.threshold = (uint64_t) env->GetLongField(saul, fid_threshold);
+		cylon.bytesAvails = (uint64_t) env->GetLongField(saul, fid_bytesAvails);
+
+		//log progress
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "cylonStruct longs: done");
+
+
+		//===FLOATS===
+		//Retrieve fields
+		jfieldID fid_hertz = env->GetFieldID(cylonClass, "hertz", "F");
+
+		//set cylonStruct floats
+		cylon.hertz = (float) env->GetFloatField(saul, fid_hertz);
+
+		//log progress
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "cylonStruct floats: done");
 
 		//temp return
 		return j_username;
