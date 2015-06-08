@@ -76,6 +76,66 @@ extern "C"
 		return jstr;
 	}
 
+	deviceStruct buildDevice(JNIEnv *env, jobject device)
+	{
+		//Retrieve class
+		jclass deviceClass = env->GetObjectClass(device);
+
+		//Create device
+		struct deviceStruct nativeDevice;
+
+		//===STRINGS===
+		//Retrieve fields
+		jfieldID fid_name = env->GetFieldID(deviceClass, "name", "Ljava/lang/String;");
+		jfieldID fid_id = env->GetFieldID(deviceClass, "id", "Ljava/lang/String;");
+
+		//Retrieve Java Strings
+		jstring j_name = (jstring) env->GetObjectField(device, fid_name);
+		jstring j_id = (jstring) env->GetObjectField(device, fid_id);
+
+		//Convert to std::strings
+		std::string name;
+		std::string id;
+		GetJStringContent(env, j_name, name);
+		GetJStringContent(env, j_id, id);
+
+		//Set deviceStruct strings
+		nativeDevice.name = name;
+		nativeDevice.id = id;
+
+		//==INTS==
+		//Retrieve fields
+		jfieldID fid_panelLocation = env->GetFieldID(deviceClass, "panelLocation", "I");
+		jfieldID fid_inLid = env->GetFieldID(deviceClass, "inLid", "I");
+		jfieldID fid_inDock = env->GetFieldID(deviceClass, "inDock", "I");
+		jfieldID fid_isDefault = env->GetFieldID(deviceClass, "isDefault", "I");
+		jfieldID fid_isEnabled = env->GetFieldID(deviceClass, "isEnabled", "I");
+		jfieldID fid_orientation = env->GetFieldID(deviceClass, "orientation", "I");
+		jfieldID fid_vendorID = env->GetFieldID(deviceClass, "vendorID", "I");
+		jfieldID fid_deviceType = env->GetFieldID(deviceClass, "deviceType", "I");
+		jfieldID fid_displayIndex = env->GetFieldID(deviceClass, "displayIndex", "I");
+		jfieldID fid_controllerIndex = env->GetFieldID(deviceClass, "controllerIndex", "I");
+		jfieldID fid_storageIndex = env->GetFieldID(deviceClass, "storageIndex", "I");
+		jfieldID fid_sensorsIndex = env->GetFieldID(deviceClass, "sensorsIndex", "I");
+
+		//set deviceStruct ints
+		nativeDevice.panelLocation = (uint32_t)env->GetIntField(device, fid_panelLocation);
+		nativeDevice.inLid = (uint32_t)env->GetIntField(device, fid_inLid);
+		nativeDevice.inDock = (uint32_t)env->GetIntField(device, fid_inDock);
+		nativeDevice.isDefault = (uint32_t)env->GetIntField(device, fid_isDefault);
+		nativeDevice.isEnabled = (uint32_t)env->GetIntField(device, fid_isEnabled);
+		nativeDevice.orientation = (uint32_t)env->GetIntField(device, fid_orientation);
+		nativeDevice.vendorID = (uint32_t)env->GetIntField(device, fid_vendorID);
+		nativeDevice.deviceType = (uint32_t)env->GetIntField(device, fid_deviceType);
+		nativeDevice.displayIndex = (uint32_t)env->GetIntField(device, fid_displayIndex);
+		nativeDevice.controllerIndex = (uint32_t)env->GetIntField(device, fid_controllerIndex);
+		nativeDevice.storageIndex = (uint32_t)env->GetIntField(device, fid_storageIndex);
+		nativeDevice.sensorsIndex = (uint32_t)env->GetIntField(device, fid_storageIndex);
+
+		//Return
+		return nativeDevice;
+	}
+
 	JNIEXPORT jstring JNICALL
 	Java_com_mindaptiv_saul_Cylon_buildCylon(JNIEnv *env, jobject obj, jobject saul)
 	{
@@ -85,7 +145,7 @@ extern "C"
 		//Create cylon
 		struct cylonStruct cylon;
 
-		//===NAMES + STRINGS===
+		//===STRINGS===
 		//Retrieve fields
 		jfieldID fid_username		= env->GetFieldID(cylonClass, "username", "Ljava/lang/String;");
 		jfieldID fid_deviceName 	= env->GetFieldID(cylonClass, "deviceName", "Ljava/lang/String;");
@@ -190,6 +250,55 @@ extern "C"
 
 		//log progress
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "cylonStruct floats: done");
+
+
+		//==LISTS==
+		//Retrieve classes
+		jclass listClass = env->FindClass("java/util/LinkedList");
+
+		//Retrieve method ID
+		//credit to pproksch @ stackoverflow for method retrieval code
+		jmethodID m_toArray = env->GetMethodID(listClass, "toArray", "()[Ljava/lang/Object;");
+		if(m_toArray == NULL)
+		{
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "WARNING: toArray not found!");
+		}
+
+		//Retrieve fields
+		jfieldID fid_devices = env->GetFieldID(cylonClass, "detectedDevices", "Ljava/util/LinkedList;");
+		jfieldID fid_controllers = env->GetFieldID(cylonClass, "controllers", "Ljava/util/LinkedList;");
+		jfieldID fid_displays = env->GetFieldID(cylonClass, "displays", "Ljava/util/LinkedList;");
+		jfieldID fid_storages = env->GetFieldID(cylonClass, "storages", "Ljava/util/LinkedList;");
+		jfieldID fid_sensors = env->GetFieldID(cylonClass, "sensors", "Ljava/util/LinkedList;");
+
+		//Retrieve lists
+		jobject j_devices = env->GetObjectField(saul, fid_devices);
+		jobject j_controllers = env->GetObjectField(saul, fid_controllers);
+		jobject j_displays = env->GetObjectField(saul, fid_displays);
+		jobject j_storages = env->GetObjectField(saul, fid_storages);
+		jobject j_sensors = env->GetObjectField(saul, fid_sensors);
+
+		//convert lists to arrays
+		jobjectArray arr_devices = (jobjectArray)env->CallObjectMethod(j_devices, m_toArray);
+		jobjectArray arr_controllers = (jobjectArray)env->CallObjectMethod(j_controllers, m_toArray);
+		jobjectArray arr_displays = (jobjectArray)env->CallObjectMethod(j_displays, m_toArray);
+		jobjectArray arr_storages = (jobjectArray)env->CallObjectMethod(j_storages, m_toArray);
+		jobjectArray arr_sensors = (jobjectArray)env->CallObjectMethod(j_sensors, m_toArray);
+
+		//iterate through devices
+		for (int i = 0; i < env->GetArrayLength(arr_devices); i++)
+		{
+			//Grab element object from array
+			jobject j_device = env->GetObjectArrayElement(arr_devices, i);
+
+			//Build Device
+			deviceStruct newDevice = buildDevice(env, j_device);
+
+			//Add Device to end of cylon's device list
+			cylon.detectedDevices.push_back(newDevice);
+		}
+
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "deviceStructs: done");
 
 		//temp return
 		return j_username;

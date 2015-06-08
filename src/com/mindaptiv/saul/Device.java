@@ -52,25 +52,25 @@ public class Device
 	//END Constants
 	
 	//device properties
-	Integer panelLocation;
-	Integer inLid;
-	Integer inDock;
-	Integer isDefault;
-	Integer isEnabled;
-	Integer orientation;
+	int panelLocation;
+	int inLid;
+	int inDock;
+	int isDefault;
+	int isEnabled;
+	int orientation;
 	public String 	name;
 	public String	id;
-	public Integer  vendorID;
+	public int  vendorID;
 	
 	//type
-	public Integer deviceType;
+	public int deviceType;
 	
 	//indexes
-	Integer displayIndex;
-	Integer controllerIndex;
-	Integer storageIndex;
-	Integer sensorsIndex;
-	public Integer testMask;
+	int displayIndex;
+	int controllerIndex;
+	int storageIndex;
+	int sensorsIndex;
+	public int testMask;
 	
 	//Constructors
 	//Build device using InputDevice object

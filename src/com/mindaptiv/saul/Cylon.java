@@ -123,7 +123,7 @@ public class Cylon implements Saul
 	public int pageSize;
 	public int processorCount;
 	public int allocationGranularity;
-	public Float hertz;
+	public float hertz;
 	
 	//memory
 	public long memoryBytes;

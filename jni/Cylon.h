@@ -41,6 +41,8 @@ struct deviceStruct
 	uint32_t		inDock;				//if the device is in the docking station of the computer
 	uint32_t		isDefault;			//if device is the default for its function
 	uint32_t		isEnabled;			//if the device is enabled
+	uint32_t		orientation;		//orientation of the device
+	uint32_t		vendorID;			//vendor ID
 	std::string     name;
 	std::string		id;
 
@@ -51,6 +53,8 @@ struct deviceStruct
 										//9 is mouse, 10 is keyboard, 11 is gamepad
 	uint32_t				displayIndex; //device's index in the displayDevices list if type is 8
 	uint32_t				controllerIndex; //device's index in the pointerDevices list if type is 9
+	uint32_t				storageIndex;
+	uint32_t				sensorsIndex;
 
 };
 //END deviceStruct
