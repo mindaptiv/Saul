@@ -87,12 +87,12 @@ struct controllerStruct
 	//xinput state
 	uint32_t	packetNumber; //for detecting changes
 	uint16_t	buttons; //bit mask for what buttons are pressed
-	int8_t		leftTrigger;
-	int8_t		rightTrigger;
-	int16_t		thumbLeftY;
-	int16_t		thumbLeftX;
-	int16_t		thumbRightX;
-	int16_t		thumbRightY;
+	float		leftTrigger;
+	float		rightTrigger;
+	float		thumbLeftY;
+	float		thumbLeftX;
+	float		thumbRightX;
+	float		thumbRightY;
 };
 //end controller struct
 

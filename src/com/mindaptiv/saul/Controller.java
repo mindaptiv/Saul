@@ -16,23 +16,17 @@ public class Controller
 	Device superDevice;
 	
 	//player index
-	Integer userIndex;
+	int userIndex;
 	
 	//button state
-	Integer packetNumber;
-	Integer	buttons; 
-	Integer leftTrigger;
-	Integer rightTrigger;
-	Integer thumbLeftX;
-	Integer thumbLeftY;
-	Integer thumbRightX;
-	Integer thumbRightY;
-	Float   fLeftTrigger;
-	Float	fRightTrigger;
-	Float   fThumbLeftX;
-	Float	fThumbLeftY;
-	Float	fThumbRightX;
-	Float	fThumbRightY;
+	int packetNumber;
+	int	buttons; 
+	float   fLeftTrigger;
+	float	fRightTrigger;
+	float   fThumbLeftX;
+	float	fThumbLeftY;
+	float	fThumbRightX;
+	float	fThumbRightY;
 	
 	//Buttons values 
 	//Adopted from XINPUT bit mask for controller state
@@ -45,7 +39,7 @@ public class Controller
 	public static final Integer LEFT_DPAD   	= 0x0004;
 	public static final Integer RIGHT_DPAD  	= 0x0008;
 	public static final Integer START_BUTTON	= 0x0010;
-	public static final Integer SELECT_BUTTON     = 0x0020;
+	public static final Integer SELECT_BUTTON   = 0x0020;
 	public static final Integer LEFT_THUMB      = 0x0040;
 	public static final Integer RIGHT_THUMB     = 0x0080;
 	public static final Integer LEFT_SHOULDER   = 0x0100;

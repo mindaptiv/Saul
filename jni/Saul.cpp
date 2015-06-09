@@ -134,7 +134,64 @@ extern "C"
 
 		//Return
 		return nativeDevice;
+	}//END buildDevice
+
+
+	controllerStruct buildController(JNIEnv *env, jobject controller)
+	{
+		//Retrieve class
+		jclass controllerClass = env->GetObjectClass(controller);
+
+		//Create device
+		struct controllerStruct nativeController;
+
+		//===INTS===
+		//Retrieve fields
+		jfieldID fid_packetNumber = env->GetFieldID(controllerClass, "packetNumber", "I");
+		jfieldID fid_buttons = env->GetFieldID(controllerClass, "buttons", "I");
+		jfieldID fid_userIndex = env->GetFieldID(controllerClass, "userIndex", "I");
+
+		//set controllerStruct uint32_t's
+		nativeController.packetNumber = (uint32_t)env->GetIntField(controller, fid_packetNumber);
+		nativeController.userIndex = (uint32_t)env->GetIntField(controller, fid_userIndex);
+
+		//set controllerStruct uint16_t's
+		nativeController.buttons = (uint16_t)env->GetIntField(controller, fid_buttons);
+
+
+		//===FLOATS===
+		//Retrieve fields
+		jfieldID fid_fLeftTrigger = env->GetFieldID(controllerClass, "fLeftTrigger", "F");
+		jfieldID fid_fRightTrigger = env->GetFieldID(controllerClass, "fRightTrigger", "F");
+		jfieldID fid_fThumbLeftX = env->GetFieldID(controllerClass, "fThumbLeftX", "F");
+		jfieldID fid_fThumbLeftY = env->GetFieldID(controllerClass, "fThumbLeftY", "F");
+		jfieldID fid_fThumbRightX = env->GetFieldID(controllerClass, "fThumbRightX", "F");
+		jfieldID fid_fThumbRightY = env->GetFieldID(controllerClass, "fThumbRightY", "F");
+
+		//set controllerStruct floats
+		nativeController.leftTrigger = (float)env->GetFloatField(controller, fid_fLeftTrigger);
+		nativeController.rightTrigger = (float)env->GetFloatField(controller, fid_fRightTrigger);
+		nativeController.thumbLeftX = (float)env->GetFloatField(controller, fid_fThumbLeftX);
+		nativeController.thumbLeftY = (float)env->GetFloatField(controller, fid_fThumbLeftY);
+		nativeController.thumbRightX = (float)env->GetFloatField(controller, fid_fThumbRightX);
+		nativeController.thumbRightY = (float)env->GetFloatField(controller, fid_fThumbRightY);
+
+
+		//===DEVICE===
+		//Retrieve field
+		jfieldID fid_superDevice = env->GetFieldID(controllerClass, "superDevice", "Lcom/mindaptiv/saul/Device;");
+
+		//Retrieve object
+		jobject j_device = env->GetObjectField(controller, fid_superDevice);
+
+		//Build and set deviceStruct field
+		nativeController.superDevice = buildDevice(env, j_device);
+
+		//Return
+		return nativeController;
 	}
+
+
 
 	JNIEXPORT jstring JNICALL
 	Java_com_mindaptiv_saul_Cylon_buildCylon(JNIEnv *env, jobject obj, jobject saul)
@@ -299,6 +356,23 @@ extern "C"
 		}
 
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "deviceStructs: done");
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Length of devices: [%d]", (int)cylon.detectedDevices.size());
+
+		//iterate through controllers
+		for (int i = 0; i < env->GetArrayLength(arr_controllers); i++)
+		{
+			//Grab element object from array
+			jobject j_controller = env->GetObjectArrayElement(arr_controllers, i);
+
+			//Build Controller
+			controllerStruct newController = buildController(env, j_controller);
+
+			//Add Controller to end of cylon's controllers list
+			cylon.controllers.push_back(newController);
+		}
+
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "controllerStructs: done");
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Length of controllers: [%d]", (int)cylon.controllers.size());
 
 		//temp return
 		return j_username;
