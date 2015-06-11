@@ -23,7 +23,7 @@ public class Device
 	final static int GENERIC_TYPE = 1;
 	final static int AUDIO_CAPTURE_TYPE = 2;
 	final static int AUDIO_RENDER_TYPE = 3;
-	final static int PORTABLE_STORAGE_TYPE = 4;
+	final static int STORAGE_TYPE = 4;
 	final static int VIDEO_CAPTURE_TYPE = 5;
 	final static int IMAGE_SCANNER_TYPE = 6;
 	final static int LOCATION_AWARE_TYPE = 7;
@@ -36,7 +36,7 @@ public class Device
 	final static int TRACKBALL_TYPE = 14;
 	final static int STYLUS_TYPE = 15;
 	final static int POSITION_TYPE = 16;
-	final static int STORAGE_TYPE = 17;
+	
 	final static int RUMBLE_TYPE = 18;
 	final static int SENSOR_TYPE = 19;
 	final static int BLUETOOTH_RADIO_TYPE = 20;

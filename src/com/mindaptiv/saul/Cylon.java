@@ -1188,22 +1188,22 @@ public class Cylon implements Saul
 		for (int i = 0; i < this.detectedDevices.size(); i++)
 		{
 			//cameras = videoCount goes up
-			if(this.detectedDevices.get(i).deviceType == 5)
+			if(this.detectedDevices.get(i).deviceType == Device.VIDEO_CAPTURE_TYPE)
 			{
 				this.videoCount += 1;
 			}
 			//location aware
-			else if (this.detectedDevices.get(i).deviceType == 7)
+			else if (this.detectedDevices.get(i).deviceType == Device.LOCATION_AWARE_TYPE)
 			{
 				this.locationCount += 1;
 			}
 			//mic
-			else if (this.detectedDevices.get(i).deviceType == 2)
+			else if (this.detectedDevices.get(i).deviceType == Device.AUDIO_CAPTURE_TYPE)
 			{
 				this.micCount += 1;
 			}
 			//speaker
-			else if (this.detectedDevices.get(i).deviceType == 3)
+			else if (this.detectedDevices.get(i).deviceType == Device.AUDIO_RENDER_TYPE)
 			{
 				this.speakerCount += 1;
 			}//END if
