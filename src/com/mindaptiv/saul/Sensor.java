@@ -10,9 +10,9 @@ public class Sensor
 {
 	//Variable Declaration
 	Device  superDevice;
-	Integer minDelay;
-	Integer type;  //based on Android Sensor values
-	Integer version;
+	int minDelay;
+	int type;  //based on Android Sensor values
+	int version;
 	String  name;
 	String  vendor;
 	float   power;
@@ -20,16 +20,16 @@ public class Sensor
 	float maxRange;
 	
 	//19+ Data
-	Integer fifoMaxEventCount;
-	Integer fifoReservedEventCount;
+	int fifoMaxEventCount;
+	int fifoReservedEventCount;
 	
 	//20+ Data
 	String stringType; //based on Android Sensor values
 	
 	//21+ Data
-	Integer maxDelay;
-	Integer reportingMode; //based on Android Sensor values
-	Integer isWakeUpSensor;
+	int maxDelay;
+	int reportingMode; //based on Android Sensor values
+	int isWakeUpSensor;
 	//END Variable Declaration
 
 	public Sensor(android.hardware.Sensor sensor, Device device)

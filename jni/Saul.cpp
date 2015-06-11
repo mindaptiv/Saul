@@ -186,6 +186,81 @@ extern "C"
 		return nativeDisplay;
 	}
 
+	sensorStruct buildSensor(JNIEnv *env, jobject sensor)
+	{
+		//Retrieve class
+		jclass sensorClass = env->GetObjectClass(sensor);
+
+		//Create sensor
+		struct sensorStruct nativeSensor;
+
+		//===INTS===
+		//Retrieve fields
+		jfieldID fid_minDelay 				= env->GetFieldID(sensorClass, "minDelay", "I");
+		jfieldID fid_type 					= env->GetFieldID(sensorClass, "type", "I");
+		jfieldID fid_version 				= env->GetFieldID(sensorClass, "version", "I");
+		jfieldID fid_fifoMaxEventCount 		= env->GetFieldID(sensorClass, "fifoMaxEventCount", "I");
+		jfieldID fid_fifoReservedEventCount = env->GetFieldID(sensorClass, "fifoReservedEventCount", "I");
+		jfieldID fid_maxDelay 				= env->GetFieldID(sensorClass, "maxDelay", "I");
+		jfieldID fid_reportingMode 			= env->GetFieldID(sensorClass, "reportingMode", "I");
+		jfieldID fid_isWakeUpSensor 		= env->GetFieldID(sensorClass, "isWakeUpSensor", "I");
+
+		//set sensortStruct uint32_t's
+		nativeSensor.minDelay 				= (uint32_t)env->GetIntField(sensor, fid_minDelay);
+		nativeSensor.type 					= (uint32_t)env->GetIntField(sensor, fid_type);
+		nativeSensor.version 				= (uint32_t)env->GetIntField(sensor, fid_version);
+		nativeSensor.fifoMaxEventCount 		= (uint32_t)env->GetIntField(sensor, fid_fifoMaxEventCount);
+		nativeSensor.fifoReservedEventCount = (uint32_t)env->GetIntField(sensor, fid_fifoReservedEventCount);
+		nativeSensor.maxDelay 				= (uint32_t)env->GetIntField(sensor, fid_maxDelay);
+		nativeSensor.reportingMode 			= (uint32_t)env->GetIntField(sensor, fid_reportingMode);
+		nativeSensor.isWakeUpSensor 		= (uint32_t)env->GetIntField(sensor, fid_isWakeUpSensor);
+
+
+		//===FLOATS===
+		//Retrieve fields
+		jfieldID fid_power 		= env->GetFieldID(sensorClass, "power", "F");
+		jfieldID fid_resolution = env->GetFieldID(sensorClass, "resolution", "F");
+		jfieldID fid_maxRange 	= env->GetFieldID(sensorClass, "maxRange", "F");
+
+		//set sensorStruct floats
+		nativeSensor.power 		= (float)env->GetFloatField(sensor, fid_power);
+		nativeSensor.resolution = (float)env->GetFloatField(sensor, fid_resolution);
+		nativeSensor.maxRange 	= (float)env->GetFloatField(sensor, fid_maxRange);
+
+
+		//===STRINGS===
+		//Retrieve fields
+		jfieldID fid_name 		= env->GetFieldID(sensorClass, "name", "Ljava/lang/String;");
+		jfieldID fid_vendor 	= env->GetFieldID(sensorClass, "vendor", "Ljava/lang/String;");
+		jfieldID fid_stringType = env->GetFieldID(sensorClass, "stringType", "Ljava/lang/String;");
+
+		//Retrieve Java Strings
+		jstring j_name  	 = (jstring) env->GetObjectField(sensor, fid_name);
+		jstring j_vendor	 = (jstring) env->GetObjectField(sensor, fid_vendor);
+		jstring j_stringType = (jstring) env->GetObjectField(sensor, fid_stringType);
+
+		//Convert to std::strings
+		std::string name;
+		std::string vendor;
+		std::string stringType;
+		GetJStringContent(env, j_name, name);
+		GetJStringContent(env, j_vendor, vendor);
+		GetJStringContent(env, j_stringType, stringType);
+
+		//===DEVICE===
+		//Retrieve field
+		jfieldID fid_superDevice = env->GetFieldID(sensorClass, "superDevice", "Lcom/mindaptiv/saul/Device;");
+
+		//Retrieve object
+		jobject j_device = env->GetObjectField(sensor, fid_superDevice);
+
+		//Build and set deviceStruct field
+		nativeSensor.superDevice = buildDevice(env, j_device);
+
+		//Return
+		return nativeSensor;
+	}
+
 	controllerStruct buildController(JNIEnv *env, jobject controller)
 	{
 		//Retrieve class
@@ -429,15 +504,30 @@ extern "C"
 			//Grab element object from array
 			jobject j_display = env->GetObjectArrayElement(arr_displays, i);
 
-			//Build Display
+			//Build displayStruct
 			displayStruct newDisplay = buildDisplay(env, j_display);
 
 			cylon.displayDevices.push_back(newDisplay);
-			//lolwut
 		}
 
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "displayStructs: done");
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Length of displays: [%d]", (int)cylon.displayDevices.size());
+
+		//iterate through sensors
+		for (int i = 0; i < env->GetArrayLength(arr_sensors); i++)
+		{
+			//Grab element object from array
+			jobject j_sensor = env->GetObjectArrayElement(arr_sensors, i);
+
+			//Build sensorStruct
+			sensorStruct newSensor = buildSensor(env, j_sensor);
+
+			//Add to end of list
+			cylon.sensors.push_back(newSensor);
+		}
+
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "sensorStructs: done");
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Length of sensors: [%d]", (int)cylon.sensors.size());
 
 		//temp return
 		return j_username;

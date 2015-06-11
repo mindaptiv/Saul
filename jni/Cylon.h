@@ -96,7 +96,7 @@ struct controllerStruct
 };
 //end controller struct
 
-//for handling device-specific metadata for a mouse
+//for handling device-specific metadata for a mouse in a WinRT context
 struct mouseStruct
 {
 	struct deviceStruct superDevice; //parent deviceStruct object
@@ -108,6 +108,34 @@ struct mouseStruct
 	uint32_t maxNumberOfButons; //most buttons available for all given mice attached (i.e. if 3 and 5 button mice are attached, return value should be 5)
 };
 //END mouseStruct
+
+//for handling device-specific metadata for a sensor in an Android context
+struct sensorStruct
+{
+	struct deviceStruct superDevice; //parent deviceStruct object
+
+	//data from Android 16+
+	uint32_t minDelay;
+	uint32_t type; //based on Android Sensor class type mappings
+	uint32_t version;
+	std::string name;
+	std::string vendor;
+	float power;
+	float resolution;
+	float maxRange;
+
+	//data from Android 19+
+	uint32_t fifoMaxEventCount;
+	uint32_t fifoReservedEventCount;
+
+	//data from Android 20+
+	std::string stringType;
+
+	//data from Android 21+
+	uint32_t maxDelay;
+	uint32_t reportingMode; //based on Android Sensor class type mappings
+	uint32_t isWakeUpSensor;
+};
 
 //struct definition for storing user and system data from a WinRT based machine for later use
 struct cylonStruct
@@ -168,6 +196,7 @@ struct cylonStruct
 	std::list<struct deviceStruct> detectedDevices;
 	std::list<struct displayStruct> displayDevices;
 	std::list<struct controllerStruct> controllers;
+	std::list<struct sensorStruct> sensors;
 	struct mouseStruct mice;
 
 	//error
