@@ -261,6 +261,50 @@ extern "C"
 		return nativeSensor;
 	}
 
+	storageStruct buildStorage(JNIEnv* env, jobject storage)
+	{
+		//Retrieve class
+		jclass storageClass = env->GetObjectClass(storage);
+
+		//Create device
+		struct storageStruct nativeStorage;
+
+		//===INTS===
+		//Retrieve fields
+		jfieldID fid_isEmulated = env->GetFieldID(storageClass, "isEmulated", "I");
+
+		//set storageStruct uint32_t's
+		nativeStorage.isEmulated = (uint32_t)env->GetIntField(storage, fid_isEmulated);
+
+
+		//===LONGS===
+		//Retrieve fields
+		jfieldID fid_bytesAvails = env->GetFieldID(storageClass, "bytesAvails", "J");
+		jfieldID fid_totalBytes  = env->GetFieldID(storageClass, "totalBytes", "J");
+
+		//set storageStruct uint64_t's
+		nativeStorage.bytesAvails = (uint64_t)env->GetLongField(storage, fid_bytesAvails);
+		nativeStorage.totalBytes  = (uint64_t)env->GetLongField(storage, fid_totalBytes);
+
+
+		//===STRINGS===
+		//Retrieve fields
+		jfieldID fid_path = env->GetFieldID(storageClass, "path", "Ljava/lang/String;");
+
+		//Retrieve Java String
+		jstring j_path = (jstring)env->GetObjectField(storage, fid_path);
+
+		//Convert to std::string
+		std::string path;
+		GetJStringContent(env, j_path, path);
+
+		//Set storageStruct std::strings
+		nativeStorage.path = path;
+
+		//return
+		return nativeStorage;
+	}
+
 	controllerStruct buildController(JNIEnv *env, jobject controller)
 	{
 		//Retrieve class
@@ -528,6 +572,22 @@ extern "C"
 
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "sensorStructs: done");
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Length of sensors: [%d]", (int)cylon.sensors.size());
+
+		//iterate through storage paths
+		for (int i = 0; i < env->GetArrayLength(arr_storages); i++)
+		{
+			//Grab element object from array
+			jobject j_storage = env->GetObjectArrayElement(arr_storages, i);
+
+			//Build storageStruct
+			storageStruct newStorage = buildStorage(env, j_storage);
+
+			//Add to end of list
+			cylon.storages.push_back(newStorage);
+		}
+
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "storageStructs: done");
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Length of storages: [%d]", (int)cylon.storages.size());
 
 		//temp return
 		return j_username;

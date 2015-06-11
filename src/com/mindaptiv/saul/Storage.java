@@ -18,7 +18,7 @@ public class Storage
 	long totalBytes;
 	
 	//type of storage
-	Integer isEmulated;
+	int isEmulated;
 	//end variable declaration
 	
 	//Constructor
