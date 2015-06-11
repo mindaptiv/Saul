@@ -301,6 +301,17 @@ extern "C"
 		//Set storageStruct std::strings
 		nativeStorage.path = path;
 
+
+		//===DEVICE===
+		//Retrieve field
+		jfieldID fid_superDevice = env->GetFieldID(storageClass, "superDevice", "Lcom/mindaptiv/saul/Device;");
+
+		//Retrieve object
+		jobject j_device = env->GetObjectField(storage, fid_superDevice);
+
+		//Build and set deviceStruct field
+		nativeStorage.superDevice = buildDevice(env, j_device);
+
 		//return
 		return nativeStorage;
 	}
