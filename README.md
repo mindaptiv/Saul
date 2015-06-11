@@ -11,7 +11,7 @@ Saul was developed with a target level API of 22, and a minimum API level of 16.
 
 ##Permissions
 Make sure your manifest file for your Android project holds the following permissions or some of the functionality may not work properly:
-    <uses-permission android:name="android.permission.READ_PROFILE"/>
+   ` <uses-permission android:name="android.permission.READ_PROFILE"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -20,7 +20,7 @@ Make sure your manifest file for your Android project holds the following permis
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>`
 
 ##Documentation
 For more detailed information, please visit the [Saul wiki.](https://github.com/mindaptiv/Saul/wiki)
