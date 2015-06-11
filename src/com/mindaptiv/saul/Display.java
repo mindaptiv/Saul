@@ -4,9 +4,6 @@
 
 package com.mindaptiv.saul;
 
-import java.lang.Integer;
-import java.lang.Float;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
@@ -36,14 +33,14 @@ public class Display
 	 * 8 = flipped portrait
 	 * 
 	 */
-	Integer rotationPreference;
-	Integer currentRotation;
-	Integer nativeRotation;
-	Float resolutionScale;
-	Integer isStereoscopicEnabled;
-	Float   logicalDPI;
-	Float	rawDPIX;
-	Float	rawDPIY;
+	int rotationPreference;
+	int currentRotation;
+	int nativeRotation;
+	int isStereoscopicEnabled;
+	float 	resolutionScale;
+	float   logicalDPI;
+	float	rawDPIX;
+	float	rawDPIY;
 	//end variable declaration
 	
 	

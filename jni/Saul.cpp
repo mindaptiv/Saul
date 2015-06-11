@@ -86,12 +86,12 @@ extern "C"
 
 		//===STRINGS===
 		//Retrieve fields
-		jfieldID fid_name = env->GetFieldID(deviceClass, "name", "Ljava/lang/String;");
-		jfieldID fid_id = env->GetFieldID(deviceClass, "id", "Ljava/lang/String;");
+		jfieldID fid_name 	= env->GetFieldID(deviceClass, "name", "Ljava/lang/String;");
+		jfieldID fid_id 	= env->GetFieldID(deviceClass, "id", "Ljava/lang/String;");
 
 		//Retrieve Java Strings
-		jstring j_name = (jstring) env->GetObjectField(device, fid_name);
-		jstring j_id = (jstring) env->GetObjectField(device, fid_id);
+		jstring j_name 	= (jstring) env->GetObjectField(device, fid_name);
+		jstring j_id 	= (jstring) env->GetObjectField(device, fid_id);
 
 		//Convert to std::strings
 		std::string name;
@@ -100,42 +100,91 @@ extern "C"
 		GetJStringContent(env, j_id, id);
 
 		//Set deviceStruct strings
-		nativeDevice.name = name;
-		nativeDevice.id = id;
+		nativeDevice.name 	= name;
+		nativeDevice.id 	= id;
 
 		//==INTS==
 		//Retrieve fields
-		jfieldID fid_panelLocation = env->GetFieldID(deviceClass, "panelLocation", "I");
-		jfieldID fid_inLid = env->GetFieldID(deviceClass, "inLid", "I");
-		jfieldID fid_inDock = env->GetFieldID(deviceClass, "inDock", "I");
-		jfieldID fid_isDefault = env->GetFieldID(deviceClass, "isDefault", "I");
-		jfieldID fid_isEnabled = env->GetFieldID(deviceClass, "isEnabled", "I");
-		jfieldID fid_orientation = env->GetFieldID(deviceClass, "orientation", "I");
-		jfieldID fid_vendorID = env->GetFieldID(deviceClass, "vendorID", "I");
-		jfieldID fid_deviceType = env->GetFieldID(deviceClass, "deviceType", "I");
-		jfieldID fid_displayIndex = env->GetFieldID(deviceClass, "displayIndex", "I");
+		jfieldID fid_panelLocation 	= env->GetFieldID(deviceClass, "panelLocation", "I");
+		jfieldID fid_inLid 			= env->GetFieldID(deviceClass, "inLid", "I");
+		jfieldID fid_inDock 		= env->GetFieldID(deviceClass, "inDock", "I");
+		jfieldID fid_isDefault 		= env->GetFieldID(deviceClass, "isDefault", "I");
+		jfieldID fid_isEnabled 		= env->GetFieldID(deviceClass, "isEnabled", "I");
+		jfieldID fid_orientation 	= env->GetFieldID(deviceClass, "orientation", "I");
+		jfieldID fid_vendorID 		= env->GetFieldID(deviceClass, "vendorID", "I");
+		jfieldID fid_deviceType 	= env->GetFieldID(deviceClass, "deviceType", "I");
+		jfieldID fid_displayIndex 	= env->GetFieldID(deviceClass, "displayIndex", "I");
 		jfieldID fid_controllerIndex = env->GetFieldID(deviceClass, "controllerIndex", "I");
-		jfieldID fid_storageIndex = env->GetFieldID(deviceClass, "storageIndex", "I");
-		jfieldID fid_sensorsIndex = env->GetFieldID(deviceClass, "sensorsIndex", "I");
+		jfieldID fid_storageIndex 	= env->GetFieldID(deviceClass, "storageIndex", "I");
+		jfieldID fid_sensorsIndex 	= env->GetFieldID(deviceClass, "sensorsIndex", "I");
 
 		//set deviceStruct ints
-		nativeDevice.panelLocation = (uint32_t)env->GetIntField(device, fid_panelLocation);
-		nativeDevice.inLid = (uint32_t)env->GetIntField(device, fid_inLid);
-		nativeDevice.inDock = (uint32_t)env->GetIntField(device, fid_inDock);
-		nativeDevice.isDefault = (uint32_t)env->GetIntField(device, fid_isDefault);
-		nativeDevice.isEnabled = (uint32_t)env->GetIntField(device, fid_isEnabled);
-		nativeDevice.orientation = (uint32_t)env->GetIntField(device, fid_orientation);
-		nativeDevice.vendorID = (uint32_t)env->GetIntField(device, fid_vendorID);
-		nativeDevice.deviceType = (uint32_t)env->GetIntField(device, fid_deviceType);
-		nativeDevice.displayIndex = (uint32_t)env->GetIntField(device, fid_displayIndex);
+		nativeDevice.panelLocation 	= (uint32_t)env->GetIntField(device, fid_panelLocation);
+		nativeDevice.inLid			= (uint32_t)env->GetIntField(device, fid_inLid);
+		nativeDevice.inDock 		= (uint32_t)env->GetIntField(device, fid_inDock);
+		nativeDevice.isDefault 		= (uint32_t)env->GetIntField(device, fid_isDefault);
+		nativeDevice.isEnabled 		= (uint32_t)env->GetIntField(device, fid_isEnabled);
+		nativeDevice.orientation 	= (uint32_t)env->GetIntField(device, fid_orientation);
+		nativeDevice.vendorID 		= (uint32_t)env->GetIntField(device, fid_vendorID);
+		nativeDevice.deviceType 	= (uint32_t)env->GetIntField(device, fid_deviceType);
+		nativeDevice.displayIndex 	= (uint32_t)env->GetIntField(device, fid_displayIndex);
 		nativeDevice.controllerIndex = (uint32_t)env->GetIntField(device, fid_controllerIndex);
-		nativeDevice.storageIndex = (uint32_t)env->GetIntField(device, fid_storageIndex);
-		nativeDevice.sensorsIndex = (uint32_t)env->GetIntField(device, fid_storageIndex);
+		nativeDevice.storageIndex 	= (uint32_t)env->GetIntField(device, fid_storageIndex);
+		nativeDevice.sensorsIndex 	= (uint32_t)env->GetIntField(device, fid_storageIndex);
 
 		//Return
 		return nativeDevice;
 	}//END buildDevice
 
+	displayStruct buildDisplay(JNIEnv* env, jobject display)
+	{
+		//Retrieve class
+		jclass displayClass = env->GetObjectClass(display);
+
+		//Create device
+		struct displayStruct nativeDisplay;
+
+		//===INTs===
+		//Retrieve fields
+		jfieldID fid_rotationPreference 	= env->GetFieldID(displayClass, "rotationPreference", "I");
+		jfieldID fid_currentRotation		= env->GetFieldID(displayClass, "currentRotation", "I");
+		jfieldID fid_isStereoscopicEnabled 	= env->GetFieldID(displayClass, "isStereoscopicEnabled", "I");
+		jfieldID fid_nativeRotation 		= env->GetFieldID(displayClass, "nativeRotation", "I");
+
+		//set displayStruct uint32_ts
+		nativeDisplay.rotationPreference 	= (uint32_t)env->GetIntField(display, fid_rotationPreference);
+		nativeDisplay.currentRotation 		= (uint32_t)env->GetIntField(display, fid_currentRotation);
+		nativeDisplay.nativeRotation 		= (uint32_t)env->GetIntField(display, fid_nativeRotation);
+		nativeDisplay.isStereoscopicEnabled = (uint32_t)env->GetIntField(display, fid_isStereoscopicEnabled);
+
+
+		//===FLOATS===
+		//Retrieve fields
+		jfieldID fid_resolutionScale 	= env->GetFieldID(displayClass, "resolutionScale", "F");
+		jfieldID fid_logicalDPI 		= env->GetFieldID(displayClass, "logicalDPI", "F");
+		jfieldID fid_rawDPIX 			= env->GetFieldID(displayClass, "rawDPIX", "F");
+		jfieldID fid_rawDPIY 			= env->GetFieldID(displayClass, "rawDPIY", "F");
+
+		//set displayStruct floats
+		nativeDisplay.resolutionScale 	= (float)env->GetFloatField(display, fid_resolutionScale);
+		nativeDisplay.logicalDPI 		= (float)env->GetFloatField(display, fid_logicalDPI);
+		nativeDisplay.rawDPIX 			= (float)env->GetFloatField(display, fid_rawDPIX);
+		nativeDisplay.rawDPIY			= (float)env->GetFloatField(display, fid_rawDPIY);
+
+
+		//===DEVICE===
+		//Retrieve field
+		jfieldID fid_superDevice = env->GetFieldID(displayClass, "superDevice", "Lcom/mindaptiv/saul/Device;");
+
+		//Retrieve object
+		jobject j_device = env->GetObjectField(display, fid_superDevice);
+
+		//Build and set deviceStruct field
+		nativeDisplay.superDevice = buildDevice(env, j_device);
+
+		//Return
+		return nativeDisplay;
+	}
 
 	controllerStruct buildController(JNIEnv *env, jobject controller)
 	{
@@ -147,13 +196,13 @@ extern "C"
 
 		//===INTS===
 		//Retrieve fields
-		jfieldID fid_packetNumber = env->GetFieldID(controllerClass, "packetNumber", "I");
-		jfieldID fid_buttons = env->GetFieldID(controllerClass, "buttons", "I");
-		jfieldID fid_userIndex = env->GetFieldID(controllerClass, "userIndex", "I");
+		jfieldID fid_packetNumber 	= env->GetFieldID(controllerClass, "packetNumber", "I");
+		jfieldID fid_buttons 		= env->GetFieldID(controllerClass, "buttons", "I");
+		jfieldID fid_userIndex 		= env->GetFieldID(controllerClass, "userIndex", "I");
 
 		//set controllerStruct uint32_t's
-		nativeController.packetNumber = (uint32_t)env->GetIntField(controller, fid_packetNumber);
-		nativeController.userIndex = (uint32_t)env->GetIntField(controller, fid_userIndex);
+		nativeController.packetNumber 	= (uint32_t)env->GetIntField(controller, fid_packetNumber);
+		nativeController.userIndex 		= (uint32_t)env->GetIntField(controller, fid_userIndex);
 
 		//set controllerStruct uint16_t's
 		nativeController.buttons = (uint16_t)env->GetIntField(controller, fid_buttons);
@@ -161,20 +210,20 @@ extern "C"
 
 		//===FLOATS===
 		//Retrieve fields
-		jfieldID fid_fLeftTrigger = env->GetFieldID(controllerClass, "fLeftTrigger", "F");
-		jfieldID fid_fRightTrigger = env->GetFieldID(controllerClass, "fRightTrigger", "F");
-		jfieldID fid_fThumbLeftX = env->GetFieldID(controllerClass, "fThumbLeftX", "F");
-		jfieldID fid_fThumbLeftY = env->GetFieldID(controllerClass, "fThumbLeftY", "F");
-		jfieldID fid_fThumbRightX = env->GetFieldID(controllerClass, "fThumbRightX", "F");
-		jfieldID fid_fThumbRightY = env->GetFieldID(controllerClass, "fThumbRightY", "F");
+		jfieldID fid_fLeftTrigger 	= env->GetFieldID(controllerClass, "fLeftTrigger", "F");
+		jfieldID fid_fRightTrigger 	= env->GetFieldID(controllerClass, "fRightTrigger", "F");
+		jfieldID fid_fThumbLeftX 	= env->GetFieldID(controllerClass, "fThumbLeftX", "F");
+		jfieldID fid_fThumbLeftY	= env->GetFieldID(controllerClass, "fThumbLeftY", "F");
+		jfieldID fid_fThumbRightX 	= env->GetFieldID(controllerClass, "fThumbRightX", "F");
+		jfieldID fid_fThumbRightY 	= env->GetFieldID(controllerClass, "fThumbRightY", "F");
 
 		//set controllerStruct floats
-		nativeController.leftTrigger = (float)env->GetFloatField(controller, fid_fLeftTrigger);
-		nativeController.rightTrigger = (float)env->GetFloatField(controller, fid_fRightTrigger);
-		nativeController.thumbLeftX = (float)env->GetFloatField(controller, fid_fThumbLeftX);
-		nativeController.thumbLeftY = (float)env->GetFloatField(controller, fid_fThumbLeftY);
-		nativeController.thumbRightX = (float)env->GetFloatField(controller, fid_fThumbRightX);
-		nativeController.thumbRightY = (float)env->GetFloatField(controller, fid_fThumbRightY);
+		nativeController.leftTrigger 	= (float)env->GetFloatField(controller, fid_fLeftTrigger);
+		nativeController.rightTrigger 	= (float)env->GetFloatField(controller, fid_fRightTrigger);
+		nativeController.thumbLeftX 	= (float)env->GetFloatField(controller, fid_fThumbLeftX);
+		nativeController.thumbLeftY 	= (float)env->GetFloatField(controller, fid_fThumbLeftY);
+		nativeController.thumbRightX 	= (float)env->GetFloatField(controller, fid_fThumbRightX);
+		nativeController.thumbRightY 	= (float)env->GetFloatField(controller, fid_fThumbRightY);
 
 
 		//===DEVICE===
@@ -251,30 +300,30 @@ extern "C"
 		jfieldID fid_dst		  = env->GetFieldID(cylonClass, "dst", "I");
 		jfieldID fid_timeZone	  = env->GetFieldID(cylonClass, "timeZone", "I");
 		jfieldID fid_pageSize  	  = env->GetFieldID(cylonClass, "pageSize", "I");
-		jfieldID fid_processorCount	  = env->GetFieldID(cylonClass, "processorCount", "I");
-		jfieldID fid_allocationGranularity = env->GetFieldID(cylonClass, "allocationGranularity", "I");
-		jfieldID fid_lowMemory	  = env->GetFieldID(cylonClass, "lowMemory", "I");
-		jfieldID fid_detectedDeviceCount = env->GetFieldID(cylonClass, "detectedDeviceCount", "I");
-		jfieldID fid_error		  = env->GetFieldID(cylonClass, "error", "I");
+		jfieldID fid_processorCount	  		= env->GetFieldID(cylonClass, "processorCount", "I");
+		jfieldID fid_allocationGranularity	= env->GetFieldID(cylonClass, "allocationGranularity", "I");
+		jfieldID fid_lowMemory	 			= env->GetFieldID(cylonClass, "lowMemory", "I");
+		jfieldID fid_detectedDeviceCount 	= env->GetFieldID(cylonClass, "detectedDeviceCount", "I");
+		jfieldID fid_error		  			= env->GetFieldID(cylonClass, "error", "I");
 
 		//set cylonStruct uint32_ts
-		cylon.milliseconds =  (uint32_t) env->GetIntField(saul, fid_milliseconds);
-		cylon.seconds = (uint32_t) env->GetIntField(saul, fid_seconds);
-		cylon.minutes = (uint32_t) env->GetIntField(saul, fid_minutes);
-		cylon.hours  = (uint32_t) env->GetIntField(saul, fid_hours);
-		cylon.day  = (uint32_t) env->GetIntField(saul, fid_day);
-		cylon.date =   (uint32_t) env->GetIntField(saul, fid_date);
-		cylon.month  = (uint32_t) env->GetIntField(saul, fid_month);
-		cylon.year  = (uint32_t) env->GetIntField(saul, fid_year);
-		cylon.dst    = (uint32_t) env->GetIntField(saul, fid_dst);
-		cylon.allocationGranularity  = (uint32_t) env->GetIntField(saul, fid_allocationGranularity);
-		cylon.lowMemory  = (uint32_t) env->GetIntField(saul, fid_lowMemory);
-		cylon.detectedDeviceCount  = (uint32_t) env->GetIntField(saul, fid_detectedDeviceCount);
-		cylon.pageSize = (uint32_t) env->GetIntField(saul, fid_pageSize);
+		cylon.milliseconds 	=  (uint32_t) env->GetIntField(saul, fid_milliseconds);
+		cylon.seconds 		= (uint32_t) env->GetIntField(saul, fid_seconds);
+		cylon.minutes 		= (uint32_t) env->GetIntField(saul, fid_minutes);
+		cylon.hours  		= (uint32_t) env->GetIntField(saul, fid_hours);
+		cylon.day  			= (uint32_t) env->GetIntField(saul, fid_day);
+		cylon.date 			=   (uint32_t) env->GetIntField(saul, fid_date);
+		cylon.month  		= (uint32_t) env->GetIntField(saul, fid_month);
+		cylon.year  		= (uint32_t) env->GetIntField(saul, fid_year);
+		cylon.dst    		= (uint32_t) env->GetIntField(saul, fid_dst);
+		cylon.allocationGranularity  	= (uint32_t) env->GetIntField(saul, fid_allocationGranularity);
+		cylon.lowMemory  				= (uint32_t) env->GetIntField(saul, fid_lowMemory);
+		cylon.detectedDeviceCount  		= (uint32_t) env->GetIntField(saul, fid_detectedDeviceCount);
+		cylon.pageSize 					= (uint32_t) env->GetIntField(saul, fid_pageSize);
 
 		//set cylonStruct int32_ts
 		cylon.timeZone  = (int32_t) env->GetIntField(saul, fid_timeZone);
-		cylon.error  = (int32_t) env->GetIntField(saul, fid_error);
+		cylon.error  	= (int32_t) env->GetIntField(saul, fid_error);
 
 		//set cylonStruct uint64_ts
 		cylon.processorCount = (uint64_t) env->GetIntField(saul, fid_processorCount);
@@ -285,14 +334,14 @@ extern "C"
 
 		//===LONGS===
 		//Retrieve fields
-		jfieldID fid_memoryBytes = env->GetFieldID(cylonClass, "memoryBytes", "J");
-		jfieldID fid_threshold = env ->GetFieldID(cylonClass, "threshold", "J");
-		jfieldID fid_bytesAvails = env-> GetFieldID(cylonClass, "bytesAvails", "J");
+		jfieldID fid_memoryBytes 	= env->GetFieldID(cylonClass, "memoryBytes", "J");
+		jfieldID fid_threshold 		= env ->GetFieldID(cylonClass, "threshold", "J");
+		jfieldID fid_bytesAvails 	= env-> GetFieldID(cylonClass, "bytesAvails", "J");
 
 		//set cylonStruct uint64_ts
-		cylon.memoryBytes = (uint64_t) env->GetLongField(saul, fid_memoryBytes);
-		cylon.threshold = (uint64_t) env->GetLongField(saul, fid_threshold);
-		cylon.bytesAvails = (uint64_t) env->GetLongField(saul, fid_bytesAvails);
+		cylon.memoryBytes 	= (uint64_t) env->GetLongField(saul, fid_memoryBytes);
+		cylon.threshold 	= (uint64_t) env->GetLongField(saul, fid_threshold);
+		cylon.bytesAvails 	= (uint64_t) env->GetLongField(saul, fid_bytesAvails);
 
 		//log progress
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "cylonStruct longs: done");
@@ -322,25 +371,25 @@ extern "C"
 		}
 
 		//Retrieve fields
-		jfieldID fid_devices = env->GetFieldID(cylonClass, "detectedDevices", "Ljava/util/LinkedList;");
-		jfieldID fid_controllers = env->GetFieldID(cylonClass, "controllers", "Ljava/util/LinkedList;");
-		jfieldID fid_displays = env->GetFieldID(cylonClass, "displays", "Ljava/util/LinkedList;");
-		jfieldID fid_storages = env->GetFieldID(cylonClass, "storages", "Ljava/util/LinkedList;");
-		jfieldID fid_sensors = env->GetFieldID(cylonClass, "sensors", "Ljava/util/LinkedList;");
+		jfieldID fid_devices 		= env->GetFieldID(cylonClass, "detectedDevices", "Ljava/util/LinkedList;");
+		jfieldID fid_controllers 	= env->GetFieldID(cylonClass, "controllers", "Ljava/util/LinkedList;");
+		jfieldID fid_displays 		= env->GetFieldID(cylonClass, "displays", "Ljava/util/LinkedList;");
+		jfieldID fid_storages 		= env->GetFieldID(cylonClass, "storages", "Ljava/util/LinkedList;");
+		jfieldID fid_sensors 		= env->GetFieldID(cylonClass, "sensors", "Ljava/util/LinkedList;");
 
 		//Retrieve lists
-		jobject j_devices = env->GetObjectField(saul, fid_devices);
-		jobject j_controllers = env->GetObjectField(saul, fid_controllers);
-		jobject j_displays = env->GetObjectField(saul, fid_displays);
-		jobject j_storages = env->GetObjectField(saul, fid_storages);
-		jobject j_sensors = env->GetObjectField(saul, fid_sensors);
+		jobject j_devices 		= env->GetObjectField(saul, fid_devices);
+		jobject j_controllers 	= env->GetObjectField(saul, fid_controllers);
+		jobject j_displays 		= env->GetObjectField(saul, fid_displays);
+		jobject j_storages 		= env->GetObjectField(saul, fid_storages);
+		jobject j_sensors 		= env->GetObjectField(saul, fid_sensors);
 
 		//convert lists to arrays
-		jobjectArray arr_devices = (jobjectArray)env->CallObjectMethod(j_devices, m_toArray);
-		jobjectArray arr_controllers = (jobjectArray)env->CallObjectMethod(j_controllers, m_toArray);
-		jobjectArray arr_displays = (jobjectArray)env->CallObjectMethod(j_displays, m_toArray);
-		jobjectArray arr_storages = (jobjectArray)env->CallObjectMethod(j_storages, m_toArray);
-		jobjectArray arr_sensors = (jobjectArray)env->CallObjectMethod(j_sensors, m_toArray);
+		jobjectArray arr_devices 		= (jobjectArray)env->CallObjectMethod(j_devices, m_toArray);
+		jobjectArray arr_controllers 	= (jobjectArray)env->CallObjectMethod(j_controllers, m_toArray);
+		jobjectArray arr_displays 		= (jobjectArray)env->CallObjectMethod(j_displays, m_toArray);
+		jobjectArray arr_storages 		= (jobjectArray)env->CallObjectMethod(j_storages, m_toArray);
+		jobjectArray arr_sensors 		= (jobjectArray)env->CallObjectMethod(j_sensors, m_toArray);
 
 		//iterate through devices
 		for (int i = 0; i < env->GetArrayLength(arr_devices); i++)
@@ -373,6 +422,22 @@ extern "C"
 
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "controllerStructs: done");
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Length of controllers: [%d]", (int)cylon.controllers.size());
+
+		//iterate through displays
+		for (int i = 0; i < env->GetArrayLength(arr_displays); i++)
+		{
+			//Grab element object from array
+			jobject j_display = env->GetObjectArrayElement(arr_displays, i);
+
+			//Build Display
+			displayStruct newDisplay = buildDisplay(env, j_display);
+
+			cylon.displayDevices.push_back(newDisplay);
+			//lolwut
+		}
+
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "displayStructs: done");
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Length of displays: [%d]", (int)cylon.displayDevices.size());
 
 		//temp return
 		return j_username;

@@ -67,11 +67,11 @@ struct displayStruct
 	uint32_t	rotationPreference;
 	uint32_t	currentRotation;
 	uint32_t	nativeRotation;
-	uint32_t	resolutionScale;
+	uint32_t	isStereoscopicEnabled;
+	float		resolutionScale;
 	float		logicalDPI;
 	float		rawDPIX;
 	float		rawDPIY;
-	uint32_t	isStereoscopicEnabled;
 	//unsigned char*  colorData;
 	//unsigned int	colorLength;
 };
