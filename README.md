@@ -10,7 +10,7 @@ Saul is an Android (Jellybean and KitKat) targeted library for gathering both us
 Saul was developed with a target level API of 22, and a minimum API level of 16.  
 
 ##Permissions
-Make sure your manifest file for your Android project holds the following permissions or some of the functionality may not work properly:
+Make sure your manifest file for your Android project holds the following permissions or some of the functionality may not work properly:  
    ` <uses-permission android:name="android.permission.READ_PROFILE"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
