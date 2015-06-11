@@ -435,6 +435,10 @@ extern "C"
 		jfieldID fid_lowMemory	 			= env->GetFieldID(cylonClass, "lowMemory", "I");
 		jfieldID fid_detectedDeviceCount 	= env->GetFieldID(cylonClass, "detectedDeviceCount", "I");
 		jfieldID fid_error		  			= env->GetFieldID(cylonClass, "error", "I");
+		jfieldID fid_micCount				= env->GetFieldID(cylonClass, "micCount", "I");;
+		jfieldID fid_speakerCount			= env->GetFieldID(cylonClass, "speakerCount", "I");;
+		jfieldID fid_videoCount				= env->GetFieldID(cylonClass, "videoCount", "I");;
+		jfieldID fid_locationCount			= env->GetFieldID(cylonClass, "locationCount", "I");;
 
 		//set cylonStruct uint32_ts
 		cylon.milliseconds 	=  (uint32_t) env->GetIntField(saul, fid_milliseconds);
@@ -450,6 +454,10 @@ extern "C"
 		cylon.lowMemory  				= (uint32_t) env->GetIntField(saul, fid_lowMemory);
 		cylon.detectedDeviceCount  		= (uint32_t) env->GetIntField(saul, fid_detectedDeviceCount);
 		cylon.pageSize 					= (uint32_t) env->GetIntField(saul, fid_pageSize);
+		cylon.micCount					= (uint32_t) env->GetIntField(saul, fid_micCount);
+		cylon.speakerCount				= (uint32_t) env->GetIntField(saul, fid_speakerCount);
+		cylon.videoCount				= (uint32_t) env->GetIntField(saul, fid_videoCount);
+		cylon.locationCount				= (uint32_t) env->GetIntField(saul, fid_locationCount);
 
 		//set cylonStruct int32_ts
 		cylon.timeZone  = (int32_t) env->GetIntField(saul, fid_timeZone);
@@ -602,8 +610,26 @@ extern "C"
 
 
 		//Unavailable fields will be set to default cases
+		//Avatar fields unused in Android context
 		cylon.pictureType = "0";
+		cylon.pictureLocation = 0;
 
+		//Set device type counts
+		cylon.installedDeviceCount = cylon.detectedDeviceCount;
+		cylon.portableStorageCount = (uint32_t)cylon.storages.size();
+		cylon.scannerCount = 0;
+
+		//Mice struct not used in android context
+		cylon.mice.anyHorizontalWheelPresent = 0;
+		cylon.mice.anyLeftRightSwapped = 0;
+		cylon.mice.anyVerticalWheelPresent = 0;
+		cylon.mice.maxNumberOfButons = 0;
+
+		//unused fields in Android Context
+		cylon.processorLevel = 0;
+		cylon.minAppAddress = 0;
+		cylon.maxAppAddress = 0;
+		cylon.osArchitecture = 0;
 
 		//temp return
 		return j_username;

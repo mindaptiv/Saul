@@ -1181,8 +1181,33 @@ public class Cylon implements Saul
 			produceDisplayDevices();
 		}
 			
-		//set count
+		//set counts
 		this.detectedDeviceCount = this.detectedDevices.size();
+		this.installedDeviceCount = this.detectedDevices.size();
+		
+		for (int i = 0; i < this.detectedDevices.size(); i++)
+		{
+			//cameras = videoCount goes up
+			if(this.detectedDevices.get(i).deviceType == 5)
+			{
+				this.videoCount += 1;
+			}
+			//location aware
+			else if (this.detectedDevices.get(i).deviceType == 7)
+			{
+				this.locationCount += 1;
+			}
+			//mic
+			else if (this.detectedDevices.get(i).deviceType == 2)
+			{
+				this.micCount += 1;
+			}
+			//speaker
+			else if (this.detectedDevices.get(i).deviceType == 3)
+			{
+				this.speakerCount += 1;
+			}//END if
+		}//END for
 		
 		//test
 		rumbleTest();
