@@ -133,7 +133,7 @@ public class Cylon implements Saul
 	public int osArchitecture;
 	
 	//avatar
-	String pictureType; //represents picture URI location
+	String picturePath; //represents picture URI location
 	
 	//devices
 	int installedDeviceCount;
@@ -1122,11 +1122,11 @@ public class Cylon implements Saul
             {
                 if(cursor.getString(ProfileQuery.PHOTO) == null)
                 {
-                	this.pictureType = "0";
+                	this.picturePath = "0";
                 }
                 else
                 {
-                	this.pictureType = cursor.getString(ProfileQuery.PHOTO);
+                	this.picturePath = cursor.getString(ProfileQuery.PHOTO);
                 }//END else
             }//END if
         }//END while
@@ -1414,7 +1414,7 @@ public class Cylon implements Saul
         Log.i("Saul", "REPORT:\n");
         Log.i("Saul", "Cylon: " + this.toString() + "\n");
         Log.i("Saul", "Username: " + this.username + "\n");
-        Log.i("Saul", "Profile Image: " + this.pictureType + "\n");
+        Log.i("Saul", "Profile Image: " + this.picturePath + "\n");
 		Log.i("Saul", "Device Name: " + this.deviceName + "\n");
 		Log.i("Saul", "Date: " + this.day + " " + this.month + "/" + this.date + "/" + this.year + "\n");
 		Log.i("Saul", "Time: " + this.hours + ":" + this.minutes + ":" + this.seconds + ":" + this.milliseconds + "\n");

@@ -376,7 +376,7 @@ extern "C"
 		jfieldID fid_deviceName 	= env->GetFieldID(cylonClass, "deviceName", "Ljava/lang/String;");
 		jfieldID fid_timeZoneName 	= env->GetFieldID(cylonClass, "timeZoneName", "Ljava/lang/String;");
 		jfieldID fid_architecture   = env->GetFieldID(cylonClass, "architecture", "Ljava/lang/String;");
-		jfieldID fid_picturePath    = env->GetFieldID(cylonClass, "pictureType", "Ljava/lang/String;");
+		jfieldID fid_picturePath    = env->GetFieldID(cylonClass, "picturePath", "Ljava/lang/String;");
 
 		//Retrieve Java Strings
 		jstring j_username		= (jstring) env->GetObjectField(saul, fid_username);
@@ -588,6 +588,11 @@ extern "C"
 
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "storageStructs: done");
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Length of storages: [%d]", (int)cylon.storages.size());
+
+
+		//Unavailable fields will be set to default cases
+		cylon.pictureType = "0";
+
 
 		//temp return
 		return j_username;
