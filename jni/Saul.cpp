@@ -624,6 +624,20 @@ extern "C"
 		cylon.mice.anyLeftRightSwapped = 0;
 		cylon.mice.anyVerticalWheelPresent = 0;
 		cylon.mice.maxNumberOfButons = 0;
+		cylon.mice.superDevice.controllerIndex = 0;
+		cylon.mice.superDevice.deviceType = 0;
+		cylon.mice.superDevice.displayIndex = 0;
+		cylon.mice.superDevice.id = "0";
+		cylon.mice.superDevice.inDock = 0;
+		cylon.mice.superDevice.inLid = 0;
+		cylon.mice.superDevice.isDefault = 0;
+		cylon.mice.superDevice.isEnabled = 0;
+		cylon.mice.superDevice.name = "0";
+		cylon.mice.superDevice.orientation = 0;
+		cylon.mice.superDevice.panelLocation = 0;
+		cylon.mice.superDevice.sensorsIndex = 0;
+		cylon.mice.superDevice.storageIndex = 0;
+		cylon.mice.superDevice.vendorID = 0;
 
 		//unused fields in Android Context
 		cylon.processorLevel = 0;
