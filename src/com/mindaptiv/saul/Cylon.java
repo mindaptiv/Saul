@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 import java.util.TimeZone;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
 import android.app.Application;
@@ -34,6 +35,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
@@ -45,18 +47,21 @@ import android.hardware.display.*;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.location.LocationManager;
+import android.Manifest;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.os.Vibrator;
 import android.provider.ContactsContract;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-
+import android.view.View;
 
 @SuppressWarnings("deprecation")
 public class Cylon implements Saul
@@ -134,7 +139,7 @@ public class Cylon implements Saul
 	
 	//avatar
 	String picturePath; //represents picture URI location
-	
+
 	//devices
 	int installedDeviceCount;
 	public int detectedDeviceCount;
@@ -154,50 +159,129 @@ public class Cylon implements Saul
 	//Android
 	Context context;
 	Application app;
-	
+	Activity activity;
+	//TODO figure out what to do with this
+	//public View mLayout;  //root of layout of this activity, NOTE: this is public here and now but should be refactored into the main activity
+
+	//Permissions
+	public final static String cameraRationale = "Camera permission is needed to retrieve device hardware information for Essence.";
+	public final static String contactsRationale = "Contacts permission is needed so the app may refer to you by your chosen name.";
+	public final static int REQUEST_CAMERA = 0;
+	public final static int REQUEST_CONTACTS = 1;
+	public final static int REQUEST_BLUETOOTH = 2;
+	public final static int REQUEST_LOCATION = 3;
+	public final static int REQUEST_STORAGE = 4;
+	boolean nonAnswersDone;
+	public boolean contactsAnswered;
+	public boolean cameraAnswered;
+	public boolean bluetoothAnswered;
+	public boolean storageAnswered;
+	public boolean locationAnswered;
+	boolean logged;
+
 	//error
 	public int error;
 	//END variable declaration
 	
-	
 	//Constructor
-	public Cylon(Context context, Application app)
+	public Cylon(Context context, Application app, Activity activity)
 	{
-		//Context
+		//Android
 		this.context = context;
 		this.app     = app;
-				
-		//producers
-		this.produceUsername();
+		this.activity = activity;
+
+		//producers (that can be called w/o permissions requests)
 		this.produceDeviceName();
 		this.produceDateTime();
 		this.produceProcessorInfo();
 		this.produceMemoryInfo();
-		this.produceAvatar();
 		this.produceDevices();
-	}
-	
+
+		//set flags
+		bluetoothAnswered 	= false;
+		contactsAnswered 	= false;
+		cameraAnswered 		= false;
+		locationAnswered 	= false;
+		storageAnswered 	= false;
+		logged				= false;
+		nonAnswersDone 		= true;
+
+		//ask for permissions
+		makeRequest(Manifest.permission.READ_CONTACTS, REQUEST_CONTACTS);
+		makeRequest(Manifest.permission.CAMERA, REQUEST_CAMERA);
+		makeRequest(Manifest.permission.BLUETOOTH, REQUEST_BLUETOOTH);
+		makeRequest(Manifest.permission.ACCESS_FINE_LOCATION, REQUEST_LOCATION);
+		makeRequest(Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_STORAGE);
+	}//END Constructor
+
+	//PERMISSIONS METHODS
+	void makeRequest(String manifestPermission, int cylonRequestCode)
+	{
+		//Check if read contacts permission is available
+		int permissionCheck = android.support.v4.content.ContextCompat.checkSelfPermission(this.activity, manifestPermission);
+
+		//if permission is not available
+		if(permissionCheck == PackageManager.PERMISSION_DENIED)
+		{
+			//Request Read Contacts Permission
+			ActivityCompat.requestPermissions(this.activity, new String[]{manifestPermission}, cylonRequestCode);
+			Log.i("Saul", "Showing regular window");
+		}//END if permission denied
+		else
+		{
+			Log.i("Saul", "Already have requested permission");
+			if(cylonRequestCode == REQUEST_CONTACTS)
+			{
+				contactsAnswered = true;
+				produceUsername();
+				produceAvatar();
+			}
+			else if (cylonRequestCode == REQUEST_CAMERA)
+			{
+				cameraAnswered = true;
+				produceCameras();
+			}
+			else if(cylonRequestCode == REQUEST_BLUETOOTH)
+			{
+				bluetoothAnswered = true;
+				produceBluetoothDevices();
+			}
+			else if(cylonRequestCode == REQUEST_LOCATION)
+			{
+				locationAnswered = true;
+				produceGPS();
+			}
+			else if(cylonRequestCode == REQUEST_STORAGE)
+			{
+				storageAnswered = true;
+				produceStorageDevices();
+			}
+		}//END if permission already available
+	}//END method
+	//END PERMISSIONS METHODS
+
 	//Saul Methods
 	//Producers
 	public void produceUsername()
 	{
-		//Credit to JoelFernandes @ stack overflow for partial display_name code
-		Cursor c = this.app.getContentResolver().query(ContactsContract.Profile.CONTENT_URI, null, null, null, null);
-		if(!(c.getCount() <= 0))
-		{
-			c.moveToFirst();
-			
-			//set username
-			this.username = c.getString(c.getColumnIndex(ContactsContract.Profile.DISPLAY_NAME_PRIMARY));
-		}
-		else
-		{
-			//username unavailable, set to missing value to prevent exception
-			this.username = "0";
-		}
-			
-		//Close the cursor
-		c.close();
+			//Credit to JoelFernandes @ stack overflow for partial display_name code
+			Cursor c = this.app.getContentResolver().query(ContactsContract.Profile.CONTENT_URI, null, null, null, null);
+			if(!(c.getCount() <= 0))
+			{
+				c.moveToFirst();
+
+				//set username
+				this.username = c.getString(c.getColumnIndex(ContactsContract.Profile.DISPLAY_NAME_PRIMARY));
+			}
+			else
+			{
+				//username unavailable, set to missing value to prevent exception
+				this.username = "0";
+			}
+
+			//Close the cursor
+			c.close();
 	}//END produce username
 	
 	public void produceDeviceName()
@@ -696,7 +780,13 @@ public class Cylon implements Saul
 		String[] paths = rv.toArray(new String[rv.size()]);
 		
 		for (int i = 0; i < paths.length; i++ )
-		{	
+		{
+			File file = new File(paths[i]);
+			if(!(file.exists()))
+			{
+				continue;
+			}
+
 			//Create new File system stats
 			StatFs stats = new StatFs(paths[i]);
 			
@@ -891,6 +981,9 @@ public class Cylon implements Saul
 					rumble.vibrate(storageBeepThree, -1);
 				}
 			}
+
+		produceSystemRumble();
+
 		
 	}//end rumble test
 	
@@ -932,7 +1025,7 @@ public class Cylon implements Saul
 			long [] mj = {0, 0,300,100,50,100,50,100,50,100,50,100,50,100,50,150,150,150,450,100,50,100,50,150,150,150,450,100,50,100,50,150,150,150,450,150,150};
 			@SuppressWarnings("unused")
 			long[] powerRangers = {0, 150,150,150,150,75,75,150,150,150,150,450};
-			//rumble.vibrate(empire, -1);
+			rumble.vibrate(empire, -1);
 			
 			//Create new device
 			Device device = new Device();
@@ -1168,12 +1261,12 @@ public class Cylon implements Saul
 		
 		//wrap all other device producers
 		produceInputDevices();
-		produceStorageDevices();
+		//NEED PERMISSION produceStorageDevices();
 		produceSystemRumble();
-		produceGPS();
+		//NEED PERMISSION produceGPS();
 		produceSensors();
-		produceCameras();
-		produceBluetoothDevices();
+		//NEED PERMISSION produceCameras();
+		//NEED PERMISSION produceBluetoothDevices();
 		produceUsbDevices();
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -1213,7 +1306,7 @@ public class Cylon implements Saul
 		rumbleTest();
 	}
 	//END producers
-	
+
 	//motion event handler
 	public boolean handleMotionEvent(MotionEvent event)
 	{	
@@ -1432,7 +1525,29 @@ public class Cylon implements Saul
 		//if no controller matched, return false
 		return false;
 	}//END handler
-	
+
+	//Call this in an update loop to update your Cylon object
+	public void updateSaul()
+	{
+		//Update fields that change rapidly
+		this.produceDateTime();
+		this.produceMemoryInfo();
+
+		//Check to see if we can log
+		if( !logged &&
+				contactsAnswered &&
+				cameraAnswered &&
+				bluetoothAnswered &&
+				locationAnswered &&
+				storageAnswered &&
+				nonAnswersDone
+				)
+		{
+			logged = true;
+			testLog();
+		}//END if
+	}//END method
+
 	public void testLog()
 	{
         //Logging
@@ -1455,7 +1570,7 @@ public class Cylon implements Saul
 		Log.i("Saul", "Is Memory Low: " + this.lowMemory + "\n");
 		Log.i("Saul", "Bit Architecture: " + this.osArchitecture + "\n");
 		Log.i("Saul", "Detected Device Count: " + this.detectedDeviceCount + "\n");
-		
+
 		for(int i = 0; i < this.detectedDevices.size(); i++)
 		{
 			Log.i("Saul", "     Device #" + i + ": " + "\n" + "          Name = " + this.detectedDevices.get(i).name + 
@@ -1527,7 +1642,6 @@ public class Cylon implements Saul
 		Log.i("Saul", stringTest(this));
 		Log.i("Saul", buildCylon(this));
 		
-		
 		//Native Test!!!
 		helloLog("This wil log to LogCat via the native call.");
 	}//end testLog
@@ -1536,6 +1650,4 @@ public class Cylon implements Saul
 	private native String stringFromJNI();
 	private native String stringTest(Cylon saul);
 	private native String buildCylon(Cylon saul);
-	
-	
 }//END class
