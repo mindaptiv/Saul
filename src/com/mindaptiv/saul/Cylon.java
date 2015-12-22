@@ -65,7 +65,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 @SuppressWarnings("deprecation")
-public class Cylon implements Saul
+public class Cylon
 {
 	//native code init
 	static
@@ -76,112 +76,110 @@ public class Cylon implements Saul
 	//Variable Declaration:
 	//Constants
 	//Days
-	final static int SUNDAY = 0;
-	final static 	int MONDAY = 1;
-	final static int TUESDAY =2;
-	final static int WEDNESDAY = 3;
-	final static int THURSDAY = 4;
-	final static int FRIDAY = 5;
-	final static int SATURDAY = 6;
+	private final static int SUNDAY = 0;
+	private final static 	int MONDAY = 1;
+	private final static int TUESDAY =2;
+	private final static int WEDNESDAY = 3;
+	private final static int THURSDAY = 4;
+	private final static int FRIDAY = 5;
+	private final static int SATURDAY = 6;
 	
 	//Months
-	final static int JANUARY = 1;
-	final static int FEBRUARY = 2;
-	final static int MARCH = 3;
-	final static int APRIL = 4;
-	final static int MAY = 5;
-	final static int JUNE = 6;
-	final static int JULY = 7;
-	final static int AUGUST = 8;
-	final static int SEPTEMBER = 9;
-	final static int OCTOBER = 10;
-	final static int NOVEMBER = 11;
-	final static int DECEMBER = 12;
+	private final static int JANUARY = 1;
+	private final static int FEBRUARY = 2;
+	private final static int MARCH = 3;
+	private final static int APRIL = 4;
+	private final static int MAY = 5;
+	private final static int JUNE = 6;
+	private final static int JULY = 7;
+	private final static int AUGUST = 8;
+	private final static int SEPTEMBER = 9;
+	private final static int OCTOBER = 10;
+	private final static int NOVEMBER = 11;
+	private final static int DECEMBER = 12;
 	
 	//DST
-	final static int STANDARD_TIME = 0;
-	final static int DAYLIGHT_TIME = 1;
+	private final static int STANDARD_TIME = 0;
+	private final static int DAYLIGHT_TIME = 1;
 	//END constants
 	
 	//names
-	public String username;
-	public String deviceName;
+	private String username;
+	private String deviceName;
 	
 	//time
-	public int milliseconds;
-	public int seconds;
-	public int minutes;
-	public int hours;
+	private int milliseconds;
+	private int seconds;
+	private int minutes;
+	private int hours;
 	
 	//date
-	public int day;
-	public int date;
-	public int month;
-	public int year;
+	private int day;
+	private int date;
+	private int month;
+	private int year;
 	
 	//time zone
-	public int dst;
-	public int timeZone;
-	public String timeZoneName;
+	private int dst;
+	private int timeZone;
+	private String timeZoneName;
 	
 	//processor
-	public String architecture;
-	public int pageSize;
-	public int processorCount;
-	public int allocationGranularity;
-	public float hertz;
+	private String architecture;
+	private int pageSize;
+	private int processorCount;
+	private int allocationGranularity;
+	private float hertz;
 	
 	//memory
-	public long memoryBytes;
-	public long threshold;
-	public long bytesAvails;
-	public int lowMemory;
-	public int osArchitecture;
+	private long memoryBytes;
+	private long threshold;
+	private long bytesAvails;
+	private int lowMemory;
+	private int osArchitecture;
 	
 	//avatar
-	String picturePath; //represents picture URI location
+	private String picturePath; //represents picture URI location
 
 	//devices
-	int installedDeviceCount;
-	public int detectedDeviceCount;
-	int portableStorageCount;
-	int videoCount;
-	int micCount;
-	int speakerCount;
-	int locationCount;
-	int scannerCount;
-	public LinkedList<Device> detectedDevices;
-	public LinkedList<Controller> controllers;
-	public LinkedList<Display> displays;
-	public LinkedList<Storage> storages;
-	public LinkedList<Sensor> sensors;
-	public int keycode;
+	private int installedDeviceCount;
+	private int detectedDeviceCount;
+	private int portableStorageCount;
+	private int videoCount;
+	private int micCount;
+	private int speakerCount;
+	private int locationCount;
+	//int scannerCount; Note: Unused in Android side of Centurion
+	private LinkedList<Device> detectedDevices;
+	private LinkedList<Controller> controllers;
+	private LinkedList<Display> displays;
+	private LinkedList<Storage> storages;
+	private LinkedList<Sensor> sensors;
+	private int keycode;
 	
 	//Android
-	Context context;
-	Application app;
-	Activity activity;
-	//TODO figure out what to do with this
-	//public View mLayout;  //root of layout of this activity, NOTE: this is public here and now but should be refactored into the main activity
+	private Context context;
+	private Application app;
+	private Activity activity;
 
 	//Permissions
-	public final static String cameraRationale = "Camera permission is needed to retrieve device hardware information for Essence.";
-	public final static String contactsRationale = "Contacts permission is needed so the app may refer to you by your chosen name.";
-	public final static int REQUEST_CAMERA = 0;
-	public final static int REQUEST_CONTACTS = 1;
-	public final static int REQUEST_BLUETOOTH = 2;
-	public final static int REQUEST_LOCATION = 3;
-	public final static int REQUEST_STORAGE = 4;
-	boolean nonAnswersDone;
-	public boolean contactsAnswered;
-	public boolean cameraAnswered;
-	public boolean bluetoothAnswered;
-	public boolean storageAnswered;
-	public boolean locationAnswered;
-	boolean logged;
+	private  final static String cameraRationale = "Camera permission is needed to retrieve device hardware information for Essence.";
+	private  final static String contactsRationale = "Contacts permission is needed so the app may refer to you by your chosen name.";
+	private  final static int REQUEST_CAMERA = 0;
+	private  final static int REQUEST_CONTACTS = 1;
+	private  final static int REQUEST_BLUETOOTH = 2;
+	private  final static int REQUEST_LOCATION = 3;
+	private  final static int REQUEST_STORAGE = 4;
+	private boolean nonAnswersDone;
+	private boolean contactsAnswered;
+	private boolean cameraAnswered;
+	private boolean bluetoothAnswered;
+	private boolean storageAnswered;
+	private boolean locationAnswered;
+	private boolean logged;
 
 	//error
-	public int error;
+	private int error;
 	//END variable declaration
 	
 	//Constructor
@@ -264,7 +262,7 @@ public class Cylon implements Saul
 
 	//Saul Methods
 	//Producers
-	public void produceUsername()
+	private void produceUsername()
 	{
 			//Credit to JoelFernandes @ stack overflow for partial display_name code
 			Cursor c = this.app.getContentResolver().query(ContactsContract.Profile.CONTENT_URI, null, null, null, null);
@@ -285,13 +283,13 @@ public class Cylon implements Saul
 			c.close();
 	}//END produce username
 	
-	public void produceDeviceName()
+	private void produceDeviceName()
 	{	
 		//Grab model name
 		this.deviceName = Build.MODEL;
 	}
 	
-	public void produceDateTime()
+	private void produceDateTime()
 	{
 		//Grab the current date/time
 		Date now = new Date();
@@ -390,7 +388,7 @@ public class Cylon implements Saul
 		}
 	}
 	
-	public void produceProcessorInfo()
+	private void produceProcessorInfo()
 	{
 		//Grab and set OS Architecture
 		String osArch 		= System.getProperty("os.arch", "0");
@@ -458,7 +456,7 @@ public class Cylon implements Saul
 		
 	}
 	
-	public void produceMemoryInfo()
+	private void produceMemoryInfo()
 	{
 		//grab and set total memory
 		//credit to Badal @ stackoverflow
@@ -500,7 +498,7 @@ public class Cylon implements Saul
 		}
 	}
 	
-	public void produceInputDevices()
+	private void produceInputDevices()
 	{
 		//Retrieve ids of available input devices
 		int[] ids = InputDevice.getDeviceIds();
@@ -530,7 +528,7 @@ public class Cylon implements Saul
 	}//end produceInputDevices()
 	
 	@SuppressLint("InlinedApi")
-	public void produceDisplayDevices()
+	private void produceDisplayDevices()
 	{
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
 		{	
@@ -569,7 +567,7 @@ public class Cylon implements Saul
 	
 	/*
 	 * TODO: eventually get a working printer function in place
-	public void producePrintingDevices()
+	private void producePrintingDevices()
 	{
 		//only run on 19+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
@@ -690,7 +688,7 @@ public class Cylon implements Saul
 	}//end printers
 	*/
 	
-	public void produceStorageDevices()
+	private void produceStorageDevices()
 	{	
 		//Credit to Yaroslav Boichuk @ stackoverflow for partial storage size code
 		//Credit to Dmitriy Lozenko @ Stackoverflow for partial storage directories code
@@ -833,7 +831,7 @@ public class Cylon implements Saul
 		
 	}//end produce storage
 
-	public void produceUsbDevices()
+	private void produceUsbDevices()
 	{
 		//OTG storage paths
 		 
@@ -957,7 +955,7 @@ public class Cylon implements Saul
 		}//END CATCH
 	}//end method
 	
-	public void rumbleTest()
+	private void rumbleTest()
 	{
 		//variable declaration
 		long[] storageBeepOne = {0, 100, 0};
@@ -989,7 +987,7 @@ public class Cylon implements Saul
 	}//end rumble test
 	
 	//produce rumble device info
-	public void produceSystemRumble()
+	private void produceSystemRumble()
 	{
 		//Credit to 
 		//Retrieve the service
@@ -1035,7 +1033,7 @@ public class Cylon implements Saul
 	} //END rumble producer
 	
 
-	public void produceGPS()
+	private void produceGPS()
 	{
 		//Grab location manager
 		LocationManager manager = (LocationManager)this.context.getSystemService(Context.LOCATION_SERVICE);
@@ -1062,7 +1060,7 @@ public class Cylon implements Saul
 		}//end if detected
 	}//END produce GPS
 	
-	public void produceSensors()
+	private void produceSensors()
 	{
 		//grab manager
 		SensorManager manager = (SensorManager) this.context.getSystemService(Context.SENSOR_SERVICE);
@@ -1091,7 +1089,7 @@ public class Cylon implements Saul
 	
 	//produce info on cameras
 	@SuppressLint("InlinedApi")
-	public void produceCameras()
+	private void produceCameras()
 	{
 		//Use old deprecated Camera class
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
@@ -1141,7 +1139,7 @@ public class Cylon implements Saul
 		}
 	}//END produceCameras
 	
-	public void produceBluetoothDevices()
+	private void produceBluetoothDevices()
 	{
 		//Get the bluetooth adapter
 		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
@@ -1182,7 +1180,7 @@ public class Cylon implements Saul
 	
 	//Credit to Dandre' "imminent" Allison @ Github for partial code
 	//grab uri of user profile image (if available)
-	public void produceAvatar()
+	private void produceAvatar()
 	{	
 		final ContentResolver content = context.getContentResolver();
 		final Cursor cursor = content.query(
@@ -1224,6 +1222,9 @@ public class Cylon implements Saul
                 }//END else
             }//END if
         }//END while
+
+		//Close the cursor
+		cursor.close();
 	}//END function
 	
     /**
@@ -1251,7 +1252,7 @@ public class Cylon implements Saul
 	
 	
 	
-	public void produceDevices()
+	private void produceDevices()
 	{
 		//create lists
 		this.detectedDevices = new LinkedList<Device>();
@@ -1549,6 +1550,9 @@ public class Cylon implements Saul
 		}//END if
 	}//END method
 
+	//Handles permission request results.
+	//Call this method within the overriden onRequestPermissionResult() method utilized by your main activity class,
+	//or wherever else in your app architecture that permission requests may occur
 	public boolean onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
 	{
 		//Return value, denotes if your activity should just call the suepr version of onRequestPermissionsResult
@@ -1657,7 +1661,7 @@ public class Cylon implements Saul
 		return shouldCallSuperMethod;
 	}//End onRequestPermissionsResult
 
-	public void testLog()
+	private void testLog()
 	{
         //Logging
         Log.i("Saul", "REPORT:\n");
@@ -1752,11 +1756,11 @@ public class Cylon implements Saul
 		Log.i("Saul", buildCylon(this));
 		
 		//Native Test!!!
-		helloLog("This wil log to LogCat via the native call.");
+		helloLog("This will log to LogCat via the native call.");
 	}//end testLog
 	
 	private native void helloLog(String logThis);
 	private native String stringFromJNI();
-	private native String stringTest(Cylon saul);
+	public native String stringTest(Cylon saul);
 	private native String buildCylon(Cylon saul);
 }//END class
