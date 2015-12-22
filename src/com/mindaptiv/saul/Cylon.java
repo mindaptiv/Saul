@@ -30,11 +30,13 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.hardware.Camera;
@@ -104,67 +106,70 @@ public class Cylon
 	//END constants
 	
 	//names
-	private String username;
-	private String deviceName;
-	
+	public String username;
+	public  String deviceName;
+
 	//time
-	private int milliseconds;
-	private int seconds;
-	private int minutes;
-	private int hours;
-	
+	public int milliseconds;
+	public int seconds;
+	public int minutes;
+	public int hours;
+
 	//date
-	private int day;
-	private int date;
-	private int month;
-	private int year;
-	
+	public int day;
+	public int date;
+	public int month;
+	public int year;
+
 	//time zone
-	private int dst;
-	private int timeZone;
-	private String timeZoneName;
-	
+	public int dst;
+	public int timeZone;
+	public String timeZoneName;
+
 	//processor
-	private String architecture;
-	private int pageSize;
-	private int processorCount;
-	private int allocationGranularity;
-	private float hertz;
-	
+	public String architecture;
+	public int pageSize;
+	public int processorCount;
+	public int allocationGranularity;
+	public float hertz;
+
 	//memory
-	private long memoryBytes;
-	private long threshold;
-	private long bytesAvails;
-	private int lowMemory;
-	private int osArchitecture;
-	
+	public long memoryBytes;
+	public long threshold;
+	public long bytesAvails;
+	public int lowMemory;
+	public int osArchitecture;
+
 	//avatar
-	private String picturePath; //represents picture URI location
+	public String picturePath; //represents picture URI location
 
 	//devices
-	private int installedDeviceCount;
-	private int detectedDeviceCount;
-	private int portableStorageCount;
-	private int videoCount;
-	private int micCount;
-	private int speakerCount;
-	private int locationCount;
+	public int installedDeviceCount;
+	public int detectedDeviceCount;
+	public int portableStorageCount;
+	public int videoCount;
+	public int micCount;
+	public int speakerCount;
+	public int locationCount;
 	//int scannerCount; Note: Unused in Android side of Centurion
-	private LinkedList<Device> detectedDevices;
-	private LinkedList<Controller> controllers;
-	private LinkedList<Display> displays;
-	private LinkedList<Storage> storages;
-	private LinkedList<Sensor> sensors;
-	private int keycode;
-	
+	public LinkedList<Device> detectedDevices;
+	public LinkedList<Controller> controllers;
+	public LinkedList<Display> displays;
+	public LinkedList<Storage> storages;
+	public LinkedList<Sensor> sensors;
+	public int keycode;
+
 	//Android
-	private Context context;
-	private Application app;
-	private Activity activity;
+	public Context context;
+	public Application app;
+	public Activity activity;
 
 	//Permissions
 	private  final static String cameraRationale = "Camera permission is needed to retrieve device hardware information for Essence.";
-	private  final static String contactsRationale = "Contacts permission is needed so the app may refer to you by your chosen name.";
+	private  final static String contactsRationale = "Contacts permission is needed so the app may refer to you by your chosen name and use your avatar for your personal profile.";
+	private final static String locationRationale = "Location permission is needed so the app can enhance your experience via GPS.";
+	private final static String bluetoothRationale = "Bluetooth permission is needed so the app can interface with your wireless devices.";
+	private final static String storageRationale = "Storage permission is needed so the app can measure the amount of free space that is available to utilize.";
 	private  final static int REQUEST_CAMERA = 0;
 	private  final static int REQUEST_CONTACTS = 1;
 	private  final static int REQUEST_BLUETOOTH = 2;
@@ -215,7 +220,7 @@ public class Cylon
 	}//END Constructor
 
 	//PERMISSIONS METHODS
-	void makeRequest(String manifestPermission, int cylonRequestCode)
+	void makeRequest(final String manifestPermission, final int cylonRequestCode)
 	{
 		//Check if read contacts permission is available
 		int permissionCheck = android.support.v4.content.ContextCompat.checkSelfPermission(this.activity, manifestPermission);
@@ -223,9 +228,66 @@ public class Cylon
 		//if permission is not available
 		if(permissionCheck == PackageManager.PERMISSION_DENIED)
 		{
-			//Request Read Contacts Permission
-			ActivityCompat.requestPermissions(this.activity, new String[]{manifestPermission}, cylonRequestCode);
-			Log.i("Saul", "Showing regular window");
+			//Check for need to show rationale window
+			if(ActivityCompat.shouldShowRequestPermissionRationale(this.activity, manifestPermission))
+			{
+				//Select the appropriate rationale message
+				String message = "Hello!";
+
+				if(cylonRequestCode == REQUEST_CONTACTS)
+				{
+					message = contactsRationale;
+				}
+				else if(cylonRequestCode == REQUEST_CAMERA)
+				{
+					message = cameraRationale;
+				}
+				else if(cylonRequestCode == REQUEST_LOCATION)
+				{
+					message = locationRationale;
+				}
+				else if(cylonRequestCode == REQUEST_BLUETOOTH)
+				{
+					message = bluetoothRationale;
+				}
+				else if(cylonRequestCode == REQUEST_STORAGE)
+				{
+					message = storageRationale;
+				}
+
+				//build listener for okay button
+				class OkListener implements DialogInterface.OnClickListener
+				{
+					private Cylon saul;
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						ActivityCompat.requestPermissions(saul.activity, new String[]{manifestPermission}, cylonRequestCode);
+					}
+
+					public void setCylon(Cylon cylon)
+					{
+						this.saul = cylon;
+					}
+				}//END class
+
+				//set listener's cylon so it may access the activity field
+				OkListener okListener = new OkListener();
+				okListener.setCylon(this);
+
+				//Show GUI window explaining rationale
+				new AlertDialog.Builder(this.activity).setMessage(message)
+						.setPositiveButton("OK", okListener)
+						.setNegativeButton("Cancel", null)
+						.create()
+						.show();
+			}//END if should show rationale
+			else
+			{
+				//Request Read Contacts Permission
+				ActivityCompat.requestPermissions(this.activity, new String[]{manifestPermission}, cylonRequestCode);
+				Log.i("Saul", "Showing regular window");
+			}
 		}//END if permission denied
 		else
 		{
@@ -1751,10 +1813,11 @@ public class Cylon
 		}
 		
 		Log.i("Saul", "Error Code: " + this.error + "\n");
-		Log.i("Saul", stringFromJNI());
-		Log.i("Saul", stringTest(this));
-		Log.i("Saul", buildCylon(this));
-		
+		//Log.i("Saul", stringFromJNI());
+		//Log.i("Saul", stringTest(this));
+		//Log.i("Saul", buildCylon(this));
+		buildCylon(this);
+
 		//Native Test!!!
 		helloLog("This will log to LogCat via the native call.");
 	}//end testLog
