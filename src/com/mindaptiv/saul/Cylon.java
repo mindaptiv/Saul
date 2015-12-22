@@ -54,6 +54,7 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.os.Vibrator;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
@@ -1547,6 +1548,114 @@ public class Cylon implements Saul
 			testLog();
 		}//END if
 	}//END method
+
+	public boolean onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+	{
+		//Return value, denotes if your activity should just call the suepr version of onRequestPermissionsResult
+		boolean shouldCallSuperMethod = false;
+
+		if(requestCode == Cylon.REQUEST_CONTACTS)
+		{
+			Log.i("Saul", "Got contacts return");
+			this.contactsAnswered = true;
+
+			if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				Log.i("Saul", "Got permission for contacts");
+				this.produceUsername();
+				this.produceAvatar();
+			}
+			else
+			{
+				Log.i("Saul", "Didn't get permission for contacts");
+			}
+		}
+		else
+		{
+			shouldCallSuperMethod = true;
+		}//END if request contacts
+
+		if(requestCode == Cylon.REQUEST_CAMERA)
+		{
+			Log.i("Saul", "Got camera return");
+			this.cameraAnswered = true;
+
+			if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+			{
+				Log.i("Saul", "Got permission for camera");
+				this.produceCameras();
+			}
+			else
+			{
+				Log.i("Saul", "Didn't get permission for camera");
+			}
+		}
+		else
+		{
+			shouldCallSuperMethod = true;
+		}//END if request camera
+
+		if(requestCode == Cylon.REQUEST_BLUETOOTH)
+		{
+			Log.i("Saul", "Got bluetooth return");
+			this.bluetoothAnswered = true;
+
+			if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+			{
+				Log.i("Saul", "Got permission for bluetooth");
+				this.produceBluetoothDevices();
+			}
+			else
+			{
+				Log.i("Saul", "Didn't get permission for bluetooth");
+			}
+		}
+		else
+		{
+			shouldCallSuperMethod = true;
+		}//END if request bluetooth
+
+		if(requestCode == Cylon.REQUEST_STORAGE)
+		{
+			Log.i("Saul", "Got storage return");
+			this.storageAnswered = true;
+
+			if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+			{
+				Log.i("Saul", "Got permission for storage");
+				this.produceStorageDevices();
+			}
+			else
+			{
+				Log.i("Saul", "Didn't get permission for storage");
+			}
+		}
+		else
+		{
+			shouldCallSuperMethod = true;
+		}//END if request storage
+
+		if(requestCode == Cylon.REQUEST_LOCATION)
+		{
+			Log.i("Saul", "Got location return");
+			this.locationAnswered = true;
+
+			if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+			{
+				Log.i("Saul", "Got permission for location");
+				this.produceGPS();
+			}
+			else
+			{
+				Log.i("Saul", "Didn't get permission for location");
+			}
+		}
+		else
+		{
+			shouldCallSuperMethod = true;
+		}//END if request location
+
+		return shouldCallSuperMethod;
+	}//End onRequestPermissionsResult
 
 	public void testLog()
 	{
