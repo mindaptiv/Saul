@@ -474,10 +474,13 @@ public class Cylon
 		TimeZone timeZone = calendar.getTimeZone();
 		
 		//Set dst boolean
-		this.dst = Cylon.STANDARD_TIME;
 		if(timeZone.inDaylightTime(now) == true)
 		{
 			this.dst = Cylon.DAYLIGHT_TIME;
+		}
+		else
+		{
+			this.dst = Cylon.STANDARD_TIME;
 		}
 		
 		//Calculate offset in minutes +/- UTC, then set timeZone value
@@ -491,75 +494,99 @@ public class Cylon
 		
 		//Grab and set Date
 		int date = calendar.get(Calendar.DATE);
-		
-		this.date = 0;
+
 		if(date >= 1 || date <= 31)
 		{
 			this.date = date;
 		}
+		else
+		{
+			this.date = 0;
+		}
 		
 		//Grab and set Day
 		int day = calendar.get(Calendar.DAY_OF_WEEK);
-		
-		this.day = 0;
+
 		if(day >= 1 || day <= 7)
 		{
 			this.day = day - 1 ; //java starts counting days at 1
+		}
+		else
+		{
+			this.day = 0;
 		}
 		
 		//Grab and set Month
 		int month = calendar.get(Calendar.MONTH);
 		month	  = month + 1; //java starts counting months at 0
-		
-		this.month = 0;
+
 		if(month >= 1 || month <= 12)
 		{
 			this.month = month;
 		}
+		else
+		{
+			this.month = 0;
+		}
 		
 		//Grab and set Year
 		int year = calendar.get(Calendar.YEAR);
-		
-		this.year = 0;
+
 		if(year > 0)
 		{
 			this.year = year;
 		}
+		else
+		{
+			this.year = 0;
+		}
 		
 		//Grab and set milliseconds
 		int milliseconds = calendar.get(Calendar.MILLISECOND);
-		
-		this.milliseconds = 0;
+
 		if (milliseconds >= 0 || milliseconds <= 999)
 		{
 			this.milliseconds = milliseconds;
 		}
+		else
+		{
+			this.milliseconds = 0;
+		}
 		
 		//Grab and set seconds
 		int seconds = calendar.get(Calendar.SECOND);
-		
-		this.seconds = 0;
+
 		if(seconds >= 0 || seconds <= 59)
 		{
 			this.seconds = seconds;
 		}
+		else
+		{
+			this.seconds = 0;
+		}
 		
 		//Grab and set minutes
 		int minutes = calendar.get(Calendar.MINUTE);
-		
-		this.minutes = 0;
+
 		if(minutes >= 0 || minutes <= 59)
 		{
 			this.minutes = minutes;
 		}
+		else
+		{
+			this.minutes = 0;
+		}
 		
 		//Grab and set hours
 		int hours = calendar.get(Calendar.HOUR_OF_DAY);
-		
-		this.hours = 0;
+
 		if(hours >= 1 || hours <= 23)
 		{
 			this.hours = hours;
+		}
+		else
+		{
+			this.hours = 0;
 		}
 	}
 	
@@ -645,10 +672,14 @@ public class Cylon
 			this.memoryBytes = mi.totalMem;
 			this.bytesAvails = mi.availMem;
 			this.threshold   = mi.threshold;
-			this.lowMemory   = 0;
+
 			if(mi.lowMemory)
 			{
 				this.lowMemory = 1;
+			}
+			else
+			{
+				this.lowMemory = 0;
 			}
 			
 		}
