@@ -687,6 +687,9 @@ public class Cylon
 		{
 			//if this fails set the default
 			this.memoryBytes = 0;
+			this.bytesAvails = 0;
+			this.threshold 	 = 0;
+			this.lowMemory	 = 0;
 		}
 		
 		
