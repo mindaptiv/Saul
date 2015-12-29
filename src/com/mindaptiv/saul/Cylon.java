@@ -220,6 +220,7 @@ public class Cylon
 	}//END Constructor
 
 	//PERMISSIONS METHODS
+	//Credit to nuuneoi @ inthecheesefactory.com for partial method code
 	void makeRequest(final String manifestPermission, final int cylonRequestCode)
 	{
 		//Check if read contacts permission is available
@@ -320,6 +321,118 @@ public class Cylon
 			}
 		}//END if permission already available
 	}//END method
+
+	//Credit to nuuneoi @ inthecheesefactory.com for partial method code
+	//Handles permission request results.
+	//Call this method within the overriden onRequestPermissionResult() method utilized by your main activity class,
+	//or wherever else in your app architecture that permission requests may occur
+	public boolean onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+	{
+		//Return value, denotes if your activity should just call the suepr version of onRequestPermissionsResult
+		boolean shouldCallSuperMethod = false;
+
+		if(requestCode == Cylon.REQUEST_CONTACTS)
+		{
+			Log.i("Saul", "Got contacts return");
+			this.contactsAnswered = true;
+
+			if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				Log.i("Saul", "Got permission for contacts");
+				this.produceUsername();
+				this.produceAvatar();
+			}
+			else
+			{
+				Log.i("Saul", "Didn't get permission for contacts");
+			}
+		}
+		else
+		{
+			shouldCallSuperMethod = true;
+		}//END if request contacts
+
+		if(requestCode == Cylon.REQUEST_CAMERA)
+		{
+			Log.i("Saul", "Got camera return");
+			this.cameraAnswered = true;
+
+			if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+			{
+				Log.i("Saul", "Got permission for camera");
+				this.produceCameras();
+			}
+			else
+			{
+				Log.i("Saul", "Didn't get permission for camera");
+			}
+		}
+		else
+		{
+			shouldCallSuperMethod = true;
+		}//END if request camera
+
+		if(requestCode == Cylon.REQUEST_BLUETOOTH)
+		{
+			Log.i("Saul", "Got bluetooth return");
+			this.bluetoothAnswered = true;
+
+			if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+			{
+				Log.i("Saul", "Got permission for bluetooth");
+				this.produceBluetoothDevices();
+			}
+			else
+			{
+				Log.i("Saul", "Didn't get permission for bluetooth");
+			}
+		}
+		else
+		{
+			shouldCallSuperMethod = true;
+		}//END if request bluetooth
+
+		if(requestCode == Cylon.REQUEST_STORAGE)
+		{
+			Log.i("Saul", "Got storage return");
+			this.storageAnswered = true;
+
+			if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+			{
+				Log.i("Saul", "Got permission for storage");
+				this.produceStorageDevices();
+			}
+			else
+			{
+				Log.i("Saul", "Didn't get permission for storage");
+			}
+		}
+		else
+		{
+			shouldCallSuperMethod = true;
+		}//END if request storage
+
+		if(requestCode == Cylon.REQUEST_LOCATION)
+		{
+			Log.i("Saul", "Got location return");
+			this.locationAnswered = true;
+
+			if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+			{
+				Log.i("Saul", "Got permission for location");
+				this.produceGPS();
+			}
+			else
+			{
+				Log.i("Saul", "Didn't get permission for location");
+			}
+		}
+		else
+		{
+			shouldCallSuperMethod = true;
+		}//END if request location
+
+		return shouldCallSuperMethod;
+	}//End onRequestPermissionsResult
 	//END PERMISSIONS METHODS
 
 	//Saul Methods
@@ -1611,117 +1724,6 @@ public class Cylon
 			testLog();
 		}//END if
 	}//END method
-
-	//Handles permission request results.
-	//Call this method within the overriden onRequestPermissionResult() method utilized by your main activity class,
-	//or wherever else in your app architecture that permission requests may occur
-	public boolean onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-	{
-		//Return value, denotes if your activity should just call the suepr version of onRequestPermissionsResult
-		boolean shouldCallSuperMethod = false;
-
-		if(requestCode == Cylon.REQUEST_CONTACTS)
-		{
-			Log.i("Saul", "Got contacts return");
-			this.contactsAnswered = true;
-
-			if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-				Log.i("Saul", "Got permission for contacts");
-				this.produceUsername();
-				this.produceAvatar();
-			}
-			else
-			{
-				Log.i("Saul", "Didn't get permission for contacts");
-			}
-		}
-		else
-		{
-			shouldCallSuperMethod = true;
-		}//END if request contacts
-
-		if(requestCode == Cylon.REQUEST_CAMERA)
-		{
-			Log.i("Saul", "Got camera return");
-			this.cameraAnswered = true;
-
-			if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-			{
-				Log.i("Saul", "Got permission for camera");
-				this.produceCameras();
-			}
-			else
-			{
-				Log.i("Saul", "Didn't get permission for camera");
-			}
-		}
-		else
-		{
-			shouldCallSuperMethod = true;
-		}//END if request camera
-
-		if(requestCode == Cylon.REQUEST_BLUETOOTH)
-		{
-			Log.i("Saul", "Got bluetooth return");
-			this.bluetoothAnswered = true;
-
-			if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-			{
-				Log.i("Saul", "Got permission for bluetooth");
-				this.produceBluetoothDevices();
-			}
-			else
-			{
-				Log.i("Saul", "Didn't get permission for bluetooth");
-			}
-		}
-		else
-		{
-			shouldCallSuperMethod = true;
-		}//END if request bluetooth
-
-		if(requestCode == Cylon.REQUEST_STORAGE)
-		{
-			Log.i("Saul", "Got storage return");
-			this.storageAnswered = true;
-
-			if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-			{
-				Log.i("Saul", "Got permission for storage");
-				this.produceStorageDevices();
-			}
-			else
-			{
-				Log.i("Saul", "Didn't get permission for storage");
-			}
-		}
-		else
-		{
-			shouldCallSuperMethod = true;
-		}//END if request storage
-
-		if(requestCode == Cylon.REQUEST_LOCATION)
-		{
-			Log.i("Saul", "Got location return");
-			this.locationAnswered = true;
-
-			if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-			{
-				Log.i("Saul", "Got permission for location");
-				this.produceGPS();
-			}
-			else
-			{
-				Log.i("Saul", "Didn't get permission for location");
-			}
-		}
-		else
-		{
-			shouldCallSuperMethod = true;
-		}//END if request location
-
-		return shouldCallSuperMethod;
-	}//End onRequestPermissionsResult
 
 	private void testLog()
 	{
