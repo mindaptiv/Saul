@@ -171,6 +171,15 @@ extern "C"
 		nativeDisplay.rawDPIX 			= (float)env->GetFloatField(display, fid_rawDPIX);
 		nativeDisplay.rawDPIY			= (float)env->GetFloatField(display, fid_rawDPIY);
 
+		//unavailable fields
+		nativeDisplay.horizontalResolution 	= 0;
+		nativeDisplay.verticalResolution 	= 0;
+		nativeDisplay.upperLeftX			= 0;
+		nativeDisplay.upperLeftY			= 0;
+		nativeDisplay.refreshRate			= 0;
+		nativeDisplay.driverData			= NULL;
+		nativeDisplay.colorData				= NULL;
+		nativeDisplay.colorLength			= 0;
 
 		//===DEVICE===
 		//Retrieve field
