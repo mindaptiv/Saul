@@ -51,9 +51,12 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.location.LocationManager;
 import android.Manifest;
+import android.media.midi.*;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.StatFs;
 import android.os.Vibrator;
 import android.provider.ContactsContract;
@@ -64,6 +67,7 @@ import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+
 
 @SuppressWarnings("deprecation")
 public class Cylon
@@ -77,31 +81,31 @@ public class Cylon
     //Variable Declaration:
     //Constants
     //Days
-    private final static int SUNDAY = 0;
-    private final static 	int MONDAY = 1;
-    private final static int TUESDAY =2;
-    private final static int WEDNESDAY = 3;
-    private final static int THURSDAY = 4;
-    private final static int FRIDAY = 5;
-    private final static int SATURDAY = 6;
+    final static int SUNDAY = 0;
+    final static 	int MONDAY = 1;
+    final static int TUESDAY =2;
+    final static int WEDNESDAY = 3;
+    final static int THURSDAY = 4;
+    final static int FRIDAY = 5;
+    final static int SATURDAY = 6;
 
     //Months
-    private final static int JANUARY = 1;
-    private final static int FEBRUARY = 2;
-    private final static int MARCH = 3;
-    private final static int APRIL = 4;
-    private final static int MAY = 5;
-    private final static int JUNE = 6;
-    private final static int JULY = 7;
-    private final static int AUGUST = 8;
-    private final static int SEPTEMBER = 9;
-    private final static int OCTOBER = 10;
-    private final static int NOVEMBER = 11;
-    private final static int DECEMBER = 12;
+    final static int JANUARY = 1;
+    final static int FEBRUARY = 2;
+    final static int MARCH = 3;
+    final static int APRIL = 4;
+    final static int MAY = 5;
+    final static int JUNE = 6;
+    final static int JULY = 7;
+    final static int AUGUST = 8;
+    final static int SEPTEMBER = 9;
+    final static int OCTOBER = 10;
+    final static int NOVEMBER = 11;
+    final static int DECEMBER = 12;
 
     //DST
-    private final static int STANDARD_TIME = 0;
-    private final static int DAYLIGHT_TIME = 1;
+    final static int STANDARD_TIME = 0;
+    final static int DAYLIGHT_TIME = 1;
     //END constants
 
     //names
@@ -1506,13 +1510,51 @@ public class Cylon
                 {
                     //Create Device Struct and save to list
                     //TODO test this on physical device
-                    Log.i("Saul", "TEST ME");
                     Device device = new Device(fingerprintManager);
                     this.detectedDevices.addLast(device);
                 }
             }
         }//END if marshmallow
     }//END producer
+
+    //retrieves MIDI device information
+    private void produceMidiInfo()
+    {
+        //Check that we're on Marshmallow
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            //Check that device has MIDI support
+            if(this.context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_MIDI))
+            {
+                //Retrieve manager
+                MidiManager manager = (MidiManager) this.context.getSystemService(Context.MIDI_SERVICE);
+
+                //Retrieve list of midi devices
+                MidiDeviceInfo[] infos = manager.getDevices();
+
+                manager.registerDeviceCallback(new MidiManager.DeviceCallback() {
+                    public void onDeviceAdded( MidiDeviceInfo info ) {
+                        Log.i("Saul", "MIDI added");
+                    }
+                    public void onDeviceRemoved( MidiDeviceInfo info ) {
+                        Log.i("Saul", "MIDI removed");
+                    }
+                }, new Handler(Looper.getMainLooper()));
+
+                //parse DeviceInfo objects and build deviceStructs
+                for(int i = 0; i < infos.length; i++)
+                {
+                    //TODO test to see if devices need to be open befor we can check their info
+                    //Build Device
+                    Device device;
+                }
+
+            }//END if MIDI supported
+
+
+        } //END if marshmallow
+
+    }//END method
 
     private void produceDevices()
     {

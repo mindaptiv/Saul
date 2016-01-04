@@ -13,8 +13,10 @@ import android.bluetooth.BluetoothAdapter;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.fingerprint.FingerprintManager;
+import android.media.midi.MidiDeviceInfo;
 import android.os.Build;
 import android.view.InputDevice;
+import android.view.Surface;
 
 @SuppressWarnings("deprecation")
 public class Device 
@@ -37,11 +39,21 @@ public class Device
 	final static int TRACKBALL_TYPE = 14;
 	final static int STYLUS_TYPE = 15;
 	final static int POSITION_TYPE = 16;
-	
+	final static int HID_TYPE	= 17;
 	final static int RUMBLE_TYPE = 18;
 	final static int SENSOR_TYPE = 19;
 	final static int BLUETOOTH_RADIO_TYPE = 20;
-	
+	final static int PHYSICAL_TYPE = 21;
+	final static int PRINTER_TYPE = 22;
+	final static int HUB_TYPE = 23;
+	final static int COMMUNICATIONS_DATA_TYPE = 24;
+	final static int SMART_CARD_TYPE = 25;
+	final static int CONTENT_SECURITY_TYPE = 26;
+	final static int PERSONAL_HEALTHCARE_TYPE = 27;
+	final static int BILLBOARD_TYPE = 28;
+	final static int WIRELESS_PHONE_TYPE = 29;
+	final static int MIDI_TYPE = 30;
+
 	//Location
 	final static int UNKNOWN_PANEL_LOCATION = 0;
 	final static int FRONT_PANEL = 1;
@@ -50,6 +62,13 @@ public class Device
 	final static int BOTTOM_PANEL = 4;
 	final static int LEFT_PANEL = 5;
 	final static int RIGHT_PANEL = 6;
+
+	//Rotation
+	final static int NO_ROTATION = 0;
+	final static int LANDSCAPE = 1;
+	final static int PORTRAIT = 2;
+	final static int FLIPPED_LANDSCAPE = 4;
+	final static int FLIPPED_PORTRAIT = 8;
 	//END Constants
 	
 	//device properties
@@ -106,7 +125,7 @@ public class Device
 		this.inDock 		= 0;
 		this.inLid			= 0;
 		this.panelLocation 	= Device.UNKNOWN_PANEL_LOCATION;
-		this.orientation    = 0;
+		this.orientation    = NO_ROTATION;
 		
 		//Parse source mask
 		this.testMask = idvice.getSources();
@@ -205,26 +224,25 @@ public class Device
 		this.storageIndex    = 0;
 		
 		//set orientation
-		//set orientation
-		if(display.getRotation() == 0)
+		if(display.getRotation() == Surface.ROTATION_0)
 		{
-			this.orientation = 0;
+			this.orientation = PORTRAIT;
 		}
-		else if(display.getRotation() == 2)
+		else if(display.getRotation() == Surface.ROTATION_180)
 		{
-			this.orientation = 180;
+			this.orientation = FLIPPED_PORTRAIT;
 		}
-		else if (display.getRotation()==3)
+		else if (display.getRotation()== Surface.ROTATION_270)
 		{
-			this.orientation = 270;
+			this.orientation = FLIPPED_LANDSCAPE;
 		}
-		else if (display.getRotation() == 1)
+		else if (display.getRotation() == Surface.ROTATION_90)
 		{
-			this.orientation = 90;
+			this.orientation = LANDSCAPE;
 		}
 		else
 		{
-			this.orientation = 0;
+			this.orientation = NO_ROTATION;
 		}
 		
 		//Set name
@@ -261,7 +279,7 @@ public class Device
 		this.testMask		= 0;
 		this.id				= "0";
 		this.sensorsIndex   = 0;
-		this.orientation     = 0;
+		this.orientation     = NO_ROTATION;
 		
 		//set device type
 		this.deviceType = Device.STORAGE_TYPE;
@@ -293,7 +311,7 @@ public class Device
 		this.sensorsIndex = 0;
 		this.testMask = 0;
 		this.id = "0";
-		this.orientation     = 0;
+		this.orientation     = NO_ROTATION;
 		
 		//set device type
 		this.deviceType = Device.RUMBLE_TYPE;
@@ -317,7 +335,7 @@ public class Device
 		this.testMask      = 0;
 		this.id            = "0";
 		this.isDefault	   = 0;
-		this.orientation     = 0;
+		this.orientation     = NO_ROTATION;
 		
 		//set device type to locationAware
 		this.deviceType = Device.LOCATION_AWARE_TYPE;
@@ -452,7 +470,7 @@ public class Device
 		this.panelLocation 	= Device.UNKNOWN_PANEL_LOCATION;
 		this.inLid 			= 0;
 		this.inDock 		= 0;
-		this.orientation 	= 0;
+		this.orientation 	= NO_ROTATION;
 		this.vendorID 		= 0;
 		this.displayIndex 		= 0;
 		this.controllerIndex 	= 0;
@@ -493,7 +511,7 @@ public class Device
 		this.inDock			= 0;
 		this.isDefault		= 1;
 		this.isEnabled		= 1;
-		this.orientation	= 0;
+		this.orientation	= NO_ROTATION;
 		this.name			= "Fingerprint Manager";
 		this.id				= "" + manager.hashCode();
 		this.vendorID		= 0;
@@ -503,6 +521,52 @@ public class Device
 		this.storageIndex	= 0;
 		this.sensorsIndex	= 0;
 		this.testMask		= 0;
+	}
+
+	//for MIDI devices
+	public Device(MidiDeviceInfo info)
+	{
+		//Set default fields
+		this.panelLocation = UNKNOWN_PANEL_LOCATION;
+		this.inLid = 0;
+		this.inDock = 0;
+		this.isDefault = 0;
+		this.isEnabled = 1;
+		this.orientation = NO_ROTATION;
+		this.displayIndex = 0;
+		this.controllerIndex = 0;
+		this.storageIndex = 0;
+		this.sensorsIndex = 0;
+		this.testMask = 0;
+
+		//Set device type
+		this.deviceType = 30;
+
+		//Check that we're on Marshmallow
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+		{
+			//Set ID
+			this.id = "" + info.getId();
+
+			//Set name
+
+			//TODO check if USB
+
+			//TODO
+			//Name
+			//Vendor Name
+			//Serial #
+			//Ports I/O
+			//Properties?
+
+		}//END if on Android M
+		else
+		{
+			//Handle corner case
+			this.id = "" + 0;
+			this.vendorID = 0;
+			this.name = "Unidentified MIDI Device";
+		}//END if not on Android M
 	}
 }//end class
 
