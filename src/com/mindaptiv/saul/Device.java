@@ -12,6 +12,7 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.view.InputDevice;
 
@@ -481,6 +482,27 @@ public class Device
 		//type for bluetooth radio
 		this.deviceType = Device.BLUETOOTH_RADIO_TYPE;	
 	
+	}
+
+	//For fingerprint readers
+	public Device(FingerprintManager manager)
+	{
+		//Set default fields
+		this.panelLocation 	= UNKNOWN_PANEL_LOCATION;
+		this.inLid			= 0;
+		this.inDock			= 0;
+		this.isDefault		= 1;
+		this.isEnabled		= 1;
+		this.orientation	= 0;
+		this.name			= "Fingerprint Manager";
+		this.id				= "" + manager.hashCode();
+		this.vendorID		= 0;
+		this.deviceType		= SENSOR_TYPE;
+		this.displayIndex 	= 0;
+		this.controllerIndex = 0;
+		this.storageIndex	= 0;
+		this.sensorsIndex	= 0;
+		this.testMask		= 0;
 	}
 }//end class
 
