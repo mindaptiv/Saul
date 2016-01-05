@@ -15,6 +15,8 @@ import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.fingerprint.FingerprintManager;
 import android.media.midi.MidiDeviceInfo;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.InputDevice;
 import android.view.Surface;
 
@@ -90,9 +92,31 @@ public class Device
 	int controllerIndex;
 	int storageIndex;
 	int sensorsIndex;
+	int midiIndex;
 	public int testMask;
 	
 	//Constructors
+	//Build a dummy device
+	public Device()
+	{
+		this.panelLocation = UNKNOWN_PANEL_LOCATION;
+		this.inLid = 0;
+		this.inDock = 0;
+		this.isDefault = 0;
+		this.isEnabled = 0;
+		this.orientation = NO_ROTATION;
+		this.name = "Dummy Device";
+		this.id = "0";
+		this.vendorID = 0;
+		this.deviceType = 0;
+		this.displayIndex = 0;
+		this.controllerIndex = 0;
+		this.storageIndex = 0;
+		this.sensorsIndex = 0;
+		this.midiIndex = 0;
+		this.testMask = 0;
+	}//END dummy device
+
 	//Build device using InputDevice object
 	public Device(InputDevice idvice)
 	{
@@ -101,6 +125,7 @@ public class Device
 		this.displayIndex 	 = 0;
 		this.storageIndex = 0;
 		this.sensorsIndex = 0;
+		this.midiIndex = 0;
 		
 		//Parse through all the metadata of the InputDevice and map it to the Device
 		
@@ -296,7 +321,7 @@ public class Device
 	}//END storage constructor
 	
 	//Constructor from rumble device
-	public Device()
+	public Device(Vibrator vibrator)
 	{
 		//Set values not available in this context (creating from system rumble)
 		this.panelLocation = Device.UNKNOWN_PANEL_LOCATION;
@@ -538,6 +563,7 @@ public class Device
 		this.storageIndex = 0;
 		this.sensorsIndex = 0;
 		this.testMask = 0;
+		this.vendorID = 0;
 
 		//Set device type
 		this.deviceType = 30;
@@ -549,22 +575,12 @@ public class Device
 			this.id = "" + info.getId();
 
 			//Set name
-
-			//TODO check if USB
-
-			//TODO
-			//Name
-			//Vendor Name
-			//Serial #
-			//Ports I/O
-			//Properties?
-
+			this.name = info.getProperties().getString(MidiDeviceInfo.PROPERTY_NAME);
 		}//END if on Android M
 		else
 		{
 			//Handle corner case
 			this.id = "" + 0;
-			this.vendorID = 0;
 			this.name = "Unidentified MIDI Device";
 		}//END if not on Android M
 	}

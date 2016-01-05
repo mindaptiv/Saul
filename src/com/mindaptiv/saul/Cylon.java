@@ -159,6 +159,7 @@ public class Cylon
     public LinkedList<Display> displays;
     public LinkedList<Storage> storages;
     public LinkedList<Sensor> sensors;
+    public LinkedList<Midi> midiDevices;
     public int keycode;
 
     //Android
@@ -1274,7 +1275,7 @@ public class Cylon
             rumble.vibrate(empire, -1);
 
             //Create new device
-            Device device = new Device();
+            Device device = new Device(rumble);
             this.detectedDevices.addLast(device);
         }
     } //END rumble producer
@@ -1531,6 +1532,7 @@ public class Cylon
 
                 //Retrieve list of midi devices
                 MidiDeviceInfo[] infos = manager.getDevices();
+                //TODO add additional device code for handlers here
 
                 manager.registerDeviceCallback(new MidiManager.DeviceCallback() {
                     public void onDeviceAdded( MidiDeviceInfo info ) {
@@ -1544,16 +1546,23 @@ public class Cylon
                 //parse DeviceInfo objects and build deviceStructs
                 for(int i = 0; i < infos.length; i++)
                 {
-                    //TODO test to see if devices need to be open befor we can check their info
-                    //Build Device
-                    Device device;
-                }
+                    //TODO test to see if devices need to be open before we can check their info
 
+                    //Create the Midi object
+                    Device device = new Device(infos[i]);
+                    Midi midiDevice = new Midi(infos[i], device); //we will change the super device later
+
+                    //NOTE: As of this writing the only USB devices we are retrieving in the USB producer are storage,
+                    //so no need to check mapping here (yet?) since there wont already be retrieved USB MIDI devices in the detectedDevices list
+
+                    //Add to lists and synchronize
+                    this.detectedDevices.addLast(device);
+                    this.midiDevices.addLast(midiDevice);
+                    this.midiDevices.getLast().superDevice = this.detectedDevices.getLast();
+                    this.detectedDevices.getLast().midiIndex = this.midiDevices.size() - 1;
+                }//END FOR
             }//END if MIDI supported
-
-
         } //END if marshmallow
-
     }//END method
 
     private void produceDevices()
@@ -1567,13 +1576,10 @@ public class Cylon
 
         //wrap all other device producers
         produceInputDevices();
-        //NEED PERMISSION produceStorageDevices();
         produceSystemRumble();
-        //NEED PERMISSION produceGPS();
         produceSensors();
-        //NEED PERMISSION produceCameras();
-        //NEED PERMISSION produceBluetoothDevices();
         produceUsbDevices();
+        produceMidiInfo();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
         {
