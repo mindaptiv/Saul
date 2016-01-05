@@ -117,6 +117,7 @@ extern "C"
 		jfieldID fid_controllerIndex = env->GetFieldID(deviceClass, "controllerIndex", "I");
 		jfieldID fid_storageIndex 	= env->GetFieldID(deviceClass, "storageIndex", "I");
 		jfieldID fid_sensorsIndex 	= env->GetFieldID(deviceClass, "sensorsIndex", "I");
+		jfieldID fid_midiIndex		= env->GetFieldID(deviceClass, "midiIndex", "I");
 
 		//set deviceStruct ints
 		nativeDevice.panelLocation 	= (uint32_t)env->GetIntField(device, fid_panelLocation);
@@ -131,6 +132,7 @@ extern "C"
 		nativeDevice.controllerIndex = (uint32_t)env->GetIntField(device, fid_controllerIndex);
 		nativeDevice.storageIndex 	= (uint32_t)env->GetIntField(device, fid_storageIndex);
 		nativeDevice.sensorsIndex 	= (uint32_t)env->GetIntField(device, fid_storageIndex);
+		nativeDevice.midiIndex		= (uint32_t)env->GetIntField(device, fid_midiIndex);
 
 		//Return
 		return nativeDevice;
@@ -379,7 +381,141 @@ extern "C"
 		return nativeController;
 	}
 
+	midiPortStruct buildMidiPort(JNIEnv *env, jobject midiPort)
+	{
+		//Retrieve class
+		jclass midiPortClass = env->GetObjectClass(midiPort);
 
+		//Create struct
+		struct midiPortStruct nativeMidiPort;
+
+		//===STRINGS===
+		//Retrieve fields
+		jfieldID fid_name = env->GetFieldID(midiPortClass, "name", "Ljava/lang/String;");
+
+		//Retrieve Java Strings
+		jstring j_name = (jstring) env->GetObjectField(midiPort, fid_name);
+
+		//Concert to std::strings
+		std::string name;
+		GetJStringContent(env, j_name, name);
+
+		//Set port strings
+		nativeMidiPort.name = name;
+
+		//===INTS===
+		jfieldID fid_number = env->GetFieldID(midiPortClass, "number", "I");
+		jfieldID fid_type = env->GetFieldID(midiPortClass, "type", "I");
+
+		//set midiPortStruct uint32_t's
+		nativeMidiPort.type = (uint32_t)env->GetIntField(midiPort, fid_type);
+		nativeMidiPort.number = (uint32_t)env->GetIntField(midiPort, fid_number);
+
+		//Return
+		return nativeMidiPort;
+	}
+
+	midiStruct buildMidi(JNIEnv *env, jobject midi)
+	{
+		//Retrieve class
+		jclass midiClass = env->GetObjectClass(midi);
+
+		//Create struct
+		struct midiStruct nativeMidi;
+
+		//===STRINGS===
+		//Retrieve fields
+		jfieldID fid_vendorName 	= env->GetFieldID(midiClass, "vendorName", "Ljava/lang/String;");
+		jfieldID fid_productName 	= env->GetFieldID(midiClass, "productName", "Ljava/lang/String;");
+		jfieldID fid_deviceName 	= env->GetFieldID(midiClass, "deviceName", "Ljava/lang/String;");
+		jfieldID fid_serialNumber	= env->GetFieldID(midiClass, "serialNumber", "Ljava/lang/String;");
+		jfieldID fid_versionNumber	= env->GetFieldID(midiClass, "versionNumber", "Ljava/lang/String;");
+
+		//Retrieve Java Strings
+		jstring j_vendorName = (jstring) env->GetObjectField(midi, fid_vendorName);
+		jstring j_productName = (jstring) env->GetObjectField(midi, fid_productName);
+		jstring j_deviceName = (jstring) env->GetObjectField(midi, fid_deviceName);
+		jstring j_serialNumber = (jstring) env->GetObjectField(midi, fid_serialNumber);
+		jstring j_versionNumber = (jstring) env->GetObjectField(midi, fid_versionNumber);
+
+		//Convert to std::strings
+		std::string vendorName;
+		std::string productName;
+		std::string deviceName;
+		std::string serialNumber;
+		std::string versionNumber;
+		GetJStringContent(env, j_vendorName, vendorName);
+		GetJStringContent(env, j_productName, productName);
+		GetJStringContent(env, j_deviceName, deviceName);
+		GetJStringContent(env, j_serialNumber, serialNumber);
+		GetJStringContent(env, j_versionNumber, versionNumber);
+
+		//Set midi strings
+		nativeMidi.vendorName = vendorName;
+		nativeMidi.productName = productName;
+		nativeMidi.deviceName = deviceName;
+		nativeMidi.serialNumber = serialNumber;
+		nativeMidi.versionNumber = versionNumber;
+
+		//===INTS===
+		//Retrieve fields
+		jfieldID fid_type = env->GetFieldID(midiClass, "type", "I");
+		jfieldID fid_id = env->GetFieldID(midiClass, "id", "I");
+		jfieldID fid_outCount = env->GetFieldID(midiClass, "outCount", "I");
+		jfieldID fid_inCount = env->GetFieldID(midiClass, "inCount", "I");
+
+		//set midiStruct ints
+		nativeMidi.type = (uint32_t)env->GetIntField(midi, fid_type);
+		nativeMidi.id = (uint32_t)env->GetIntField(midi, fid_id);
+		nativeMidi.outCount = (uint32_t)env->GetIntField(midi, fid_outCount);
+		nativeMidi.inCount = (uint32_t)env->GetIntField(midi, fid_inCount);
+
+		//===DEVICE===
+		//Retrieve field
+		jfieldID fid_superDevice = env->GetFieldID(midiClass, "superDevice", "Lcom/mindaptiv/saul/Device;");
+
+		//Retrieve object
+		jobject j_device = env->GetObjectField(midi, fid_superDevice);
+
+		//Build and set deviceStruct field
+		nativeMidi.superDevice = buildDevice(env, j_device);
+
+		//===PORTS LIST===
+		//Retrieve class
+		jclass listClass = env->FindClass("java/util/LinkedList");
+
+		//Retrieve method ID
+		jmethodID m_toArray = env->GetMethodID(listClass, "toArray", "()[Ljava/lang/Object;");
+		if(m_toArray == NULL)
+		{
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "WARNING: toArray not found!");
+		}
+
+		//Retrieve fields
+		jfieldID fid_ports = env->GetFieldID(midiClass, "ports", "Ljava/util/LinkedList;");
+
+		//Retrieve list
+		jobject j_ports = env->GetObjectField(midi, fid_ports);
+
+		//convert list to array
+		jobjectArray arr_ports = (jobjectArray)env->CallObjectMethod(j_ports, m_toArray);
+
+		//iterate through the ports
+		for(int i = 0; i < env->GetArrayLength(arr_ports); i++)
+		{
+			//Grab element object from array
+			jobject j_port = env->GetObjectArrayElement(arr_ports, i);
+
+			//Build midiPort
+			midiPortStruct midiPort = buildMidiPort(env, j_port);
+
+			//Add midi port to end of midi's list
+			nativeMidi.ports.push_back(midiPort);
+		}
+
+		//Return
+		return nativeMidi;
+	}
 
 	JNIEXPORT jstring JNICALL
 	Java_com_mindaptiv_saul_Cylon_buildCylon(JNIEnv *env, jobject obj, jobject saul)
@@ -523,6 +659,7 @@ extern "C"
 		jfieldID fid_displays 		= env->GetFieldID(cylonClass, "displays", "Ljava/util/LinkedList;");
 		jfieldID fid_storages 		= env->GetFieldID(cylonClass, "storages", "Ljava/util/LinkedList;");
 		jfieldID fid_sensors 		= env->GetFieldID(cylonClass, "sensors", "Ljava/util/LinkedList;");
+		jfieldID fid_midiDevices	= env->GetFieldID(cylonClass, "midiDevices", "Ljava/util/LinkedList;");
 
 		//Retrieve lists
 		jobject j_devices 		= env->GetObjectField(saul, fid_devices);
@@ -530,6 +667,7 @@ extern "C"
 		jobject j_displays 		= env->GetObjectField(saul, fid_displays);
 		jobject j_storages 		= env->GetObjectField(saul, fid_storages);
 		jobject j_sensors 		= env->GetObjectField(saul, fid_sensors);
+		jobject j_midiDevices		= env->GetObjectField(saul, fid_midiDevices);
 
 		//convert lists to arrays
 		jobjectArray arr_devices 		= (jobjectArray)env->CallObjectMethod(j_devices, m_toArray);
@@ -537,6 +675,7 @@ extern "C"
 		jobjectArray arr_displays 		= (jobjectArray)env->CallObjectMethod(j_displays, m_toArray);
 		jobjectArray arr_storages 		= (jobjectArray)env->CallObjectMethod(j_storages, m_toArray);
 		jobjectArray arr_sensors 		= (jobjectArray)env->CallObjectMethod(j_sensors, m_toArray);
+		jobjectArray arr_midiDevices			= (jobjectArray)env->CallObjectMethod(j_midiDevices, m_toArray);
 
 		//iterate through devices
 		for (int i = 0; i < env->GetArrayLength(arr_devices); i++)
@@ -617,6 +756,20 @@ extern "C"
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "storageStructs: done");
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Length of storages: [%d]", (int)cylon.storages.size());
 
+		for (int i = 0; i < env->GetArrayLength(arr_midiDevices); i++)
+		{
+			//Grab element objects from array
+			jobject j_midi = env->GetObjectArrayElement(arr_midiDevices, i);
+
+			//Build midiStruct
+			midiStruct newMidi = buildMidi(env, j_midi);
+
+			//Add to end of list
+			cylon.midiDevices.push_back(newMidi);
+		}
+
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", "midiStructs: done");
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Length of midiDevices: [%d]", (int)cylon.midiDevices.size());
 
 		//Unavailable fields will be set to default cases
 		//Avatar fields unused in Android context

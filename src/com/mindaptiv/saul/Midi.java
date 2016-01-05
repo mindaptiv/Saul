@@ -44,6 +44,9 @@ public class Midi
         //Set parent
         this.superDevice = superaDevice;
 
+        //Setup list
+        this.ports = new LinkedList<MidiPort>();
+
         //Set type
         int infoType = info.getType();
 
@@ -89,6 +92,26 @@ public class Midi
         }//END if Android M
 
     }//END Constructor
+
+    //Build a dummy Midi for testing
+    public Midi()
+    {
+        this.vendorName = "0";
+        this.versionNumber = "0";
+        this.serialNumber = "0";
+
+        //Setup list
+        this.ports = new LinkedList<MidiPort>();
+
+        //Build Port
+        MidiPort port = new MidiPort();
+        port.name   = "0";
+        port.number = 0;
+        port.type   = 0;
+
+        //Add to ports list for device
+        this.ports.addLast(port);
+    }//END dummy constructor
 }//End class
 
 class MidiPort

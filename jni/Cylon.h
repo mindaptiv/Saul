@@ -94,10 +94,20 @@ static const int TOUCH_PAD_TYPE 		= 13;
 static const int TRACKBALL_TYPE 		= 14;
 static const int STYLUS_TYPE 			= 15;
 static const int POSITION_TYPE 			= 16;
-
-static const int RUMBLE_TYPE 			= 18;
-static const int SENSOR_TYPE 			= 19;
-static const int BLUETOOTH_RADIO_TYPE 	= 20;
+static const int HID_TYPE	= 17;
+static const int RUMBLE_TYPE = 18;
+static const int SENSOR_TYPE = 19;
+static const int BLUETOOTH_RADIO_TYPE = 20;
+static const int PHYSICAL_TYPE = 21;
+static const int PRINTER_TYPE = 22;
+static const int HUB_TYPE = 23;
+static const int COMMUNICATIONS_DATA_TYPE = 24;
+static const int SMART_CARD_TYPE = 25;
+static const int CONTENT_SECURITY_TYPE = 26;
+static const int PERSONAL_HEALTHCARE_TYPE = 27;
+static const int BILLBOARD_TYPE = 28;
+static const int WIRELESS_PHONE_TYPE = 29;
+static const int MIDI_TYPE = 30;
 
 //deviceStruct location
 static const int UNKNOWN_PANEL_LOCATION = 0;
@@ -114,6 +124,13 @@ static const int LANDSCAPE		= 1;
 static const int PORTRAIT		= 2;
 static const int FLIPPED_LANDSCAPE = 4;
 static const int FLIPPED_PORTRAIT  = 8;
+
+//midi constants
+static const int MIDI_VIRTUAL = 0;
+static const int MIDI_USB = 1;
+static const int MIDI_BLUETOOTH = 2;
+static const int MIDI_IN = 0;
+static const int MIDI_OUT = 1;
 
 
 //support structure for cylonStruct for holding the properties of a given device in a single struct
@@ -136,6 +153,7 @@ struct deviceStruct
 	uint32_t				controllerIndex; //device's index in the pointerDevices list if type is 9
 	uint32_t				storageIndex;
 	uint32_t				sensorsIndex;
+	uint32_t 				midiIndex; //device's index in the midiDevices list if type is 30
 
 };
 //END deviceStruct
@@ -240,6 +258,35 @@ struct storageStruct
 	uint32_t isEmulated;
 };
 
+//struct for representing a MIDI port
+struct midiPortStruct
+{
+	std::string name;
+	uint32_t number;
+	uint32_t type; //IN = 0, OUT = 1
+};
+
+//struct for representing a MIDI device
+struct midiStruct
+{
+	struct deviceStruct superDevice; //parent deviceStruct object
+
+	uint32_t id;
+	uint32_t type; //virtual = 0, usb = 1, bluetooth = 2
+
+	//Ports
+	uint32_t outCount;
+	uint32_t inCount;
+	std::list<struct midiPortStruct> ports;
+
+	//String names and numbers
+	std::string vendorName;
+	std::string deviceName;
+	std::string productName;
+	std::string versionNumber;
+	std::string serialNumber;
+};
+
 //struct definition for storing user and system data from a WinRT based machine for later use
 struct cylonStruct
 {
@@ -282,7 +329,6 @@ struct cylonStruct
 	uint64_t					bytesAvails;
 
 	//account picture
-	//TODO add picture location from IStorageFile
 	std::string					pictureType;
 	std::string					picturePath;
 	uintptr_t					pictureLocation;
@@ -301,6 +347,7 @@ struct cylonStruct
 	std::list<struct controllerStruct> controllers;
 	std::list<struct sensorStruct> sensors;
 	std::list<struct storageStruct> storages;
+	std::list<struct midiStruct> midiDevices;
 	struct mouseStruct mice;
 
 	//error

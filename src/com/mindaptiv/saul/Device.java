@@ -247,6 +247,7 @@ public class Device
 		this.vendorID		 = 0;
 		this.sensorsIndex	 = 0;
 		this.storageIndex    = 0;
+		this.midiIndex = 0;
 		
 		//set orientation
 		if(display.getRotation() == Surface.ROTATION_0)
@@ -305,6 +306,7 @@ public class Device
 		this.id				= "0";
 		this.sensorsIndex   = 0;
 		this.orientation     = NO_ROTATION;
+		this.midiIndex = 0;
 		
 		//set device type
 		this.deviceType = Device.STORAGE_TYPE;
@@ -337,6 +339,7 @@ public class Device
 		this.testMask = 0;
 		this.id = "0";
 		this.orientation     = NO_ROTATION;
+		this.midiIndex = 0;
 		
 		//set device type
 		this.deviceType = Device.RUMBLE_TYPE;
@@ -361,6 +364,7 @@ public class Device
 		this.id            = "0";
 		this.isDefault	   = 0;
 		this.orientation     = NO_ROTATION;
+		this.midiIndex = 0;
 		
 		//set device type to locationAware
 		this.deviceType = Device.LOCATION_AWARE_TYPE;
@@ -394,6 +398,7 @@ public class Device
 		this.testMask = 0;
 		this.id = "0";
 		this.orientation     = 0;
+		this.midiIndex = 0;
 		
 		//set device type to sensor
 		this.deviceType = Device.SENSOR_TYPE;
@@ -419,6 +424,7 @@ public class Device
 		this.testMask 		= 0;
 		this.sensorsIndex 	= 0;
 		this.isDefault		= 0;
+		this.midiIndex = 0;
 		
 		//set device type to camera
 		this.deviceType = Device.VIDEO_CAPTURE_TYPE;
@@ -460,6 +466,7 @@ public class Device
 		this.testMask 		= 0;
 		this.sensorsIndex 	= 0;
 		this.isDefault		= 0;
+		this.midiIndex = 0;
 		
 		//set device type to camera
 		this.deviceType = Device.VIDEO_CAPTURE_TYPE;
@@ -502,6 +509,7 @@ public class Device
 		this.storageIndex		= 0;
 		this.sensorsIndex		= 0;
 		this.testMask			= 0;
+		this.midiIndex = 0;
 		
 		//Set is default (adapter we retrieve is the default one by way of Android's API)
 		this.isDefault = 1;
@@ -546,6 +554,7 @@ public class Device
 		this.storageIndex	= 0;
 		this.sensorsIndex	= 0;
 		this.testMask		= 0;
+		this.midiIndex = 0;
 	}
 
 	//for MIDI devices
@@ -564,6 +573,7 @@ public class Device
 		this.sensorsIndex = 0;
 		this.testMask = 0;
 		this.vendorID = 0;
+		this.midiIndex = 0;
 
 		//Set device type
 		this.deviceType = 30;

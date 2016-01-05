@@ -1547,7 +1547,7 @@ public class Cylon
                 for(int i = 0; i < infos.length; i++)
                 {
                     //TODO test to see if devices need to be open before we can check their info
-
+                    //TODO test with physical devices
                     //Create the Midi object
                     Device device = new Device(infos[i]);
                     Midi midiDevice = new Midi(infos[i], device); //we will change the super device later
@@ -1573,6 +1573,7 @@ public class Cylon
         this.displays		 = new LinkedList<Display>();
         this.storages		 = new LinkedList<Storage>();
         this.sensors		 = new LinkedList<Sensor>();
+        this.midiDevices     = new LinkedList<Midi>();
 
         //wrap all other device producers
         produceInputDevices();
