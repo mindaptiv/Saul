@@ -1102,6 +1102,13 @@ public class Cylon
             bytesAvails = 0;
 
             //Create new File system stats
+            //TODO FIX THIS :D
+            File file = new File(usbDevices.get(key).getDeviceName());
+            if(!(file.exists()))
+            {
+                continue;
+            }
+
             StatFs stats = new StatFs(usbDevices.get(key).getDeviceName());
 
             //get size in bytes
@@ -1671,6 +1678,9 @@ public class Cylon
 
                 //test
                 controllers.get(i).keycode = key;
+
+                //TEST
+                Log.i("Saul", "Keycode: " + key);
 
                 //parse event code
                 //parse keycode
