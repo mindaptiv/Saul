@@ -763,13 +763,14 @@ public class Cylon
             //build controller (if appropriate)
             if (device.deviceType == Device.CONTROLLER_TYPE)
             {
-                Controller controller = new Controller(device, devices[i]);
+                //set the controller index of the corresponding device to what its index WILL be upon insertion
+                this.detectedDevices.getLast().controllerIndex = this.controllers.size();
 
-                //insert into controllers
+                //Build controller
+                Controller controller = new Controller(this.detectedDevices.getLast(), devices[i]);
+
+                //insert into end of controllers list
                 this.controllers.addLast(controller);
-
-                //set the controller index of the corresponding device
-                device.controllerIndex = this.controllers.size() - 1;
             }
         }//end for
 
@@ -795,15 +796,17 @@ public class Cylon
                 //Create new device using Display
                 Device device = new Device(displaysies[i]);
 
+                //set index of what the display will be
+                device.displayIndex = this.displays.size();
+
                 //add to devices list
                 this.detectedDevices.addLast(device);
 
                 //Create display device
-                com.mindaptiv.saul.Display display = new Display(displaysies[i], displayContext, device);
+                com.mindaptiv.saul.Display display = new Display(displaysies[i], displayContext, this.detectedDevices.getLast());
 
                 //Add to list of displays
                 this.displays.addLast(display);
-                device.displayIndex = this.displays.size() - 1;
             }//END FOR
         }//END if
         else
@@ -1101,14 +1104,14 @@ public class Cylon
             totalBytes  = 0;
             bytesAvails = 0;
 
-            //Create new File system stats
-            //TODO FIX THIS :D
+            //Make sure file exists first
             File file = new File(usbDevices.get(key).getDeviceName());
             if(!(file.exists()))
             {
                 continue;
             }
 
+            //Create new File system stats
             StatFs stats = new StatFs(usbDevices.get(key).getDeviceName());
 
             //get size in bytes
@@ -1385,6 +1388,7 @@ public class Cylon
                 }
 
             }
+            //TODO check API level
             catch (CameraAccessException e)
             {
                 //Bail!
@@ -1676,11 +1680,8 @@ public class Cylon
                 //Variable declaration
                 int key = event.getKeyCode();
 
-                //test
+                //get keycode
                 controllers.get(i).keycode = key;
-
-                //TEST
-                Log.i("Saul", "Keycode: " + key);
 
                 //parse event code
                 //parse keycode

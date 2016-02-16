@@ -272,6 +272,7 @@ public class Device
 		}
 		
 		//Set name
+		//TODO: check API level
 		this.name = display.getName();
 		
 		//Set id

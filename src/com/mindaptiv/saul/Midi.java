@@ -48,6 +48,7 @@ public class Midi
         this.ports = new LinkedList<MidiPort>();
 
         //Set type
+        //TODO check API level
         int infoType = info.getType();
 
         if(infoType == MidiDeviceInfo.TYPE_BLUETOOTH)
