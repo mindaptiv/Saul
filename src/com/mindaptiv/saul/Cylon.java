@@ -1072,12 +1072,16 @@ public class Cylon
 
             //Create new Device object
             Device device = new Device(paths[i], isDefault);
+
+            //set to what storage index WILL be
+            device.storageIndex = this.storages.size();
+
+            //add to detected devices
             this.detectedDevices.addLast(device);
 
-            //Create new Storage object
-            Storage storage = new Storage(device, paths[i], bytesAvails, totalBytes, isEmulated);
+            //Create new Storage object and place at end of list
+            Storage storage = new Storage(this.detectedDevices.getLast(), paths[i], bytesAvails, totalBytes, isEmulated);
             this.storages.addLast(storage);
-            this.detectedDevices.getLast().storageIndex = this.storages.size() - 1;
         }//END for
 
     }//end produce storage
@@ -1133,12 +1137,16 @@ public class Cylon
             {
                 //Create new Device object
                 Device device = new Device(usbDevices.get(key).getDeviceName(), isDefaultEmulated);
+
+                //set to what storage index WILL be
+                device.storageIndex = this.storages.size();
+
+                //insert into end of list
                 this.detectedDevices.addLast(device);
 
-                //Create new Storage object
-                Storage storage = new Storage(device, usbDevices.get(key).getDeviceName(), bytesAvails, totalBytes, isDefaultEmulated);
+                //Create new Storage object and save into list
+                Storage storage = new Storage(this.detectedDevices.getLast(), usbDevices.get(key).getDeviceName(), bytesAvails, totalBytes, isDefaultEmulated);
                 this.storages.addLast(storage);
-                this.detectedDevices.getLast().storageIndex = this.storages.size() - 1;
             }
         }
 
@@ -1197,12 +1205,18 @@ public class Cylon
                     {
                         //Create new Device object
                         Device device = new Device(file.getAbsolutePath(), isDefaultEmulated);
+
+                        //set storage index to what it WILL be
+                        device.storageIndex = this.storages.size();
+
+                        //place at end of list
                         this.detectedDevices.addLast(device);
 
                         //Create new Storage object
-                        Storage storage = new Storage(device, file.getAbsolutePath(), bytesAvails, totalBytes, isDefaultEmulated);
+                        Storage storage = new Storage(this.detectedDevices.getLast(), file.getAbsolutePath(), bytesAvails, totalBytes, isDefaultEmulated);
+
+                        //place at end of list
                         this.storages.addLast(storage);
-                        this.detectedDevices.getLast().storageIndex = this.storages.size() - 1;
                     }//END STORED
                 } //END IF
             }//END FOR
@@ -1337,11 +1351,18 @@ public class Cylon
                 defaulty = 1;
             }//end IF
 
+            //Create Device
             Device device = new Device(sensorList.get(i), defaulty);
-            Sensor sensor = new Sensor(sensorList.get(i), device);
-            sensors.addLast(sensor);
-            device.sensorsIndex = sensors.size() - 1;
+
+            //Set sensors index to what it WILL be
+            device.sensorsIndex = sensors.size();
+
+            //place at end of list
             this.detectedDevices.addLast(device);
+
+            //Create Sensor
+            Sensor sensor = new Sensor(sensorList.get(i), this.detectedDevices.getLast());
+            sensors.addLast(sensor);
         }
     }
 
@@ -1559,18 +1580,23 @@ public class Cylon
                 {
                     //TODO test to see if devices need to be open before we can check their info
                     //TODO test with physical devices
-                    //Create the Midi object
+                    //Create the Device object
                     Device device = new Device(infos[i]);
-                    Midi midiDevice = new Midi(infos[i], device); //we will change the super device later
+
+                    //set to what midi index value WILL be
+                    device.midiIndex = this.midiDevices.size();
+
+                    //add to detected devices
+                    this.detectedDevices.addLast(device);
+
+                    //Create Midi object
+                    Midi midiDevice = new Midi(infos[i], this.detectedDevices.getLast()); //we will change the super device later
 
                     //NOTE: As of this writing the only USB devices we are retrieving in the USB producer are storage,
                     //so no need to check mapping here (yet?) since there wont already be retrieved USB MIDI devices in the detectedDevices list
 
                     //Add to lists and synchronize
-                    this.detectedDevices.addLast(device);
                     this.midiDevices.addLast(midiDevice);
-                    this.midiDevices.getLast().superDevice = this.detectedDevices.getLast();
-                    this.detectedDevices.getLast().midiIndex = this.midiDevices.size() - 1;
                 }//END FOR
             }//END if MIDI supported
         } //END if marshmallow
