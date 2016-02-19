@@ -191,6 +191,9 @@ public class Cylon
 
     //error
     private int error;
+
+    //native conversion tracker
+    private boolean nativeConverted;
     //END variable declaration
 
     //Constructor
@@ -200,6 +203,9 @@ public class Cylon
         this.context = context;
         this.app     = app;
         this.activity = activity;
+
+        //native data conversion
+        nativeConverted = false;
 
         //producers (that can be called w/o permissions requests)
         this.produceDeviceName();
@@ -1988,17 +1994,23 @@ public class Cylon
         }
 
         Log.i("Saul", "Error Code: " + this.error + "\n");
+
+        //JNI Test
         //Log.i("Saul", stringFromJNI());
         //Log.i("Saul", stringTest(this));
         //Log.i("Saul", buildCylon(this));
-        buildCylon(this);
+        //helloLog("This will log to LogCat via the native call.");
+        //END JNI Test
 
-        //Native Test!!!
-        helloLog("This will log to LogCat via the native call.");
+        //JNI Calls
+        Log.i("Saul", "Conversion Status: " + this.nativeConverted);
+        buildCylon(this);
+        Log.i("Saul", "Conversion Status: " + this.nativeConverted);
     }//end testLog
 
     private native void helloLog(String logThis);
     private native String stringFromJNI();
     public native String stringTest(Cylon saul);
     private native String buildCylon(Cylon saul);
+    private native boolean isNativeConverted(Cylon saul);
 }//END class

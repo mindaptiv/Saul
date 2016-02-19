@@ -10,6 +10,7 @@ public class Sensor
 {
 	//Variable Declaration
 	Device  superDevice;
+	int devicesIndex;
 	int minDelay;
 	int type;  //based on Android Sensor values
 	int version;

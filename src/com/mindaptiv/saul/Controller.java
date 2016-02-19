@@ -14,6 +14,7 @@ public class Controller
 {
 	//parent device
 	Device superDevice;
+	int devicesIndex;
 	
 	//player index
 	int userIndex;

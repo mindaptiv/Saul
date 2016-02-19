@@ -18,6 +18,7 @@ public class Midi
 
     //"Parent" device structure
     Device superDevice;
+    int devicesIndex;
 
     //Virtual/Bluetooth/USB
     int type;

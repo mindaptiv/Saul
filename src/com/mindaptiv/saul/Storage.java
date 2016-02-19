@@ -9,6 +9,7 @@ public class Storage
 	//Variable Declaration
 	//Related Device object for this Storage object
 	Device superDevice;
+	int devicesIndex;
 	
 	//Path to access the storage device in the file system
 	String path;

@@ -26,7 +26,16 @@
 
 extern "C"
 {
+	//Track if native conversion is completed
+	JNIEXPORT jboolean JNICALL
+	Java_com_mindaptiv_saul_Cylon_isNativeConverted(JNIEnv* env, jobject obj)
+	{
+		//Variable Declaration
+		jboolean returnValue = JNI_TRUE;
 
+		//return
+		return returnValue;
+	}
 
 	//Test method
 	JNIEXPORT jstring JNICALL
@@ -806,6 +815,10 @@ extern "C"
 		cylon.minAppAddress = 0;
 		cylon.maxAppAddress = 0;
 		cylon.osArchitecture = 0;
+
+		//Confirm we've reached this point, so native conversion should be done
+		jfieldID fid_nativeConverted = env->GetFieldID(cylonClass, "nativeConverted", "Z");
+		env->SetBooleanField(saul, fid_nativeConverted, true);
 
 		//temp return
 		return j_username;

@@ -22,6 +22,7 @@ public class Display
 	
 	//parent device
 	Device superDevice;
+	int devicesIndex;
 	
 	//properties
 	/* 
