@@ -2031,5 +2031,5 @@ public class Cylon
     }//end testLog
 
     private native String buildCylon(Cylon saul);
-    private native void updateController(Controller controller);
+    private native void updateController(Controller controller, int controllerIndex);
 }//END class

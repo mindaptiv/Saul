@@ -1,6 +1,7 @@
 #include <jni.h>
 #include <string>
 #include <android/log.h>
+#include <list>
 #include "Cylon.h"
 #define DEBUG_TAG "NDK_Android_Saul_Test"
 
@@ -26,6 +27,9 @@
 
 extern "C"
 {
+	//Variable Declaration
+	struct cylonStruct testCylon;
+
 	//Converters
 	//Convert jstring to std::string
 	//Credit to trashkalmar @ stackoverflow for conversion code
@@ -790,13 +794,68 @@ extern "C"
 		jfieldID fid_nativeConverted = env->GetFieldID(cylonClass, "nativeConverted", "Z");
 		env->SetBooleanField(saul, fid_nativeConverted, true);
 
+		//set test cylon
+		testCylon = cylon;
+
 		//temp return
 		return j_username;
 	}
 
 	JNIEXPORT jstring JNICALL
-	Java_com_mindaptiv_saul_Cylon_updateController(JNIEnv *env, jobject controller)
+	Java_com_mindaptiv_saul_Cylon_updateController(JNIEnv *env, jobject controller, jint controllerIndex)
 	{
+		//Grab index value
+		uint32_t index = (uint32_t)controllerIndex;
 
-	}
-}
+		//Retrieve class
+		jclass controllerClass = env->GetObjectClass(controller);
+
+		//Retrieve Fields
+		//===INTS===
+		//jfieldID fid_packetNumber 	= env->GetFieldID(controllerClass, "packetNumber", "I");
+		jfieldID fid_buttons 		= env->GetFieldID(controllerClass, "buttons", "I");
+		//jfieldID fid_userIndex 		= env->GetFieldID(controllerClass, "userIndex", "I");
+		//jfieldID fid_deviceIndex	= env->GetFieldID(controllerClass, "devicesIndex", "I");
+
+		//===FLOATS===
+		jfieldID fid_fLeftTrigger 	= env->GetFieldID(controllerClass, "fLeftTrigger", "F");
+		jfieldID fid_fRightTrigger 	= env->GetFieldID(controllerClass, "fRightTrigger", "F");
+		jfieldID fid_fThumbLeftX 	= env->GetFieldID(controllerClass, "fThumbLeftX", "F");
+		jfieldID fid_fThumbLeftY	= env->GetFieldID(controllerClass, "fThumbLeftY", "F");
+		jfieldID fid_fThumbRightX 	= env->GetFieldID(controllerClass, "fThumbRightX", "F");
+		jfieldID fid_fThumbRightY 	= env->GetFieldID(controllerClass, "fThumbRightY", "F");
+
+		//===DEVICE===
+		//jfieldID fid_superDevice = env->GetFieldID(controllerClass, "superDevice", "Lcom/mindaptiv/saul/Device;");
+
+		//Retrieve object
+		//jobject j_device = env->GetObjectField(controller, fid_superDevice);
+		//END Retrieve Fields
+
+		//set counter
+		int counter = 0;
+
+		//Identify and isolate correct controllerStruct in controllers
+		for(std::list<controllerStruct>::iterator iterator = testCylon.controllers.begin(), end = testCylon.controllers.end(); iterator != end; ++iterator)
+		{
+			//if the iterated controllerStruct is at the requested index in the list
+			if(counter == index)
+			{
+				//Update the axes and buttons mask
+				//set controllerStruct uint16_t's
+				iterator->buttons = (uint16_t)env->GetIntField(controller, fid_buttons);
+
+				//set controllerStruct floats
+				iterator->leftTrigger 	= (float)env->GetFloatField(controller, fid_fLeftTrigger);
+				iterator->rightTrigger 	= (float)env->GetFloatField(controller, fid_fRightTrigger);
+				iterator->thumbLeftX 	= (float)env->GetFloatField(controller, fid_fThumbLeftX);
+				iterator->thumbLeftY 	= (float)env->GetFloatField(controller, fid_fThumbLeftY);
+				iterator->thumbRightX 	= (float)env->GetFloatField(controller, fid_fThumbRightX);
+				iterator->thumbRightY 	= (float)env->GetFloatField(controller, fid_fThumbRightY);
+			}//END if
+
+			//increment the counter
+			counter++;
+		}//END For
+	}//END updateController()
+}//END extern C
