@@ -1687,6 +1687,14 @@ public class Cylon
                 controllers.get(i).fThumbRightX  = event.getAxisValue(MotionEvent.AXIS_Z);
                 controllers.get(i).fThumbRightY  = -event.getAxisValue(MotionEvent.AXIS_RZ);
 
+                //TODO set native controller info
+                //check if native data is set, only try to update C side if already converted
+                if(this.nativeConverted)
+                {
+
+                }
+
+
                 //return true because event was not an anomaly
                 return true;
             }//end if
@@ -1722,8 +1730,8 @@ public class Cylon
                 //get keycode
                 controllers.get(i).keycode = key;
 
-                //parse event code
-                //parse keycode
+                //TODO handle native controllers
+                //parse event code/keycode
                 if (key == KeyEvent.KEYCODE_BUTTON_A)
                 {
                     if(event.getAction() == KeyEvent.ACTION_DOWN || event.getAction() == KeyEvent.ACTION_MULTIPLE)
@@ -2022,9 +2030,6 @@ public class Cylon
         Log.i("Saul", "Conversion Status: " + this.nativeConverted);
     }//end testLog
 
-    private native void helloLog(String logThis);
-    private native String stringFromJNI();
-    public native String stringTest(Cylon saul);
     private native String buildCylon(Cylon saul);
-    private native boolean isNativeConverted(Cylon saul);
+    private native void updateController(Controller controller);
 }//END class

@@ -26,26 +26,6 @@
 
 extern "C"
 {
-	//Track if native conversion is completed
-	JNIEXPORT jboolean JNICALL
-	Java_com_mindaptiv_saul_Cylon_isNativeConverted(JNIEnv* env, jobject obj)
-	{
-		//Variable Declaration
-		jboolean returnValue = JNI_TRUE;
-
-		//return
-		return returnValue;
-	}
-	//END isNativeConverted
-
-	//Test method
-	JNIEXPORT jstring JNICALL
-	Java_com_mindaptiv_saul_Cylon_stringFromJNI (JNIEnv *env, jobject obj)
-	{
-		return env->NewStringUTF("GLARG");
-	}
-	//END stringFromJNI
-
 	//Converters
 	//Convert jstring to std::string
 	//Credit to trashkalmar @ stackoverflow for conversion code
@@ -63,31 +43,7 @@ extern "C"
 	}
 	//END GetJStringContent
 
-	//Create cylonStruct and report back the size to Java
-	//Cred to Robert @ stackoverflow for retrieval code
-	JNIEXPORT jstring JNICALL
-	Java_com_mindaptiv_saul_Cylon_stringTest (JNIEnv *env, jobject obj, jobject saul)
-	{
-		//Retrieve class
-		jclass cylonClass = env->GetObjectClass(saul);
-
-		//get field ID
-	    jfieldID fid_username = env->GetFieldID(cylonClass, "username", "Ljava/lang/String;");
-
-		//get jstring
-		jstring jstr = (jstring) env->GetObjectField(saul, fid_username);
-
-		//get std::string
-		std::string username;
-		GetJStringContent(env, jstr, username);
-
-		//test
-		const char* nativeString = env->GetStringUTFChars(jstr,0);
-		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", nativeString);
-		return jstr;
-	}
-	//END stringTest
-
+	//Convert Device to deviceStruct
 	deviceStruct buildDevice(JNIEnv *env, jobject device)
 	{
 		//Retrieve class
@@ -96,6 +52,7 @@ extern "C"
 		//Create device
 		struct deviceStruct nativeDevice;
 
+		//Cred to Robert @ stackoverflow for retrieval code
 		//===STRINGS===
 		//Retrieve fields
 		jfieldID fid_name 	= env->GetFieldID(deviceClass, "name", "Ljava/lang/String;");
@@ -540,7 +497,7 @@ extern "C"
 	//END buildMidi
 
 	JNIEXPORT jstring JNICALL
-	Java_com_mindaptiv_saul_Cylon_buildCylon(JNIEnv *env, jobject obj, jobject saul)
+	Java_com_mindaptiv_saul_Cylon_buildCylon(JNIEnv *env, jobject saul)
 	{
 		//Retrieve class
 		jclass cylonClass = env->GetObjectClass(saul);
@@ -835,5 +792,11 @@ extern "C"
 
 		//temp return
 		return j_username;
+	}
+
+	JNIEXPORT jstring JNICALL
+	Java_com_mindaptiv_saul_Cylon_updateController(JNIEnv *env, jobject controller)
+	{
+
 	}
 }
