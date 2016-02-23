@@ -36,6 +36,7 @@ extern "C"
 		//return
 		return returnValue;
 	}
+	//END isNativeConverted
 
 	//Test method
 	JNIEXPORT jstring JNICALL
@@ -43,6 +44,7 @@ extern "C"
 	{
 		return env->NewStringUTF("GLARG");
 	}
+	//END stringFromJNI
 
 	//Converters
 	//Convert jstring to std::string
@@ -59,7 +61,7 @@ extern "C"
 		ARes = s;
 		AEnv->ReleaseStringUTFChars(AStr, s);
 	}
-
+	//END GetJStringContent
 
 	//Create cylonStruct and report back the size to Java
 	//Cred to Robert @ stackoverflow for retrieval code
@@ -84,6 +86,7 @@ extern "C"
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "NDK:LC: [%s]", nativeString);
 		return jstr;
 	}
+	//END stringTest
 
 	deviceStruct buildDevice(JNIEnv *env, jobject device)
 	{
@@ -161,13 +164,14 @@ extern "C"
 		jfieldID fid_currentRotation		= env->GetFieldID(displayClass, "currentRotation", "I");
 		jfieldID fid_isStereoscopicEnabled 	= env->GetFieldID(displayClass, "isStereoscopicEnabled", "I");
 		jfieldID fid_nativeRotation 		= env->GetFieldID(displayClass, "nativeRotation", "I");
+		jfieldID fid_deviceIndex			= env->GetFieldID(displayClass, "devicesIndex", "I");
 
 		//set displayStruct uint32_ts
 		nativeDisplay.rotationPreference 	= (uint32_t)env->GetIntField(display, fid_rotationPreference);
 		nativeDisplay.currentRotation 		= (uint32_t)env->GetIntField(display, fid_currentRotation);
 		nativeDisplay.nativeRotation 		= (uint32_t)env->GetIntField(display, fid_nativeRotation);
 		nativeDisplay.isStereoscopicEnabled = (uint32_t)env->GetIntField(display, fid_isStereoscopicEnabled);
-
+		nativeDisplay.deviceIndex			= (uint32_t)env->GetIntField(display, fid_deviceIndex);
 
 		//===FLOATS===
 		//Retrieve fields
@@ -224,6 +228,7 @@ extern "C"
 		jfieldID fid_maxDelay 				= env->GetFieldID(sensorClass, "maxDelay", "I");
 		jfieldID fid_reportingMode 			= env->GetFieldID(sensorClass, "reportingMode", "I");
 		jfieldID fid_isWakeUpSensor 		= env->GetFieldID(sensorClass, "isWakeUpSensor", "I");
+		jfieldID fid_deviceIndex			= env->GetFieldID(sensorClass, "devicesIndex", "I");
 
 		//set sensortStruct uint32_t's
 		nativeSensor.minDelay 				= (uint32_t)env->GetIntField(sensor, fid_minDelay);
@@ -234,6 +239,7 @@ extern "C"
 		nativeSensor.maxDelay 				= (uint32_t)env->GetIntField(sensor, fid_maxDelay);
 		nativeSensor.reportingMode 			= (uint32_t)env->GetIntField(sensor, fid_reportingMode);
 		nativeSensor.isWakeUpSensor 		= (uint32_t)env->GetIntField(sensor, fid_isWakeUpSensor);
+		nativeSensor.deviceIndex			= (uint32_t)env->GetIntField(sensor, fid_deviceIndex);
 
 
 		//===FLOATS===
@@ -291,10 +297,12 @@ extern "C"
 
 		//===INTS===
 		//Retrieve fields
-		jfieldID fid_isEmulated = env->GetFieldID(storageClass, "isEmulated", "I");
+		jfieldID fid_isEmulated 	= env->GetFieldID(storageClass, "isEmulated", "I");
+		jfieldID fid_deviceIndex	= env->GetFieldID(storageClass, "devicesIndex", "I");
 
 		//set storageStruct uint32_t's
 		nativeStorage.isEmulated = (uint32_t)env->GetIntField(storage, fid_isEmulated);
+		nativeStorage.deviceIndex = (uint32_t)env->GetIntField(storage, fid_deviceIndex);
 
 
 		//===LONGS===
@@ -349,10 +357,12 @@ extern "C"
 		jfieldID fid_packetNumber 	= env->GetFieldID(controllerClass, "packetNumber", "I");
 		jfieldID fid_buttons 		= env->GetFieldID(controllerClass, "buttons", "I");
 		jfieldID fid_userIndex 		= env->GetFieldID(controllerClass, "userIndex", "I");
+		jfieldID fid_deviceIndex	= env->GetFieldID(controllerClass, "devicesIndex", "I");
 
 		//set controllerStruct uint32_t's
 		nativeController.packetNumber 	= (uint32_t)env->GetIntField(controller, fid_packetNumber);
 		nativeController.userIndex 		= (uint32_t)env->GetIntField(controller, fid_userIndex);
+		nativeController.deviceIndex	= (uint32_t)env->GetIntField(controller, fid_deviceIndex);
 
 		//set controllerStruct uint16_t's
 		nativeController.buttons = (uint16_t)env->GetIntField(controller, fid_buttons);
@@ -413,12 +423,12 @@ extern "C"
 		nativeMidiPort.name = name;
 
 		//===INTS===
-		jfieldID fid_number = env->GetFieldID(midiPortClass, "number", "I");
-		jfieldID fid_type = env->GetFieldID(midiPortClass, "type", "I");
+		jfieldID fid_number 	= env->GetFieldID(midiPortClass, "number", "I");
+		jfieldID fid_type 		= env->GetFieldID(midiPortClass, "type", "I");
 
 		//set midiPortStruct uint32_t's
-		nativeMidiPort.type = (uint32_t)env->GetIntField(midiPort, fid_type);
-		nativeMidiPort.number = (uint32_t)env->GetIntField(midiPort, fid_number);
+		nativeMidiPort.type 	= (uint32_t)env->GetIntField(midiPort, fid_type);
+		nativeMidiPort.number 	= (uint32_t)env->GetIntField(midiPort, fid_number);
 
 		//Return
 		return nativeMidiPort;
@@ -468,16 +478,18 @@ extern "C"
 
 		//===INTS===
 		//Retrieve fields
-		jfieldID fid_type = env->GetFieldID(midiClass, "type", "I");
-		jfieldID fid_id = env->GetFieldID(midiClass, "id", "I");
-		jfieldID fid_outCount = env->GetFieldID(midiClass, "outCount", "I");
-		jfieldID fid_inCount = env->GetFieldID(midiClass, "inCount", "I");
+		jfieldID fid_type 			= env->GetFieldID(midiClass, "type", "I");
+		jfieldID fid_id 			= env->GetFieldID(midiClass, "id", "I");
+		jfieldID fid_outCount 		= env->GetFieldID(midiClass, "outCount", "I");
+		jfieldID fid_inCount		= env->GetFieldID(midiClass, "inCount", "I");
+		jfieldID fid_deviceIndex	= env->GetFieldID(midiClass, "devicesIndex", "I");
 
 		//set midiStruct ints
 		nativeMidi.type = (uint32_t)env->GetIntField(midi, fid_type);
 		nativeMidi.id = (uint32_t)env->GetIntField(midi, fid_id);
 		nativeMidi.outCount = (uint32_t)env->GetIntField(midi, fid_outCount);
 		nativeMidi.inCount = (uint32_t)env->GetIntField(midi, fid_inCount);
+		nativeMidi.deviceIndex = (uint32_t)env->GetIntField(midi, fid_deviceIndex);
 
 		//===DEVICE===
 		//Retrieve field
@@ -525,6 +537,7 @@ extern "C"
 		//Return
 		return nativeMidi;
 	}
+	//END buildMidi
 
 	JNIEXPORT jstring JNICALL
 	Java_com_mindaptiv_saul_Cylon_buildCylon(JNIEnv *env, jobject obj, jobject saul)
