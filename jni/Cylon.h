@@ -162,6 +162,7 @@ struct deviceStruct
 struct displayStruct
 {
 	struct deviceStruct superDevice; //parent deviceStruct object
+	uint32_t 	deviceIndex;
 
 	uint32_t	rotationPreference;
 	uint32_t	currentRotation;
@@ -186,7 +187,7 @@ struct displayStruct
 struct controllerStruct
 {
 	struct deviceStruct superDevice;
-
+	uint32_t deviceIndex;
 	uint32_t userIndex; //player number 0-3
 
 	//xinput state
@@ -205,6 +206,7 @@ struct controllerStruct
 struct mouseStruct
 {
 	struct deviceStruct superDevice; //parent deviceStruct object
+	uint32_t 	deviceIndex;
 
 	//properties of available mice
 	uint32_t anyLeftRightSwapped;
@@ -218,6 +220,7 @@ struct mouseStruct
 struct sensorStruct
 {
 	struct deviceStruct superDevice; //parent deviceStruct object
+	uint32_t 	deviceIndex;
 
 	//data from Android 16+
 	uint32_t minDelay;
@@ -246,6 +249,7 @@ struct sensorStruct
 struct storageStruct
 {
 	struct deviceStruct superDevice; //parent deviceStruct object
+	uint32_t 	deviceIndex;
 
 	//Path to access the storage device in the file system
 	std::string path;
@@ -270,6 +274,7 @@ struct midiPortStruct
 struct midiStruct
 {
 	struct deviceStruct superDevice; //parent deviceStruct object
+	uint32_t 	deviceIndex;
 
 	uint32_t id;
 	uint32_t type; //virtual = 0, usb = 1, bluetooth = 2

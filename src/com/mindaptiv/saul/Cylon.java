@@ -774,6 +774,7 @@ public class Cylon
 
                 //Build controller
                 Controller controller = new Controller(this.detectedDevices.getLast(), devices[i]);
+                controller.devicesIndex = this.detectedDevices.size() - 1;
 
                 //insert into end of controllers list
                 this.controllers.addLast(controller);
@@ -810,6 +811,7 @@ public class Cylon
 
                 //Create display device
                 com.mindaptiv.saul.Display display = new Display(displaysies[i], displayContext, this.detectedDevices.getLast());
+                display.devicesIndex = this.detectedDevices.size() - 1;
 
                 //Add to list of displays
                 this.displays.addLast(display);
@@ -1087,6 +1089,7 @@ public class Cylon
 
             //Create new Storage object and place at end of list
             Storage storage = new Storage(this.detectedDevices.getLast(), paths[i], bytesAvails, totalBytes, isEmulated);
+            storage.devicesIndex = this.detectedDevices.size() - 1;
             this.storages.addLast(storage);
         }//END for
 
@@ -1152,6 +1155,7 @@ public class Cylon
 
                 //Create new Storage object and save into list
                 Storage storage = new Storage(this.detectedDevices.getLast(), usbDevices.get(key).getDeviceName(), bytesAvails, totalBytes, isDefaultEmulated);
+                storage.devicesIndex = this.detectedDevices.size() - 1;
                 this.storages.addLast(storage);
             }
         }
@@ -1220,6 +1224,7 @@ public class Cylon
 
                         //Create new Storage object
                         Storage storage = new Storage(this.detectedDevices.getLast(), file.getAbsolutePath(), bytesAvails, totalBytes, isDefaultEmulated);
+                        storage.devicesIndex = this.detectedDevices.size() - 1;
 
                         //place at end of list
                         this.storages.addLast(storage);
@@ -1368,6 +1373,7 @@ public class Cylon
 
             //Create Sensor
             Sensor sensor = new Sensor(sensorList.get(i), this.detectedDevices.getLast());
+            sensor.devicesIndex = this.detectedDevices.size() - 1;
             sensors.addLast(sensor);
         }
     }
@@ -1596,7 +1602,8 @@ public class Cylon
                     this.detectedDevices.addLast(device);
 
                     //Create Midi object
-                    Midi midiDevice = new Midi(infos[i], this.detectedDevices.getLast()); //we will change the super device later
+                    Midi midiDevice = new Midi(infos[i], this.detectedDevices.getLast());
+                    midiDevice.devicesIndex = this.detectedDevices.size() - 1;
 
                     //NOTE: As of this writing the only USB devices we are retrieving in the USB producer are storage,
                     //so no need to check mapping here (yet?) since there wont already be retrieved USB MIDI devices in the detectedDevices list
@@ -1954,6 +1961,7 @@ public class Cylon
                             "\n" + "          Right Trigger = " + this.controllers.get(i).fRightTrigger +
                             "\n" + "          Buttons = " + this.controllers.get(i).buttons +
                             "\n" + "          User Index = " + this.controllers.get(i).userIndex +
+                            "\n" + "          Device Index = " + this.controllers.get(i).devicesIndex +
                             "\n"
             );
         }
@@ -1965,6 +1973,7 @@ public class Cylon
                     "\n" + "          Raw X DPI = " + this.displays.get(i).rawDPIX +
                     "\n" + "          Raw Y DPI = " + this.displays.get(i).rawDPIY +
                     "\n" + "          Logical DPI = " + this.displays.get(i).logicalDPI +
+                    "\n" + "          Device Index = " + this.displays.get(i).devicesIndex +
                     "\n" + "          Resolution Scale = " + this.displays.get(i).resolutionScale + "\n");
         }
         for(int i =0; i < this.storages.size(); i++)
@@ -1972,7 +1981,10 @@ public class Cylon
             Log.i("Saul", "     Storage #" + i + ": " + "\n" + "          Emulated = " + this.storages.get(i).isEmulated +
                     "\n" + "          Bytes Available = " + this.storages.get(i).bytesAvails +
                     "\n" + "          Total Bytes = " + this.storages.get(i).totalBytes +
-                    "\n" + "          Path = " + this.storages.get(i).path);
+                    "\n" + "          Device Index = " + this.storages.get(i).devicesIndex +
+                    "\n" + "          Path = " + this.storages.get(i).path +
+                    "\n"
+            );
         }
         for(int i =0; i < this.sensors.size(); i++)
         {
@@ -1989,7 +2001,9 @@ public class Cylon
                             "\n" + "          String Type = " + this.sensors.get(i).stringType +
                             "\n" + "          Max Delay = " + this.sensors.get(i).maxDelay +
                             "\n" + "          Reporting Mode = " + this.sensors.get(i).reportingMode +
-                            "\n" + "          Is Wake Up Sensor? = " + this.sensors.get(i).isWakeUpSensor + "\n"
+                            "\n" + "          Is Wake Up Sensor? = " + this.sensors.get(i).isWakeUpSensor +
+                            "\n" + "          Device Index = " + this.sensors.get(i).devicesIndex +
+                            "\n"
             );
         }
 
