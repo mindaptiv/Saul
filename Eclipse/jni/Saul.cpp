@@ -685,6 +685,26 @@ extern "C"
 			//Build Controller
 			controllerStruct newController = buildController(env, j_controller);
 
+			//Set counter
+			int counter = 0;
+
+			//Synch lists
+			for(std::list<deviceStruct>::iterator iterator = cylon.detectedDevices.begin(), end = cylon.detectedDevices.end(); iterator != end; ++iterator)
+			{
+				//if the device index matches that of the index in the list
+				if(counter == newController.deviceIndex)
+				{
+					//set the superDevice
+					newController.superDevice = *iterator;
+
+					//bail
+					break;
+				}
+
+				//increment counter
+				counter++;
+			}
+
 			//Add Controller to end of cylon's controllers list
 			cylon.controllers.push_back(newController);
 		}
@@ -701,6 +721,26 @@ extern "C"
 			//Build displayStruct
 			displayStruct newDisplay = buildDisplay(env, j_display);
 
+			//Set counter
+			int counter = 0;
+
+			//Synch lists
+			for(std::list<deviceStruct>::iterator iterator = cylon.detectedDevices.begin(), end = cylon.detectedDevices.end(); iterator != end; ++iterator)
+			{
+				//if the device index matches that of the index in the list
+				if(counter == newDisplay.deviceIndex)
+				{
+					//set the superDevice
+					newDisplay.superDevice = *iterator;
+
+					//bail
+					break;
+				}
+
+				//increment counter
+				counter++;
+			}
+
 			cylon.displayDevices.push_back(newDisplay);
 		}
 
@@ -715,6 +755,26 @@ extern "C"
 
 			//Build sensorStruct
 			sensorStruct newSensor = buildSensor(env, j_sensor);
+
+			//Set counter
+			int counter = 0;
+
+			//Synch lists
+			for(std::list<deviceStruct>::iterator iterator = cylon.detectedDevices.begin(), end = cylon.detectedDevices.end(); iterator != end; ++iterator)
+			{
+				//if the device index matches that of the index in the list
+				if(counter == newSensor.deviceIndex)
+				{
+					//set the superDevice
+					newSensor.superDevice = *iterator;
+
+					//bail
+					break;
+				}
+
+				//increment counter
+				counter++;
+			}
 
 			//Add to end of list
 			cylon.sensors.push_back(newSensor);
@@ -732,6 +792,26 @@ extern "C"
 			//Build storageStruct
 			storageStruct newStorage = buildStorage(env, j_storage);
 
+			//Set counter
+			int counter = 0;
+
+			//Synch lists
+			for(std::list<deviceStruct>::iterator iterator = cylon.detectedDevices.begin(), end = cylon.detectedDevices.end(); iterator != end; ++iterator)
+			{
+				//if the device index matches that of the index in the list
+				if(counter == newStorage.deviceIndex)
+				{
+					//set the superDevice
+					newStorage.superDevice = *iterator;
+
+					//bail
+					break;
+				}
+
+				//increment counter
+				counter++;
+			}
+
 			//Add to end of list
 			cylon.storages.push_back(newStorage);
 		}
@@ -746,6 +826,26 @@ extern "C"
 
 			//Build midiStruct
 			midiStruct newMidi = buildMidi(env, j_midi);
+
+			//Set counter
+			int counter = 0;
+
+			//Synch lists
+			for(std::list<deviceStruct>::iterator iterator = cylon.detectedDevices.begin(), end = cylon.detectedDevices.end(); iterator != end; ++iterator)
+			{
+				//if the device index matches that of the index in the list
+				if(counter == newMidi.deviceIndex)
+				{
+					//set the superDevice
+					newMidi.superDevice = *iterator;
+
+					//bail
+					break;
+				}
+
+				//increment counter
+				counter++;
+			}
 
 			//Add to end of list
 			cylon.midiDevices.push_back(newMidi);
@@ -852,10 +952,18 @@ extern "C"
 				iterator->thumbLeftY 	= (float)env->GetFloatField(controller, fid_fThumbLeftY);
 				iterator->thumbRightX 	= (float)env->GetFloatField(controller, fid_fThumbRightX);
 				iterator->thumbRightY 	= (float)env->GetFloatField(controller, fid_fThumbRightY);
+
+				//bail
+				break;
 			}//END if
 
 			//increment the counter
 			counter++;
 		}//END For
 	}//END updateController()
+
+	void produceJniLog()
+	{
+
+	}
 }//END extern C
