@@ -1687,13 +1687,11 @@ public class Cylon
                 controllers.get(i).fThumbRightX  = event.getAxisValue(MotionEvent.AXIS_Z);
                 controllers.get(i).fThumbRightY  = -event.getAxisValue(MotionEvent.AXIS_RZ);
 
-                //TODO set native controller info
                 //check if native data is set, only try to update C side if already converted
                 if(this.nativeConverted)
                 {
-
+                    updateController(i, controllers.get(i));
                 }
-
 
                 //return true because event was not an anomaly
                 return true;
@@ -1730,7 +1728,6 @@ public class Cylon
                 //get keycode
                 controllers.get(i).keycode = key;
 
-                //TODO handle native controllers
                 //parse event code/keycode
                 if (key == KeyEvent.KEYCODE_BUTTON_A)
                 {
@@ -1888,6 +1885,12 @@ public class Cylon
                     }
                 }
 
+                //check if native data is set, only try to update C side if already converted
+                if(this.nativeConverted)
+                {
+                    updateController(i, controllers.get(i));
+                }
+
                 //return
                 return true;
             }
@@ -2017,13 +2020,6 @@ public class Cylon
 
         Log.i("Saul", "Error Code: " + this.error + "\n");
 
-        //JNI Test
-        //Log.i("Saul", stringFromJNI());
-        //Log.i("Saul", stringTest(this));
-        //Log.i("Saul", buildCylon(this));
-        //helloLog("This will log to LogCat via the native call.");
-        //END JNI Test
-
         //JNI Calls
         Log.i("Saul", "Conversion Status: " + this.nativeConverted);
         buildCylon(this);
@@ -2031,5 +2027,5 @@ public class Cylon
     }//end testLog
 
     private native String buildCylon(Cylon saul);
-    private native void updateController(Controller controller, int controllerIndex);
+    private native void updateController(int controllerIndex, Controller controller);
 }//END class

@@ -901,21 +901,21 @@ extern "C"
 		return j_username;
 	}
 
-	JNIEXPORT jstring JNICALL
-	Java_com_mindaptiv_saul_Cylon_updateController(JNIEnv *env, jobject controller, jint controllerIndex)
+	JNIEXPORT void JNICALL
+	Java_com_mindaptiv_saul_Cylon_updateController(JNIEnv *env, jobject obj, jint controllerIndex, jobject controller)
 	{
 		//Grab index value
-		uint32_t index = (uint32_t)controllerIndex;
+		int32_t index = (int32_t) controllerIndex;
+
+		//set counter
+		int counter = 0;
 
 		//Retrieve class
 		jclass controllerClass = env->GetObjectClass(controller);
 
 		//Retrieve Fields
 		//===INTS===
-		//jfieldID fid_packetNumber 	= env->GetFieldID(controllerClass, "packetNumber", "I");
 		jfieldID fid_buttons 		= env->GetFieldID(controllerClass, "buttons", "I");
-		//jfieldID fid_userIndex 		= env->GetFieldID(controllerClass, "userIndex", "I");
-		//jfieldID fid_deviceIndex	= env->GetFieldID(controllerClass, "devicesIndex", "I");
 
 		//===FLOATS===
 		jfieldID fid_fLeftTrigger 	= env->GetFieldID(controllerClass, "fLeftTrigger", "F");
@@ -924,16 +924,7 @@ extern "C"
 		jfieldID fid_fThumbLeftY	= env->GetFieldID(controllerClass, "fThumbLeftY", "F");
 		jfieldID fid_fThumbRightX 	= env->GetFieldID(controllerClass, "fThumbRightX", "F");
 		jfieldID fid_fThumbRightY 	= env->GetFieldID(controllerClass, "fThumbRightY", "F");
-
-		//===DEVICE===
-		//jfieldID fid_superDevice = env->GetFieldID(controllerClass, "superDevice", "Lcom/mindaptiv/saul/Device;");
-
-		//Retrieve object
-		//jobject j_device = env->GetObjectField(controller, fid_superDevice);
 		//END Retrieve Fields
-
-		//set counter
-		int counter = 0;
 
 		//Identify and isolate correct controllerStruct in controllers
 		for(std::list<controllerStruct>::iterator iterator = testCylon.controllers.begin(), end = testCylon.controllers.end(); iterator != end; ++iterator)
@@ -941,6 +932,11 @@ extern "C"
 			//if the iterated controllerStruct is at the requested index in the list
 			if(counter == index)
 			{
+				//TODO remove test
+				//TEST
+				__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Buttons before: %d", iterator->buttons);
+				//END TEST
+
 				//Update the axes and buttons mask
 				//set controllerStruct uint16_t's
 				iterator->buttons = (uint16_t)env->GetIntField(controller, fid_buttons);
@@ -953,6 +949,11 @@ extern "C"
 				iterator->thumbRightX 	= (float)env->GetFloatField(controller, fid_fThumbRightX);
 				iterator->thumbRightY 	= (float)env->GetFloatField(controller, fid_fThumbRightY);
 
+				//TODO remove test
+				//TEST
+				__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Buttons after: %d", iterator->buttons);
+				//END TEST
+
 				//bail
 				break;
 			}//END if
@@ -960,10 +961,16 @@ extern "C"
 			//increment the counter
 			counter++;
 		}//END For
+
+
 	}//END updateController()
 
 	void produceJniLog()
 	{
-
-	}
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Cylon @: ");
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Username: %s", testCylon.username.c_str());
+	/*	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "", );
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "", );
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "", );
+	*/}
 }//END extern C
