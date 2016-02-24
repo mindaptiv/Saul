@@ -500,6 +500,46 @@ extern "C"
 	}
 	//END buildMidi
 
+
+	void produceJniLog()
+	{
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Cylon @: "); //TODO put pointer here
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Username: %s", testCylon.username.c_str());
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Time: %d:%d:%d:%d", testCylon.hours, testCylon.minutes, testCylon.seconds, testCylon.milliseconds);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Date: %d, %d/%d/%d", testCylon.day, testCylon.month, testCylon.date, testCylon.year);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Timezone: %d %d %s",testCylon.dst, testCylon.timeZone, testCylon.timeZoneName.c_str() );
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Device Name: %s", testCylon.deviceName.c_str());
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Architecture: %s", testCylon.architecture.c_str());
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Processor Level: %d", testCylon.processorLevel);
+	//__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Processor Count: %ld", testCylon.processorCount);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Page Size: %d", testCylon.pageSize);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Allocation Granularity: %d", testCylon.allocationGranularity);
+	//__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Min App Address: %ld", testCylon.minAppAddress);
+	//__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Max App Address: %ld", testCylon.maxAppAddress);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Hertz: %f", testCylon.hertz);
+	//__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Memory Bytes: %ld", testCylon.memoryBytes);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "OS Architecture: %d", testCylon.osArchitecture);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Low Memory: %d", testCylon.lowMemory);
+	//__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Low Memory Threshold: %ld", testCylon.threshold);
+	//__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Bytes Available: %ld", testCylon.bytesAvails);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Picture Type: %s", testCylon.pictureType.c_str());
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Picture Path: %s", testCylon.picturePath.c_str());
+	//__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Picture Location: %ld", testCylon.pictureLocation);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Installed Device Count: %d", testCylon.installedDeviceCount);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Detected Device Count: %d", testCylon.detectedDeviceCount);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Portable Storage Count: %d", testCylon.portableStorageCount);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Video Device Count: %d", testCylon.videoCount);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Mic Count %d: ", testCylon.micCount);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Speaker Count: %d", testCylon.speakerCount);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Location Aware Device Count: %d", testCylon.locationCount);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Scanner Count: %d", testCylon.scannerCount);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Error Code: %d", testCylon.error);
+
+	//TODO device lists
+
+	//__android_log_print(ANDROID_LOG_DEBUG, "Saul", ": ");
+	}//END produce log
+
 	JNIEXPORT jstring JNICALL
 	Java_com_mindaptiv_saul_Cylon_buildCylon(JNIEnv *env, jobject saul)
 	{
@@ -897,6 +937,9 @@ extern "C"
 		//set test cylon
 		testCylon = cylon;
 
+		//log
+		produceJniLog();
+
 		//temp return
 		return j_username;
 	}
@@ -961,16 +1004,6 @@ extern "C"
 			//increment the counter
 			counter++;
 		}//END For
-
-
 	}//END updateController()
 
-	void produceJniLog()
-	{
-		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Cylon @: ");
-		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Username: %s", testCylon.username.c_str());
-	/*	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "", );
-		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "", );
-		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "", );
-	*/}
 }//END extern C
