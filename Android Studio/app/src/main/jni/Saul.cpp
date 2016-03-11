@@ -104,7 +104,9 @@ extern "C"
 		nativeDevice.displayIndex 	= (uint32_t)env->GetIntField(device, fid_displayIndex);
 		nativeDevice.controllerIndex = (uint32_t)env->GetIntField(device, fid_controllerIndex);
 		nativeDevice.storageIndex 	= (uint32_t)env->GetIntField(device, fid_storageIndex);
-		nativeDevice.sensorsIndex 	= (uint32_t)env->GetIntField(device, fid_storageIndex);
+		nativeDevice.sensorsIndex 	= (uint32_t)env->GetIntField(device, fid_sensorsIndex);
+		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t=========================Sensors Index: %d", (uint32_t)env->GetIntField(device, fid_sensorsIndex));
+
 		nativeDevice.midiIndex		= (uint32_t)env->GetIntField(device, fid_midiIndex);
 
 		//Return
@@ -165,7 +167,7 @@ extern "C"
 		jobject j_device = env->GetObjectField(display, fid_superDevice);
 
 		//Build and set deviceStruct field
-		nativeDisplay.superDevice = buildDevice(env, j_device);
+		//nativeDisplay.superDevice = buildDevice(env, j_device);
 
 		//Return
 		return nativeDisplay;
@@ -242,7 +244,7 @@ extern "C"
 		jobject j_device = env->GetObjectField(sensor, fid_superDevice);
 
 		//Build and set deviceStruct field
-		nativeSensor.superDevice = buildDevice(env, j_device);
+		//nativeSensor.superDevice = buildDevice(env, j_device);
 
 		//Return
 		return nativeSensor;
@@ -298,8 +300,9 @@ extern "C"
 		//Retrieve object
 		jobject j_device = env->GetObjectField(storage, fid_superDevice);
 
+		//TODO figure out what's going on here and on others
 		//Build and set deviceStruct field
-		nativeStorage.superDevice = buildDevice(env, j_device);
+		//nativeStorage.superDevice = buildDevice(env, j_device);
 
 		//return
 		return nativeStorage;
@@ -355,7 +358,7 @@ extern "C"
 		jobject j_device = env->GetObjectField(controller, fid_superDevice);
 
 		//Build and set deviceStruct field
-		nativeController.superDevice = buildDevice(env, j_device);
+		//nativeController.superDevice = buildDevice(env, j_device);
 
 		//Return
 		return nativeController;
@@ -460,7 +463,7 @@ extern "C"
 		jobject j_device = env->GetObjectField(midi, fid_superDevice);
 
 		//Build and set deviceStruct field
-		nativeMidi.superDevice = buildDevice(env, j_device);
+		//nativeMidi.superDevice = buildDevice(env, j_device);
 
 		//===PORTS LIST===
 		//Retrieve class
@@ -511,20 +514,20 @@ extern "C"
 	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Device Name: %s", testCylon.deviceName.c_str());
 	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Architecture: %s", testCylon.architecture.c_str());
 	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Processor Level: %d", testCylon.processorLevel);
-	//__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Processor Count: %ld", testCylon.processorCount);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Processor Count: %llu", (long long unsigned int)testCylon.processorCount);
 	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Page Size: %d", testCylon.pageSize);
 	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Allocation Granularity: %d", testCylon.allocationGranularity);
-	//__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Min App Address: %ld", testCylon.minAppAddress);
-	//__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Max App Address: %ld", testCylon.maxAppAddress);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Min App Address: %llX", (long long unsigned int)testCylon.minAppAddress);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Max App Address: %llX", (long long unsigned int)testCylon.maxAppAddress);
 	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Hertz: %f", testCylon.hertz);
-	//__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Memory Bytes: %ld", testCylon.memoryBytes);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Memory Bytes: %llu", (long long unsigned int)testCylon.memoryBytes);
 	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "OS Architecture: %d", testCylon.osArchitecture);
 	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Low Memory: %d", testCylon.lowMemory);
-	//__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Low Memory Threshold: %ld", testCylon.threshold);
-	//__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Bytes Available: %ld", testCylon.bytesAvails);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Low Memory Threshold: %llu", (long long unsigned int)testCylon.threshold);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Bytes Available: %llu", (long long unsigned int)testCylon.bytesAvails);
 	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Picture Type: %s", testCylon.pictureType.c_str());
 	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Picture Path: %s", testCylon.picturePath.c_str());
-	//__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Picture Location: %ld", testCylon.pictureLocation);
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Picture Location: %llX", (long long unsigned int)testCylon.pictureLocation);
 	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Installed Device Count: %d", testCylon.installedDeviceCount);
 	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Detected Device Count: %d", testCylon.detectedDeviceCount);
 	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Portable Storage Count: %d", testCylon.portableStorageCount);
@@ -536,6 +539,24 @@ extern "C"
 	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Error Code: %d", testCylon.error);
 
 	//TODO device lists
+		for(std::list<deviceStruct>::const_iterator iterator = testCylon.detectedDevices.begin(), end = testCylon.detectedDevices.end(); iterator != end; ++iterator)
+		{
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tName: %s", iterator->name.c_str());
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tType: %d", iterator->deviceType);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tVendor ID: %X", iterator->vendorID);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tID: %s", iterator->id.c_str());
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tOrientation: %d", iterator->orientation);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tIs Default? %d", iterator->isDefault);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tIs Enabled? %d", iterator->isEnabled);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tController Index: %d", iterator->controllerIndex);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tDisplay Index: %d", iterator->displayIndex);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tStorage Index: %d", iterator->storageIndex);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tSensors Index: %d", iterator->sensorsIndex);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tMIDI Index: %d\n", iterator->midiIndex);
+		}//END for devices
+
+
+
 
 	//__android_log_print(ANDROID_LOG_DEBUG, "Saul", ": ");
 	}//END produce log
