@@ -75,6 +75,8 @@ static const int LEFT_THUMB 	= 0x0040;
 static const int RIGHT_THUMB 	= 0x0080;
 static const int LEFT_SHOULDER 	= 0x0100;
 static const int RIGHT_SHOULDER = 0x0200;
+static const int HOME_BUTTON 	= 0x0400;
+
 
 //deviceStruct Types
 static const int ERROR_TYPE 		= 0;
@@ -132,6 +134,9 @@ static const int MIDI_BLUETOOTH = 2;
 static const int MIDI_IN = 0;
 static const int MIDI_OUT = 1;
 
+//error codes
+static const int CONTROLLERS_LIST_ID_SYNCH_ERROR = 1; //failed to correctly synchronize data between the controllers and detectedDevices lists
+static const int INVALID_CONTROLLER_ID = 2; //failed to correctly get the ID of a controller device
 
 //support structure for cylonStruct for holding the properties of a given device in a single struct
 struct deviceStruct
@@ -145,7 +150,10 @@ struct deviceStruct
 	uint32_t		orientation;		//orientation of the device
 	uint32_t		vendorID;			//vendor ID
 	std::string     name;
-	std::string		id;
+	std::string		id_string;			//id in string format
+	uint32_t 		id_int;				//id in integer format
+	uint32_t 		usb_bus;			//usb bus, where available
+	uint32_t 		udev_deviceNumber;	//usb device #, where available
 
 	//type
 	uint32_t				deviceType;
@@ -189,10 +197,11 @@ struct controllerStruct
 	struct deviceStruct superDevice;
 	uint32_t deviceIndex;
 	uint32_t userIndex; //player number 0-3
+	uint32_t id;	//id number of controller (if applicable on platform, otherwise == userIndex)
 
 	//xinput state
 	uint32_t	packetNumber; //for detecting changes
-	uint16_t	buttons; //bit mask for what buttons are pressed
+	uint32_t	buttons; //bit mask for what buttons are pressed
 	float		leftTrigger;
 	float		rightTrigger;
 	float		thumbLeftY;

@@ -1677,7 +1677,7 @@ public class Cylon
         for (int i = 0; i < this.controllers.size(); i++)
         {
             //check if any controller ID matches the source of the event
-            if(Integer.parseInt(controllers.get(i).superDevice.id) == event.getDeviceId())
+            if(Integer.parseInt(controllers.get(i).superDevice.id_string) == event.getDeviceId())
             {
                 //set the appropriate trigger and joystick values
                 controllers.get(i).fLeftTrigger  = event.getAxisValue(MotionEvent.AXIS_LTRIGGER);
@@ -1719,7 +1719,7 @@ public class Cylon
         for (int i = 0; i < this.controllers.size(); i++)
         {
             //check if any controller ID matches the source of the event
-            if(Integer.parseInt(controllers.get(i).superDevice.id) == event.getDeviceId())
+            if(Integer.parseInt(controllers.get(i).superDevice.id_string) == event.getDeviceId())
             {
                 //if true, then parse code of event
                 //Variable declaration
@@ -1948,7 +1948,8 @@ public class Cylon
         for(int i = 0; i < this.detectedDevices.size(); i++)
         {
             Log.i("Saul", "     Device #" + i + ": " + "\n" + "          Name = " + this.detectedDevices.get(i).name +
-                    "\n" + "          ID = " + this.detectedDevices.get(i).id +
+                    "\n" + "          ID String = " + this.detectedDevices.get(i).id_string +
+                    "\n" + "          ID Int = " + this.detectedDevices.get(i).id_int +
                     "\n" + "          Vendor ID = " + Integer.toHexString(this.detectedDevices.get(i).vendorID) +
                     "\n" + "          Bitmask = " + Integer.toHexString(this.detectedDevices.get(i).testMask) +
                     "\n" + "          Type = " + this.detectedDevices.get(i).deviceType +
@@ -1963,7 +1964,7 @@ public class Cylon
         for(int i =0; i < this.controllers.size(); i++)
         {
             Log.i("Saul", "     Controller #" + i + ": " + "\n" +
-                            "\n" + "          ID = " + this.controllers.get(i).superDevice.id +
+                            "\n" + "          ID = " + this.controllers.get(i).superDevice.id_string +
                             "\n" + "          Left X = " + this.controllers.get(i).fThumbLeftX +
                             "\n" + "          Left Y = " + this.controllers.get(i).fThumbLeftY +
                             "\n" + "          Right X = " + this.controllers.get(i).fThumbRightX +

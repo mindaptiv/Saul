@@ -60,7 +60,7 @@ extern "C"
 		//===STRINGS===
 		//Retrieve fields
 		jfieldID fid_name 	= env->GetFieldID(deviceClass, "name", "Ljava/lang/String;");
-		jfieldID fid_id 	= env->GetFieldID(deviceClass, "id", "Ljava/lang/String;");
+		jfieldID fid_id 	= env->GetFieldID(deviceClass, "id_string", "Ljava/lang/String;");
 
 		//Retrieve Java Strings
 		jstring j_name 	= (jstring) env->GetObjectField(device, fid_name);
@@ -68,13 +68,13 @@ extern "C"
 
 		//Convert to std::strings
 		std::string name;
-		std::string id;
+		std::string id_string;
 		GetJStringContent(env, j_name, name);
-		GetJStringContent(env, j_id, id);
+		GetJStringContent(env, j_id, id_string);
 
 		//Set deviceStruct strings
-		nativeDevice.name 	= name;
-		nativeDevice.id 	= id;
+		nativeDevice.name 		= name;
+		nativeDevice.id_string 	= id_string;
 
 		//==INTS==
 		//Retrieve fields
@@ -91,6 +91,7 @@ extern "C"
 		jfieldID fid_storageIndex 	= env->GetFieldID(deviceClass, "storageIndex", "I");
 		jfieldID fid_sensorsIndex 	= env->GetFieldID(deviceClass, "sensorsIndex", "I");
 		jfieldID fid_midiIndex		= env->GetFieldID(deviceClass, "midiIndex", "I");
+		jfieldID fid_id_int			= env->GetFieldID(deviceClass, "id_int", "J");
 
 		//set deviceStruct ints
 		nativeDevice.panelLocation 	= (uint32_t)env->GetIntField(device, fid_panelLocation);
@@ -105,9 +106,12 @@ extern "C"
 		nativeDevice.controllerIndex = (uint32_t)env->GetIntField(device, fid_controllerIndex);
 		nativeDevice.storageIndex 	= (uint32_t)env->GetIntField(device, fid_storageIndex);
 		nativeDevice.sensorsIndex 	= (uint32_t)env->GetIntField(device, fid_sensorsIndex);
-		//__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t=========================Sensors Index: %d", (uint32_t)env->GetIntField(device, fid_sensorsIndex));
-
 		nativeDevice.midiIndex		= (uint32_t)env->GetIntField(device, fid_midiIndex);
+		nativeDevice.id_int			= (uint32_t)env->GetLongField(device, fid_id_int);
+
+		//set unavailable fields
+		nativeDevice.usb_bus			= 0;
+		nativeDevice.udev_deviceNumber 	= 0;
 
 		//Return
 		return nativeDevice;
@@ -165,9 +169,6 @@ extern "C"
 
 		//Retrieve object
 		jobject j_device = env->GetObjectField(display, fid_superDevice);
-
-		//Build and set deviceStruct field
-		//nativeDisplay.superDevice = buildDevice(env, j_device);
 
 		//Return
 		return nativeDisplay;
@@ -243,9 +244,6 @@ extern "C"
 		//Retrieve object
 		jobject j_device = env->GetObjectField(sensor, fid_superDevice);
 
-		//Build and set deviceStruct field
-		//nativeSensor.superDevice = buildDevice(env, j_device);
-
 		//Return
 		return nativeSensor;
 	}
@@ -300,10 +298,6 @@ extern "C"
 		//Retrieve object
 		jobject j_device = env->GetObjectField(storage, fid_superDevice);
 
-		//TODO figure out what's going on here and on others
-		//Build and set deviceStruct field
-		//nativeStorage.superDevice = buildDevice(env, j_device);
-
 		//return
 		return nativeStorage;
 	}
@@ -327,9 +321,8 @@ extern "C"
 		nativeController.packetNumber 	= (uint32_t)env->GetIntField(controller, fid_packetNumber);
 		nativeController.userIndex 		= (uint32_t)env->GetIntField(controller, fid_userIndex);
 		nativeController.deviceIndex	= (uint32_t)env->GetIntField(controller, fid_deviceIndex);
-
-		//set controllerStruct uint16_t's
-		nativeController.buttons = (uint16_t)env->GetIntField(controller, fid_buttons);
+		nativeController.buttons 		= (uint32_t)env->GetIntField(controller, fid_buttons);
+		nativeController.id				= nativeController.userIndex;
 
 
 		//===FLOATS===
@@ -356,9 +349,6 @@ extern "C"
 
 		//Retrieve object
 		jobject j_device = env->GetObjectField(controller, fid_superDevice);
-
-		//Build and set deviceStruct field
-		//nativeController.superDevice = buildDevice(env, j_device);
 
 		//Return
 		return nativeController;
@@ -462,9 +452,6 @@ extern "C"
 		//Retrieve object
 		jobject j_device = env->GetObjectField(midi, fid_superDevice);
 
-		//Build and set deviceStruct field
-		//nativeMidi.superDevice = buildDevice(env, j_device);
-
 		//===PORTS LIST===
 		//Retrieve class
 		jclass listClass = env->FindClass("java/util/LinkedList");
@@ -542,107 +529,108 @@ extern "C"
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "==============Devices");
 		for(std::list<deviceStruct>::const_iterator iterator = testCylon.detectedDevices.begin(), end = testCylon.detectedDevices.end(); iterator != end; ++iterator)
 		{
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tName: %s", iterator->name.c_str());
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tType: %d", iterator->deviceType);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tVendor ID: %X", iterator->vendorID);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tID: %s", iterator->id.c_str());
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tOrientation: %d", iterator->orientation);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tIs Default? %d", iterator->isDefault);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tIs Enabled? %d", iterator->isEnabled);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tController Index: %d", iterator->controllerIndex);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tDisplay Index: %d", iterator->displayIndex);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tStorage Index: %d", iterator->storageIndex);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tSensors Index: %d", iterator->sensorsIndex);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tMIDI Index: %d\n", iterator->midiIndex);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tName: %s", iterator->name.c_str());
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tType: %d", iterator->deviceType);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tVendor ID: %X", iterator->vendorID);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tID String: %s", iterator->id_string.c_str());
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tID Int: %llu", (long long unsigned int)iterator->id_int);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tOrientation: %d", iterator->orientation);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tIs Default? %d", iterator->isDefault);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tIs Enabled? %d", iterator->isEnabled);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tController Index: %d", iterator->controllerIndex);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tDisplay Index: %d", iterator->displayIndex);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tStorage Index: %d", iterator->storageIndex);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tSensors Index: %d", iterator->sensorsIndex);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tMIDI Index: %d\n", iterator->midiIndex);
 		}//END for devices
 
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "==============Game Controllers");
 		for(std::list<controllerStruct>::const_iterator iterator = testCylon.controllers.begin(), end = testCylon.controllers.end(); iterator != end; ++iterator)
 		{
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tController #: %d", iterator->userIndex);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tController #: %d", iterator->userIndex);
 			//__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tInstance ID: %d", iterator->id);
 			//__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tName: %s", iterator->name.c_str());
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tButtons Mask: %X", iterator->buttons);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tLeft Trigger: %f", iterator->leftTrigger);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tRight Trigger: %f", iterator->rightTrigger);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tLeft X: %f", iterator->thumbLeftX);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tLeft Y: %f", iterator->thumbLeftY);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tRight X: %f", iterator->thumbRightX);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tRight Y: %f", iterator->thumbRightY);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tDevice Index: %d", iterator->deviceIndex);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tButtons Mask: %X", iterator->buttons);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tLeft Trigger: %f", iterator->leftTrigger);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tRight Trigger: %f", iterator->rightTrigger);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tLeft X: %f", iterator->thumbLeftX);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tLeft Y: %f", iterator->thumbLeftY);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tRight X: %f", iterator->thumbRightX);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tRight Y: %f", iterator->thumbRightY);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tDevice Index: %d", iterator->deviceIndex);
 		}//END for controllers
 
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "==============Displays");
 		for(std::list<displayStruct>::const_iterator iterator = testCylon.displayDevices.begin(), end = testCylon.displayDevices.end(); iterator != end; ++iterator)
 		{
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tName: %s", iterator->superDevice.name.c_str());
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tDisplay #: %s", iterator->superDevice.id.c_str());
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tDevice Index: %d", iterator->deviceIndex );
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tRotation Preference: %d", iterator->rotationPreference);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tCurrent Rotation: %d", iterator->currentRotation);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tNative Rotation: %d", iterator->nativeRotation);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tHorizontal Res: %d", iterator->horizontalResolution);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tVertical Res: %d", iterator->verticalResolution);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tUpper Left X: %d", iterator->upperLeftX);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tUpper Left Y: %d", iterator->upperLeftY);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tRefresh Rate: %f", iterator->refreshRate);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tResolution Scale: %f", iterator->resolutionScale);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tLogical DPI: %f", iterator->logicalDPI);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tRaw DPI X: %f", iterator->rawDPIX);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tRaw DPI Y: %f", iterator->rawDPIY);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tDriver Data: %p", iterator->driverData);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tColor Data: %s", iterator->colorData);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tColor Length: %d", iterator->colorLength);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tName: %s", iterator->superDevice.name.c_str());
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tDisplay #: %s", iterator->superDevice.id_string.c_str());
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tDevice Index: %d", iterator->deviceIndex );
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tRotation Preference: %d", iterator->rotationPreference);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tCurrent Rotation: %d", iterator->currentRotation);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tNative Rotation: %d", iterator->nativeRotation);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tHorizontal Res: %d", iterator->horizontalResolution);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tVertical Res: %d", iterator->verticalResolution);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tUpper Left X: %d", iterator->upperLeftX);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tUpper Left Y: %d", iterator->upperLeftY);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tRefresh Rate: %f", iterator->refreshRate);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tResolution Scale: %f", iterator->resolutionScale);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tLogical DPI: %f", iterator->logicalDPI);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tRaw DPI X: %f", iterator->rawDPIX);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tRaw DPI Y: %f", iterator->rawDPIY);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tDriver Data: %p", iterator->driverData);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tColor Data: %s", iterator->colorData);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tColor Length: %d", iterator->colorLength);
 		}//END for displays
 
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "==============Sensors");
 		for(std::list<sensorStruct>::const_iterator iterator = testCylon.sensors.begin(), end = testCylon.sensors.end(); iterator != end; ++iterator)
 		{
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tName: %s", iterator->name.c_str());
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tDevice Index: %d", iterator->deviceIndex);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tMin Delay: %d", iterator->minDelay);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tType: %d", iterator->type);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tString Type: %s", iterator->stringType.c_str());
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tVendor: %s", iterator->vendor.c_str());
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tPower: %f", iterator->power);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tResolution: %f", iterator->resolution);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tMax Range: %f", iterator->maxRange);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tFifo Reserved Events: %d", iterator->fifoReservedEventCount);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tFifo Max Events: %d", iterator->fifoMaxEventCount);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tMax Delay: %d", iterator->maxDelay);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tReporting Mode: %d", iterator->reportingMode);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tIs Wakeup Sensor? %d", iterator->isWakeUpSensor);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tName: %s", iterator->name.c_str());
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tDevice Index: %d", iterator->deviceIndex);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tMin Delay: %d", iterator->minDelay);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tType: %d", iterator->type);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tString Type: %s", iterator->stringType.c_str());
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tVendor: %s", iterator->vendor.c_str());
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tPower: %f", iterator->power);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tResolution: %f", iterator->resolution);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tMax Range: %f", iterator->maxRange);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tFifo Reserved Events: %d", iterator->fifoReservedEventCount);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tFifo Max Events: %d", iterator->fifoMaxEventCount);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tMax Delay: %d", iterator->maxDelay);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tReporting Mode: %d", iterator->reportingMode);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tIs Wakeup Sensor? %d", iterator->isWakeUpSensor);
 		}//END for sensors
 
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "==============Storage Drives");
 		for(std::list<storageStruct>::const_iterator iterator= testCylon.storages.begin(), end = testCylon.storages.end(); iterator != end; ++iterator)
 		{
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tPath: %s", iterator->path.c_str());
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tDevice Index: %d", iterator->deviceIndex);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tBytes Avails: %llu", (long long unsigned int)iterator->bytesAvails);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tTotal Bytes: %llu", (long long unsigned int)iterator->totalBytes);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tIs Emulated? %d", iterator->isEmulated);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tPath: %s", iterator->path.c_str());
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tDevice Index: %d", iterator->deviceIndex);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tBytes Avails: %llu", (long long unsigned int)iterator->bytesAvails);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tTotal Bytes: %llu", (long long unsigned int)iterator->totalBytes);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tIs Emulated? %d", iterator->isEmulated);
 		}//END storage structs
 
 		__android_log_print(ANDROID_LOG_DEBUG, "Saul", "==============MIDI Devices");
 		for(std::list<midiStruct>::const_iterator iterator = testCylon.midiDevices.begin(), end = testCylon.midiDevices.end(); iterator != end; ++iterator)
 		{
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tID: %d", iterator->id);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tDevice Index: %d", iterator->deviceIndex);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tType: %d", iterator->type);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tOut Count: %d", iterator->outCount);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tIn Count: %d", iterator->inCount);
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tVendor Name: %s", iterator->vendorName.c_str());
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tDevice Name: %s", iterator->deviceName.c_str());
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tProduct Name: %s", iterator->productName.c_str());
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tVersion Number: %s", iterator->versionNumber.c_str());
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tSerial Number: %s", iterator->serialNumber.c_str());
-			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tPorts:");
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tID: %d", iterator->id);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tDevice Index: %d", iterator->deviceIndex);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tType: %d", iterator->type);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tOut Count: %d", iterator->outCount);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tIn Count: %d", iterator->inCount);
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tVendor Name: %s", iterator->vendorName.c_str());
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tDevice Name: %s", iterator->deviceName.c_str());
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tProduct Name: %s", iterator->productName.c_str());
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tVersion Number: %s", iterator->versionNumber.c_str());
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tSerial Number: %s", iterator->serialNumber.c_str());
+			__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\tPorts:");
 			for(std::list<midiPortStruct>::const_iterator iterator1 = iterator->ports.begin(), end1 = iterator->ports.end(); iterator1 != end1; ++iterator1)
 			{
-				__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tPort Name: %s", iterator1->name.c_str());
-				__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tNumber: %d", iterator1->number);
-				__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\tType: %d", iterator->type);
+				__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\t\tPort Name: %s", iterator1->name.c_str());
+				__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\t\tNumber: %d", iterator1->number);
+				__android_log_print(ANDROID_LOG_DEBUG, "Saul", "\t\t\tType: %d", iterator->type);
 			}//END for ports
 		}//END for midis
 
@@ -1020,7 +1008,8 @@ extern "C"
 		cylon.mice.superDevice.controllerIndex = 0;
 		cylon.mice.superDevice.deviceType = 0;
 		cylon.mice.superDevice.displayIndex = 0;
-		cylon.mice.superDevice.id = "0";
+		cylon.mice.superDevice.id_string = "0";
+		cylon.mice.superDevice.id_int = 0;
 		cylon.mice.superDevice.inDock = 0;
 		cylon.mice.superDevice.inLid = 0;
 		cylon.mice.superDevice.isDefault = 0;
@@ -1040,7 +1029,7 @@ extern "C"
 
 		//Confirm we've reached this point, so native conversion should be done
 		jfieldID fid_nativeConverted = env->GetFieldID(cylonClass, "nativeConverted", "Z");
-		env->SetBooleanField(saul, fid_nativeConverted, true);
+		env->SetBooleanField(saul, fid_nativeConverted, (jboolean) true);
 
 		//set test cylon
 		testCylon = cylon;
@@ -1084,8 +1073,8 @@ extern "C"
 			if(counter == index)
 			{
 				//Update the axes and buttons mask
-				//set controllerStruct uint16_t's
-				iterator->buttons = (uint16_t)env->GetIntField(controller, fid_buttons);
+				//set controllerStruct uint32_t's
+				iterator->buttons = (uint32_t)env->GetIntField(controller, fid_buttons);
 
 				//set controllerStruct floats
 				iterator->leftTrigger 	= (float)env->GetFloatField(controller, fid_fLeftTrigger);

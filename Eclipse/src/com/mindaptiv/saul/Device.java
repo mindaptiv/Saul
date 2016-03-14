@@ -15,7 +15,6 @@ import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.fingerprint.FingerprintManager;
 import android.media.midi.MidiDeviceInfo;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.InputDevice;
 import android.view.Surface;
@@ -81,8 +80,9 @@ public class Device
 	int isEnabled;
 	int orientation;
 	public String 	name;
-	public String	id;
-	public int  vendorID;
+	public String	id_string;
+	public long		id_int;
+	public int  	vendorID;
 	
 	//type
 	public int deviceType;
@@ -106,7 +106,8 @@ public class Device
 		this.isEnabled = 0;
 		this.orientation = NO_ROTATION;
 		this.name = "Dummy Device";
-		this.id = "0";
+		this.id_string = "0";
+		this.id_int = 0;
 		this.vendorID = 0;
 		this.deviceType = 0;
 		this.displayIndex = 0;
@@ -133,7 +134,8 @@ public class Device
 		this.name = idvice.getName();
 		
 		//Grab and set ids
-		this.id 		= Integer.toString(idvice.getId());
+		this.id_string 		= Integer.toString(idvice.getId());
+		this.id_int			= idvice.getId();
 		
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
 		{	
@@ -276,7 +278,8 @@ public class Device
 		this.name = display.getName();
 		
 		//Set id
-		this.id = Integer.toString(display.getDisplayId());
+		this.id_string 	= Integer.toString(display.getDisplayId());
+		this.id_int	   	= display.getDisplayId();
 		
 		//set deviceType for Saul
 		this.deviceType = Device.DISPLAY_TYPE;
@@ -304,7 +307,8 @@ public class Device
 		this.displayIndex	= 0;
 		this.controllerIndex = 0;
 		this.testMask		= 0;
-		this.id				= "0";
+		this.id_string		= "0";
+		this.id_int			= 0;
 		this.sensorsIndex   = 0;
 		this.orientation     = NO_ROTATION;
 		this.midiIndex = 0;
@@ -338,7 +342,8 @@ public class Device
 		this.storageIndex = 0;
 		this.sensorsIndex = 0;
 		this.testMask = 0;
-		this.id = "0";
+		this.id_string = "0";
+		this.id_int	   = 0;
 		this.orientation     = NO_ROTATION;
 		this.midiIndex = 0;
 		
@@ -362,7 +367,8 @@ public class Device
 		this.storageIndex  = 0;
 		this.sensorsIndex  = 0;
 		this.testMask      = 0;
-		this.id            = "0";
+		this.id_string     = "0";
+		this.id_int		   = 0;
 		this.isDefault	   = 0;
 		this.orientation     = NO_ROTATION;
 		this.midiIndex = 0;
@@ -397,7 +403,8 @@ public class Device
 		this.storageIndex    = 0;
 		this.isEnabled = 1;
 		this.testMask = 0;
-		this.id = "0";
+		this.id_string 	= "0";
+		this.id_int		= 0;
 		this.orientation     = 0;
 		this.midiIndex = 0;
 		
@@ -449,7 +456,8 @@ public class Device
 		
 		//set name + id
 		this.name = "Camera " + id;
-		this.id   = Integer.toString(id);
+		this.id_string   	= Integer.toString(id);
+		this.id_int			= id;
 	}
 	
 	//Create new Device from CameraCharacteristics
@@ -492,7 +500,8 @@ public class Device
 			
 			//set name + id
 			this.name = "Camera " + name;
-			this.id   = Integer.toString(id);
+			this.id_string	= Integer.toString(id);
+			this.id_int		= id;
 		}
 	}//end Constructor
 	
@@ -529,12 +538,21 @@ public class Device
 		this.name = adapter.getName();
 		
 		//Set ID based on bluetooth address
-		this.id = adapter.getAddress();
-		
+		this.id_string = adapter.getAddress();
+
+		//Credit to Ben Holland, rockyit86, and Paco Abato @ Stack Overflow for Address->Hex val code
+		String[] addressParts 	= adapter.getAddress().split(":");
+		String hexAddress = "";
+		for(int i=0; i< addressParts.length; i++)
+		{
+			hexAddress += addressParts[i];
+		}
+		Long hexValue = Long.parseLong(hexAddress, 16);
+		this.id_int = hexValue;
+
 		//type for bluetooth radio
-		this.deviceType = Device.BLUETOOTH_RADIO_TYPE;	
-	
-	}
+		this.deviceType = Device.BLUETOOTH_RADIO_TYPE;
+	}//END constructor
 
 	//For fingerprint readers
 	public Device(FingerprintManager manager)
@@ -547,7 +565,8 @@ public class Device
 		this.isEnabled		= 1;
 		this.orientation	= NO_ROTATION;
 		this.name			= "Fingerprint Manager";
-		this.id				= "" + manager.hashCode();
+		this.id_string		= "" + manager.hashCode();
+		this.id_int			= manager.hashCode();
 		this.vendorID		= 0;
 		this.deviceType		= SENSOR_TYPE;
 		this.displayIndex 	= 0;
@@ -583,7 +602,8 @@ public class Device
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
 		{
 			//Set ID
-			this.id = "" + info.getId();
+			this.id_string 	= "" + info.getId();
+			this.id_int		= info.getId();
 
 			//Set name
 			this.name = info.getProperties().getString(MidiDeviceInfo.PROPERTY_NAME);
@@ -591,7 +611,8 @@ public class Device
 		else
 		{
 			//Handle corner case
-			this.id = "" + 0;
+			this.id_string 	= "0";
+			this.id_int		= 0;
 			this.name = "Unidentified MIDI Device";
 		}//END if not on Android M
 	}
