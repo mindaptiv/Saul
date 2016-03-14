@@ -1307,7 +1307,7 @@ public class Cylon
             long [] mj = {0, 0,300,100,50,100,50,100,50,100,50,100,50,100,50,150,150,150,450,100,50,100,50,150,150,150,450,100,50,100,50,150,150,150,450,150,150};
             @SuppressWarnings("unused")
             long[] powerRangers = {0, 150,150,150,150,75,75,150,150,150,150,450};
-            rumble.vibrate(empire, -1);
+            //rumble.vibrate(empire, -1);
 
             //Create new device
             Device device = new Device(rumble);
@@ -1666,7 +1666,7 @@ public class Cylon
         }//END for
 
         //test
-        rumbleTest();
+        //rumbleTest();
     }
     //END producers
 
@@ -1950,15 +1950,15 @@ public class Cylon
             Log.i("Saul", "     Device #" + i + ": " + "\n" + "          Name = " + this.detectedDevices.get(i).name +
                     "\n" + "          ID = " + this.detectedDevices.get(i).id +
                     "\n" + "          Vendor ID = " + Integer.toHexString(this.detectedDevices.get(i).vendorID) +
-                    "\n" + "          Bitmask = " + Integer.toHexString(this.detectedDevices.get(i).testMask) + "\n"
-                    + "\n" + "          Type = " + this.detectedDevices.get(i).deviceType +
-                    "\n" +   "          Controller Index = " + this.detectedDevices.get(i).controllerIndex +
-                    "\n" +   "          Display Index = " + this.detectedDevices.get(i).displayIndex +
-                    "\n" +   "          Storage Index = " + this.detectedDevices.get(i).storageIndex +
-                    "\n" +   "          Sensor Index = " + this.detectedDevices.get(i).sensorsIndex +
-                    "\n" +   "          Default = " + this.detectedDevices.get(i).isDefault +
-                    "\n" +   "          Panel Location = " + this.detectedDevices.get(i).panelLocation +
-                    "\n" +   "          Orientation = " + this.detectedDevices.get(i).orientation);
+                    "\n" + "          Bitmask = " + Integer.toHexString(this.detectedDevices.get(i).testMask) +
+                    "\n" + "          Type = " + this.detectedDevices.get(i).deviceType +
+                    "\n" + "          Controller Index = " + this.detectedDevices.get(i).controllerIndex +
+                    "\n" + "          Display Index = " + this.detectedDevices.get(i).displayIndex +
+                    "\n" + "          Storage Index = " + this.detectedDevices.get(i).storageIndex +
+                    "\n" + "          Sensor Index = " + this.detectedDevices.get(i).sensorsIndex +
+                    "\n" + "          Default = " + this.detectedDevices.get(i).isDefault +
+                    "\n" + "          Panel Location = " + this.detectedDevices.get(i).panelLocation +
+                    "\n" + "          Orientation = " + this.detectedDevices.get(i).orientation);
         }
         for(int i =0; i < this.controllers.size(); i++)
         {
