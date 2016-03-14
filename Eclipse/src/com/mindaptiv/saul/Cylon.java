@@ -1379,7 +1379,7 @@ public class Cylon
     }
 
     //produce info on cameras
-    @SuppressLint("InlinedApi")
+    @SuppressLint("NewApi")
     private void produceCameras()
     {
         //Use old deprecated Camera class
@@ -1398,6 +1398,7 @@ public class Cylon
                 this.detectedDevices.addLast(device);
             }//END for
         }//END if
+
         //use camera2 package
         else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
@@ -1421,7 +1422,7 @@ public class Cylon
                 }
 
             }
-            //TODO check API level
+
             catch (CameraAccessException e)
             {
                 //Bail!
@@ -1551,14 +1552,22 @@ public class Cylon
 
             if (fingerprintManager != null)
             {
-                if(fingerprintManager.isHardwareDetected() == true)
+                try
                 {
-                    //Create Device Struct and save to list
-                    //TODO test this on physical device
-                    Device device = new Device(fingerprintManager);
-                    this.detectedDevices.addLast(device);
-                }
-            }
+                    if (fingerprintManager.isHardwareDetected() == true) {
+                        //Create Device Struct and save to list
+                        //TODO test this on physical device
+                        Device device = new Device(fingerprintManager);
+                        this.detectedDevices.addLast(device);
+                    }//END inner if
+                }//END try
+
+                catch(java.lang.SecurityException exception)
+                {
+                    //bail
+                    return;
+                } //END catch
+            }//END outer if
         }//END if marshmallow
     }//END producer
 

@@ -5,6 +5,7 @@
 package com.mindaptiv.saul;
 
 //imports
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.media.midi.*;
@@ -40,6 +41,7 @@ public class Midi
 
     //Constructors
     //Build Midi using midi device info and Device parent
+    @SuppressLint("NewApi")
     public Midi(MidiDeviceInfo info, Device superaDevice)
     {
         //Set parent
@@ -49,7 +51,6 @@ public class Midi
         this.ports = new LinkedList<MidiPort>();
 
         //Set type
-        //TODO check API level
         int infoType = info.getType();
 
         if(infoType == MidiDeviceInfo.TYPE_BLUETOOTH)

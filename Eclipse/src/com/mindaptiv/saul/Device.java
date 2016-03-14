@@ -222,7 +222,7 @@ public class Device
 			this.deviceType = Device.POSITION_TYPE;
 		}
 		//if any remaining bits are set, we know its not necessarily a bogus reading so save as generic
-		else if((this.testMask | 0xffffffff) > InputDevice.SOURCE_CLASS_NONE)
+		else if(this.testMask > InputDevice.SOURCE_CLASS_NONE)
 		{
 			this.deviceType = Device.GENERIC_TYPE;
 		}
@@ -234,60 +234,56 @@ public class Device
 	}//END input constructor
 	
 	//Constructor for Device tied to Display object
-	public Device(android.view.Display display)
-	{
+	public Device(android.view.Display display) {
+
 		//Temporary zeroing of values that may change later
 		this.displayIndex = 0;
-		
+
 		//Set values not available in this context (creating from an android Display object)
-		this.panelLocation 	 = Device.UNKNOWN_PANEL_LOCATION;
-		this.inLid 			 = 0;
-		this.inDock			 = 0;
-		this.isEnabled		 = 1;
+		this.panelLocation = Device.UNKNOWN_PANEL_LOCATION;
+		this.inLid = 0;
+		this.inDock = 0;
+		this.isEnabled = 1;
 		this.controllerIndex = 0;
-		this.testMask		 = 0;
-		this.vendorID		 = 0;
-		this.sensorsIndex	 = 0;
-		this.storageIndex    = 0;
+		this.testMask = 0;
+		this.vendorID = 0;
+		this.sensorsIndex = 0;
+		this.storageIndex = 0;
 		this.midiIndex = 0;
-		
+
 		//set orientation
-		if(display.getRotation() == Surface.ROTATION_0)
-		{
+		if (display.getRotation() == Surface.ROTATION_0) {
 			this.orientation = PORTRAIT;
-		}
-		else if(display.getRotation() == Surface.ROTATION_180)
-		{
+		} else if (display.getRotation() == Surface.ROTATION_180) {
 			this.orientation = FLIPPED_PORTRAIT;
-		}
-		else if (display.getRotation()== Surface.ROTATION_270)
-		{
+		} else if (display.getRotation() == Surface.ROTATION_270) {
 			this.orientation = FLIPPED_LANDSCAPE;
-		}
-		else if (display.getRotation() == Surface.ROTATION_90)
-		{
+		} else if (display.getRotation() == Surface.ROTATION_90) {
 			this.orientation = LANDSCAPE;
-		}
-		else
-		{
+		} else {
 			this.orientation = NO_ROTATION;
 		}
-		
-		//Set name
-		//TODO: check API level
-		this.name = display.getName();
-		
+
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+		{
+			//Set name
+			this.name = display.getName();
+		}//END if
+		else
+		{
+			this.name = "0";
+		}
+
 		//Set id
-		this.id_string 	= Integer.toString(display.getDisplayId());
-		this.id_int	   	= display.getDisplayId();
-		
+		this.id_string = Integer.toString(display.getDisplayId());
+		this.id_int = display.getDisplayId();
+
 		//set deviceType for Saul
 		this.deviceType = Device.DISPLAY_TYPE;
-		
+
 		//set isDefault
 		this.isDefault = 0;
-		if(display.getDisplayId() == android.view.Display.DEFAULT_DISPLAY)
-		{
+		if (display.getDisplayId() == android.view.Display.DEFAULT_DISPLAY) {
 			this.isDefault = 1;
 		}
 	}//END display constructor
@@ -318,7 +314,7 @@ public class Device
 		
 		//Set value for being default storage location
 		this.isDefault = 0;
-		if(isDefault == true)
+		if(isDefault)
 		{
 			this.isDefault = 1;
 		}
@@ -328,7 +324,7 @@ public class Device
 	}//END storage constructor
 	
 	//Constructor from rumble device
-	public Device(Vibrator vibrator)
+	public Device(Vibrator rumbler)
 	{
 		//Set values not available in this context (creating from system rumble)
 		this.panelLocation = Device.UNKNOWN_PANEL_LOCATION;
@@ -543,12 +539,11 @@ public class Device
 		//Credit to Ben Holland, rockyit86, and Paco Abato @ Stack Overflow for Address->Hex val code
 		String[] addressParts 	= adapter.getAddress().split(":");
 		String hexAddress = "";
-		for(int i=0; i< addressParts.length; i++)
+		for (String addressPart : addressParts)
 		{
-			hexAddress += addressParts[i];
+			hexAddress += addressPart;
 		}
-		Long hexValue = Long.parseLong(hexAddress, 16);
-		this.id_int = hexValue;
+		this.id_int = Long.parseLong(hexAddress, 16);
 
 		//type for bluetooth radio
 		this.deviceType = Device.BLUETOOTH_RADIO_TYPE;
