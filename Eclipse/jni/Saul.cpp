@@ -493,7 +493,7 @@ extern "C"
 
 	void produceJniLog()
 	{
-	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Cylon @: "); //TODO put pointer here
+	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Cylon @: %p", &testCylon);
 	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Username: %s", testCylon.username.c_str());
 	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Time: %d:%d:%d:%d", testCylon.hours, testCylon.minutes, testCylon.seconds, testCylon.milliseconds);
 	__android_log_print(ANDROID_LOG_DEBUG, "Saul", "Date: %d, %d/%d/%d", testCylon.day, testCylon.month, testCylon.date, testCylon.year);
@@ -1025,7 +1025,9 @@ extern "C"
 		cylon.processorLevel = 0;
 		cylon.minAppAddress = 0;
 		cylon.maxAppAddress = 0;
-		cylon.osArchitecture = 0;
+
+		//Grab Wordsize
+		cylon.osArchitecture = __WORDSIZE;
 
 		//Confirm we've reached this point, so native conversion should be done
 		jfieldID fid_nativeConverted = env->GetFieldID(cylonClass, "nativeConverted", "Z");

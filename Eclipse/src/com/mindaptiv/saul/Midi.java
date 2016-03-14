@@ -1,4 +1,5 @@
 //Midi.java
+//NOTE: Do not attempt to call any of this code without a device at least running Android M or later
 //Java version of the midiStruct structure from Cylon.h
 //josh@mindaptiv.com
 

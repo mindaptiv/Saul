@@ -519,7 +519,7 @@ public class Cylon
         TimeZone timeZone = calendar.getTimeZone();
 
         //Set dst boolean
-        if(timeZone.inDaylightTime(now) == true)
+        if(timeZone.inDaylightTime(now))
         {
             this.dst = Cylon.DAYLIGHT_TIME;
         }
@@ -737,19 +737,8 @@ public class Cylon
             this.lowMemory	 = 0;
         }
 
-
-        //grab and set os bit-level architecture type
-        //Android uses VM's but can still determine JVM's architecture for native code to use
-        String osArch = System.getProperty("sun.arch.data.model");
-
-        //error/unknown/invalid/missing case
+        //Android uses VM's, but we can try to set in the native side
         this.osArchitecture = 0;
-
-        //otherwise
-        if(osArch == "32" || osArch == "64")
-        {
-            this.osArchitecture = Integer.parseInt(osArch);
-        }
     }
 
     private void produceInputDevices()
@@ -817,11 +806,6 @@ public class Cylon
                 this.displays.addLast(display);
             }//END FOR
         }//END if
-        else
-        {
-            return;
-        }//END else
-
     }//END produce display devices
 	
 	/*
@@ -1426,7 +1410,6 @@ public class Cylon
             catch (CameraAccessException e)
             {
                 //Bail!
-                return;
             }
 
         }
@@ -1554,7 +1537,7 @@ public class Cylon
             {
                 try
                 {
-                    if (fingerprintManager.isHardwareDetected() == true) {
+                    if (fingerprintManager.isHardwareDetected()) {
                         //Create Device Struct and save to list
                         //TODO test this on physical device
                         Device device = new Device(fingerprintManager);
@@ -1565,7 +1548,6 @@ public class Cylon
                 catch(java.lang.SecurityException exception)
                 {
                     //bail
-                    return;
                 } //END catch
             }//END outer if
         }//END if marshmallow
