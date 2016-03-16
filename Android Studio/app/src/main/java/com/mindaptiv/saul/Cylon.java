@@ -1043,9 +1043,14 @@ public class Cylon
             //check if emulated
             //credit to Matt Quail @ stackoverflow for pattern checking code
             boolean isEmulated = false;
-            if(Pattern.compile(Pattern.quote(rawEmulatedStorageTarget), Pattern.CASE_INSENSITIVE).matcher(paths[i]).find())
+            try {
+                if (Pattern.compile(Pattern.quote(rawEmulatedStorageTarget), Pattern.CASE_INSENSITIVE).matcher(paths[i]).find()) {
+                    isEmulated = true;
+                }
+            }
+            catch (NullPointerException e)
             {
-                isEmulated = true;
+                // stay false
             }
 
             //get size in bytes
@@ -1567,8 +1572,8 @@ public class Cylon
 
                 //Retrieve list of midi devices
                 MidiDeviceInfo[] infos = manager.getDevices();
-                //TODO add additional device code for handlers here
 
+                //TODO test and possibly add additional device code for handlers here w/ testing
                 manager.registerDeviceCallback(new MidiManager.DeviceCallback() {
                     public void onDeviceAdded( MidiDeviceInfo info ) {
                         Log.i("Saul", "MIDI added");
@@ -1678,11 +1683,68 @@ public class Cylon
                 controllers.get(i).fThumbRightX  = event.getAxisValue(MotionEvent.AXIS_Z);
                 controllers.get(i).fThumbRightY  = -event.getAxisValue(MotionEvent.AXIS_RZ);
 
+                //if its a SHIELD controller then check the HAT axis to update the DPAD
+                String deviceName = event.getDevice().getName();
+
+                //credit to Igo Artamonov for string checker code
+                if(deviceName.toLowerCase().contains("nvidia controller"))
+                {
+                    //controller is a SHIELD controller, grab hat axis values
+                    float hatX = event.getAxisValue(MotionEvent.AXIS_HAT_X);
+                    float hatY = event.getAxisValue(MotionEvent.AXIS_HAT_Y);
+
+                    //determine if dpad up/down buttons bits should be hot
+                    if(hatY == -1.0)
+                    {
+                        controllers.get(i).buttons = controllers.get(i).buttons | Controller.UP_DPAD;
+                    }
+                    else if(hatY == 1.0)
+                    {
+                        controllers.get(i).buttons = controllers.get(i).buttons | Controller.DOWN_DPAD;
+                    }
+                    else //some intermediate float value
+                    {
+                        if( (controllers.get(i).buttons & Controller.UP_DPAD) == Controller.UP_DPAD )
+                        {
+                            //lower the up button
+                            controllers.get(i).buttons = controllers.get(i).buttons - Controller.UP_DPAD;
+                        }
+
+                        if( (controllers.get(i).buttons & Controller.DOWN_DPAD) ==  Controller.DOWN_DPAD)
+                        {
+                            //lower the down button
+                            controllers.get(i).buttons = controllers.get(i).buttons - Controller.DOWN_DPAD;
+                        }
+                    }//END hatY
+
+                    //determine if dpad up/down buttons bits should be hot
+                    if(hatX == 1.0)
+                    {
+                        controllers.get(i).buttons = controllers.get(i).buttons | Controller.RIGHT_DPAD;
+                    }
+                    else if(hatX == -1.0)
+                    {
+                        controllers.get(i).buttons = controllers.get(i).buttons | Controller.LEFT_DPAD;
+                    }
+                    else //some intermediate float value
+                    {
+                        if( (controllers.get(i).buttons & Controller.LEFT_DPAD) == Controller.LEFT_DPAD )
+                        {
+                            controllers.get(i).buttons = controllers.get(i).buttons - Controller.LEFT_DPAD;
+                        }
+
+                        if( (controllers.get(i).buttons & Controller.RIGHT_DPAD) == Controller.RIGHT_DPAD )
+                        {
+                            controllers.get(i).buttons = controllers.get(i).buttons - Controller.RIGHT_DPAD;
+                        }
+                    }//END if hatX
+                }//END if shield controller
+
                 //check if native data is set, only try to update C side if already converted
                 if(this.nativeConverted)
                 {
                     updateController(i, controllers.get(i));
-                }
+                }//END if native converted
 
                 //return true because event was not an anomaly
                 return true;
