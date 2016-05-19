@@ -68,7 +68,6 @@ import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-
 @SuppressWarnings("deprecation")
 public class Cylon
 {
@@ -171,23 +170,22 @@ public class Cylon
     private  final static String cameraRationale = "Camera permission is needed to retrieve device hardware information for Essence.";
     private  final static String contactsRationale = "Contacts permission is needed so the app may refer to you by your chosen name and use your avatar for your personal profile.";
     private final static String locationRationale = "Location permission is needed so the app can enhance your experience via GPS.";
-    private final static String bluetoothRationale = "Bluetooth permission is needed so the app can interface with your wireless devices.";
     private final static String storageRationale = "Storage permission is needed so the app can measure the amount of free space that is available to utilize.";
-    private final static String fingerprintRationale = "Fingerprint use is needed to the app can lock your content securely (when requested).";
     private  final static int REQUEST_CAMERA = 0;
     private  final static int REQUEST_CONTACTS = 1;
-    private  final static int REQUEST_BLUETOOTH = 2;
-    private  final static int REQUEST_LOCATION = 3;
-    private  final static int REQUEST_STORAGE = 4;
-    private final static int REQUEST_FINGERPRINT = 5;
+    private  final static int REQUEST_LOCATION = 2;
+    private  final static int REQUEST_STORAGE = 3;
     private boolean nonAnswersDone;
     private boolean contactsAnswered;
     private boolean cameraAnswered;
-    private boolean bluetoothAnswered;
     private boolean storageAnswered;
     private boolean locationAnswered;
-    private boolean fingerprintAnswered;
+    private boolean cameraAsked;
+    private boolean contactsAsked;
+    private boolean storageAsked;
+    private boolean locationAsked;
     private boolean logged;
+    String requestRationaleMessage;
 
     //error
     private int error;
@@ -215,28 +213,45 @@ public class Cylon
         this.produceDevices();
 
         //set flags
-        bluetoothAnswered 	= false;
         contactsAnswered 	= false;
         cameraAnswered 		= false;
         locationAnswered 	= false;
         storageAnswered 	= false;
-        fingerprintAnswered = false;
         logged				= false;
         nonAnswersDone 		= true;
+        cameraAsked         = false;
+        cameraAsked         = false;
+        storageAsked        = false;
+        locationAsked       = false;
 
-        //ask for permissions
-        makeRequest(Manifest.permission.READ_CONTACTS, REQUEST_CONTACTS);
-        makeRequest(Manifest.permission.CAMERA, REQUEST_CAMERA);
-        makeRequest(Manifest.permission.BLUETOOTH, REQUEST_BLUETOOTH);
-        makeRequest(Manifest.permission.ACCESS_FINE_LOCATION, REQUEST_LOCATION);
-        makeRequest(Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_STORAGE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            makeRequest(Manifest.permission.USE_FINGERPRINT, REQUEST_FINGERPRINT);
-        }
+        requestContacts();
+        requestCamera();
+        requestLocation();
+        requestStorage();
     }//END Constructor
 
     //PERMISSIONS METHODS
+    //Make all of the requests in one location
+    public void requestContacts()
+    {
+        makeRequest(Manifest.permission.READ_CONTACTS, REQUEST_CONTACTS);
+    }
+
+    public void requestCamera()
+    {
+        makeRequest(Manifest.permission.CAMERA, REQUEST_CAMERA);
+    }
+
+    void requestLocation()
+    {
+        makeRequest(Manifest.permission.ACCESS_FINE_LOCATION, REQUEST_LOCATION);
+    }
+
+    void requestStorage()
+    {
+        makeRequest(Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_STORAGE);
+    }
+
     //Credit to nuuneoi @ inthecheesefactory.com for partial method code
     void makeRequest(final String manifestPermission, final int cylonRequestCode)
     {
@@ -250,59 +265,50 @@ public class Cylon
             if(ActivityCompat.shouldShowRequestPermissionRationale(this.activity, manifestPermission))
             {
                 //Select the appropriate rationale message
-                String message = "Hello!";
+                this.requestRationaleMessage = "Hello!";
 
                 if(cylonRequestCode == REQUEST_CONTACTS)
                 {
-                    message = contactsRationale;
+                    this.requestRationaleMessage = contactsRationale;
                 }
                 else if(cylonRequestCode == REQUEST_CAMERA)
                 {
-                    message = cameraRationale;
+                    this.requestRationaleMessage = cameraRationale;
                 }
                 else if(cylonRequestCode == REQUEST_LOCATION)
                 {
-                    message = locationRationale;
-                }
-                else if(cylonRequestCode == REQUEST_BLUETOOTH)
-                {
-                    message = bluetoothRationale;
+                    this.requestRationaleMessage = locationRationale;
                 }
                 else if(cylonRequestCode == REQUEST_STORAGE)
                 {
-                    message = storageRationale;
-                }
-                else if(cylonRequestCode == REQUEST_FINGERPRINT)
-                {
-                    message = fingerprintRationale;
+                    this.requestRationaleMessage = storageRationale;
                 }
 
-                //build listener for okay button
-                class OkListener implements DialogInterface.OnClickListener
-                {
-                    private Cylon saul;
+                this.activity.runOnUiThread(new Runnable() {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions(saul.activity, new String[]{manifestPermission}, cylonRequestCode);
-                    }
 
-                    public void setCylon(Cylon cylon)
+                    //build listener for okay button
+                    class OkListener implements DialogInterface.OnClickListener
                     {
-                        this.saul = cylon;
-                    }
-                }//END class
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            ActivityCompat.requestPermissions(activity, new String[]{manifestPermission}, cylonRequestCode);
+                        }
+                    }//END class
 
-                //set listener's cylon so it may access the activity field
-                OkListener okListener = new OkListener();
-                okListener.setCylon(this);
+                    //set listener's cylon so it may access the activity field
+                    OkListener okListener = new OkListener();
 
-                //Show GUI window explaining rationale
-                new AlertDialog.Builder(this.activity).setMessage(message)
-                        .setPositiveButton("OK", okListener)
-                        .setNegativeButton("Cancel", null)
-                        .create()
-                        .show();
+                    public void run() {
+                        //Toast.makeText(activity, "This is Toast!!!", Toast.LENGTH_SHORT).show();
+                        new AlertDialog.Builder(activity).setMessage(requestRationaleMessage)
+                                .setPositiveButton("OK", okListener)
+                                .setNegativeButton("Cancel", null)
+                                .create()
+                                .show();
+                    }//END run()
+                }); //END new runnable
             }//END if should show rationale
             else
             {
@@ -325,11 +331,6 @@ public class Cylon
                 cameraAnswered = true;
                 produceCameras();
             }
-            else if(cylonRequestCode == REQUEST_BLUETOOTH)
-            {
-                bluetoothAnswered = true;
-                produceBluetoothDevices();
-            }
             else if(cylonRequestCode == REQUEST_LOCATION)
             {
                 locationAnswered = true;
@@ -339,11 +340,6 @@ public class Cylon
             {
                 storageAnswered = true;
                 produceStorageDevices();
-            }
-            else if(cylonRequestCode == REQUEST_FINGERPRINT)
-            {
-                fingerprintAnswered = true;
-                produceFingerprintReader();
             }
         }//END if permission already available
     }//END method
@@ -372,31 +368,8 @@ public class Cylon
                 Log.i("Saul", "Didn't get permission for contacts");
             }
         }
-        else
-        {
-            shouldCallSuperMethod = true;
-        }//END if request contacts
 
-        if(requestCode == Cylon.REQUEST_FINGERPRINT)
-        {
-            Log.i("Saul", "Got contacts return");
-            this.fingerprintAnswered = true;
-
-            if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.i("Saul", "Got permission for fingers");
-                this.produceFingerprintReader();
-            }
-            else
-            {
-                Log.i("Saul", "Didn't get permission for fingers");
-            }
-        }
-        else
-        {
-            shouldCallSuperMethod = true;
-        }//END if request contacts
-
-        if(requestCode == Cylon.REQUEST_CAMERA)
+        else if(requestCode == Cylon.REQUEST_CAMERA)
         {
             Log.i("Saul", "Got camera return");
             this.cameraAnswered = true;
@@ -411,32 +384,8 @@ public class Cylon
                 Log.i("Saul", "Didn't get permission for camera");
             }
         }
-        else
-        {
-            shouldCallSuperMethod = true;
-        }//END if request camera
 
-        if(requestCode == Cylon.REQUEST_BLUETOOTH)
-        {
-            Log.i("Saul", "Got bluetooth return");
-            this.bluetoothAnswered = true;
-
-            if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
-                Log.i("Saul", "Got permission for bluetooth");
-                this.produceBluetoothDevices();
-            }
-            else
-            {
-                Log.i("Saul", "Didn't get permission for bluetooth");
-            }
-        }
-        else
-        {
-            shouldCallSuperMethod = true;
-        }//END if request bluetooth
-
-        if(requestCode == Cylon.REQUEST_STORAGE)
+        else if(requestCode == Cylon.REQUEST_STORAGE)
         {
             Log.i("Saul", "Got storage return");
             this.storageAnswered = true;
@@ -451,12 +400,8 @@ public class Cylon
                 Log.i("Saul", "Didn't get permission for storage");
             }
         }
-        else
-        {
-            shouldCallSuperMethod = true;
-        }//END if request storage
 
-        if(requestCode == Cylon.REQUEST_LOCATION)
+        else if(requestCode == Cylon.REQUEST_LOCATION)
         {
             Log.i("Saul", "Got location return");
             this.locationAnswered = true;
@@ -1544,7 +1489,6 @@ public class Cylon
                 {
                     if (fingerprintManager.isHardwareDetected()) {
                         //Create Device Struct and save to list
-                        //TODO test this on physical device
                         Device device = new Device(fingerprintManager);
                         this.detectedDevices.addLast(device);
                     }//END inner if
@@ -1626,7 +1570,9 @@ public class Cylon
         produceSystemRumble();
         produceSensors();
         produceUsbDevices();
-        produceMidiInfo();
+        //produceMidiInfo(); TODO test this with real devices
+        produceBluetoothDevices();
+        produceFingerprintReader();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
         {
@@ -1960,11 +1906,41 @@ public class Cylon
         this.produceDateTime();
         this.produceMemoryInfo();
 
+  /*      Looper lupin = Looper.getMainLooper();
+        if(lupin == null)
+        {
+            Log.i("Saul", "No looper found, making one.\n");
+            Looper.prepare();
+        }
+
+        if(!contactsAsked)
+        {
+            requestContacts();
+            contactsAsked = true;
+        }
+
+        if(contactsAnswered && !cameraAsked)
+        {
+            requestCamera();
+            cameraAsked = true;
+        }
+
+        if(cameraAnswered && !locationAsked)
+        {
+            requestLocation();
+            locationAsked= true;
+        }
+
+        if(locationAnswered &&!storageAsked)
+        {
+            requestStorage();
+            storageAsked = true;
+        }
+*/
         //Check to see if we can log
         if( !logged &&
                 contactsAnswered &&
                 cameraAnswered &&
-                bluetoothAnswered &&
                 locationAnswered &&
                 storageAnswered &&
                 nonAnswersDone
