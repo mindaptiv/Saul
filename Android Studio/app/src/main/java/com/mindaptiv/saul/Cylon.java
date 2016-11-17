@@ -46,12 +46,13 @@ import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
-import android.hardware.display.*;
+import android.hardware.display.DisplayManager;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.location.LocationManager;
 import android.Manifest;
-import android.media.midi.*;
+import android.media.midi.MidiDeviceInfo;
+import android.media.midi.MidiManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -225,9 +226,10 @@ public class Cylon
         locationAsked       = false;
 
         requestContacts();
-        requestCamera();
+        //Moved for cascading TODO test this
+       /* requestCamera();
         requestLocation();
-        requestStorage();
+        requestStorage();*/
     }//END Constructor
 
     //PERMISSIONS METHODS
@@ -341,6 +343,25 @@ public class Cylon
                 storageAnswered = true;
                 produceStorageDevices();
             }
+
+            //Credit to businesstek @ GitHub for cascading code
+            //Must Cascade requests or fatal error
+            if (!contactsAnswered){
+                requestContacts();
+                return;
+            }
+            if (!cameraAnswered){
+                requestCamera();
+                return;
+            }
+            if (!storageAnswered){
+                requestStorage();
+                return;
+            }
+            if (!locationAnswered){
+                requestLocation();
+                return;
+            }
         }//END if permission already available
     }//END method
 
@@ -421,6 +442,24 @@ public class Cylon
             shouldCallSuperMethod = true;
         }//END if request location
 
+        //credit to businesstek @ GitHub for cascading code
+        //Must Cascade requests or fatal error
+        if (!contactsAnswered){
+            requestContacts();
+            return false;
+        }
+        if (!cameraAnswered){
+            requestCamera();
+            return false;
+        }
+        if (!storageAnswered){
+            requestStorage();
+            return false;
+        }
+        if (!locationAnswered){
+            requestLocation();
+            return false;
+        }
         return shouldCallSuperMethod;
     }//End onRequestPermissionsResult
     //END PERMISSIONS METHODS
